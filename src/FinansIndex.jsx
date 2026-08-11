@@ -274,6 +274,11 @@ const CSS = `
 .fi-src ol { margin:0; padding-left:20px; font-size:14px; color:var(--ink-2); }
 .fi-src li { margin-bottom:7px; }
 .fi-disc { background:var(--bg); border:1px solid var(--line); border-radius:var(--r); padding:15px 17px; font-size:13px; color:var(--muted); margin:24px 0; }
+.fi-aibox { background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--petrol); border-radius:0; padding:18px 20px; margin:30px 0 0; }
+.fi-aibox h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--petrol); margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+.fi-aibox p { font-size:14px; line-height:1.6; color:var(--ink-2); margin:0 0 10px; }
+.fi-aibox p:last-child { margin-bottom:0; }
+.fi-aibox b { color:var(--ink); font-weight:600; }
 .fi-corr { background:var(--gold-soft); border:1px solid #E8D49B; border-radius:var(--r); padding:15px 17px; font-size:13.5px; color:#5F4604; margin:24px 0; }
 .fi-sponnote { background:var(--gold-soft); border:1px solid #E8D49B; border-radius:var(--r); padding:16px 18px; margin:0 0 20px; font-size:14px; color:#5F4604; }
 .fi-rail { display:flex; flex-direction:column; gap:26px; }
@@ -498,10 +503,18 @@ const CATEGORIES = [
 const catName = (s) => CATEGORIES.find((c) => c.slug === s)?.name || s;
 
 const AUTHORS = {
-  "elif-durak": { name: "Elif Durak", role: "Kıdemli editör · Kredi ve bankacılık" },
-  "mert-aksoy": { name: "Mert Aksoy", role: "Editör · Makroekonomi" },
-  "seda-yalcin": { name: "Seda Yalçın", role: "Editör · Kişisel finans" },
-  "burak-onder": { name: "Burak Önder", role: "Editör · Yatırım ve emeklilik" },
+  "burcu-berk-arslan": {
+    name: "Burcu Berk Arslan",
+    role: "Kurucu ve editör",
+    bio: "FinansIndex'in kurucusu. İçerikleri resmî kaynaklarla karşılaştırarak doğruluyor ve yayına alıyor. Finansal danışmanlık yetkisi bulunmuyor.",
+  },
+};
+
+/* Yapay zekâ kullanım beyanı — her içerikte gösterilir.
+   Bu metin editoryal ilkeler sayfasındaki açıklamayla tutarlı olmalıdır. */
+const AI_NOTE = {
+  short: "Yapay zekâ destekli",
+  full: "Bu içeriğin taslağı, aşağıda listelenen resmî kaynakların ham metinleri temel alınarak yapay zekâ desteğiyle hazırlanmıştır. Metindeki tüm oran, tarih ve tutarlar kaynak belgelerle karşılaştırılarak editör tarafından doğrulanmış ve yayına bu şekilde alınmıştır. FinansIndex finansal danışmanlık hizmeti vermez.",
 };
 
 /* --------------------------------------------------------- 7. İÇERİK VERİSİ */
@@ -515,9 +528,9 @@ const ARTICLES = [
     id: "a1", slug: "politika-faizi-mevduat-getirisi-iliskisi",
     title: "Politika faizi değiştiğinde mevduat getiriniz neden hemen değişmez?",
     summary: "Merkez Bankası'nın faiz kararı ile hesabınıza yansıyan mevduat faizi arasında birkaç aşamalı bir aktarım mekanizması var. Bu yazıda o mekanizmayı ve vade planlamanıza etkisini adım adım anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Analiz", author: "mert-aksoy",
+    category: "ekonomiyi-anla", contentType: "Analiz", author: "burcu-berk-arslan",
     published_at: "2026-08-06T09:15:00+03:00", updated_at: "2026-08-06T14:40:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "elif-durak",
+    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "mevduat",
     tags: ["faiz", "mevduat", "para politikası"],
     source_name: "TCMB", source_urls: ["TCMB — Para Politikası Kurulu karar metinleri", "TCMB — Ağırlıklı ortalama mevduat faiz oranları istatistikleri", "BDDK — Aylık bankacılık sektörü verileri"],
@@ -556,9 +569,9 @@ const ARTICLES = [
     id: "a2", slug: "kredi-karti-asgari-odeme-nasil-hesaplanir",
     title: "Kredi kartı asgari ödeme tutarı nasıl hesaplanır ve neden bir çözüm değildir?",
     summary: "Asgari ödeme, borcu kapatmanın değil ertelemenin yoludur. Hesaplama mantığını, kalan borca işleyen faizin nasıl büyüdüğünü ve çıkış planını örnek bir hesaplama üzerinden gösteriyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "seda-yalcin",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-08-05T08:00:00+03:00", updated_at: "2026-08-05T08:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "elif-durak",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "asgari",
     tags: ["kredi kartı", "borç", "bütçe"],
     source_name: "BDDK / Resmî Gazete",
@@ -597,9 +610,9 @@ const ARTICLES = [
     id: "a3", slug: "borc-kapatma-hangi-krediden-baslanmali",
     title: "Birden fazla borcunuz varsa hangisinden başlamalısınız?",
     summary: "Çığ yöntemi mi, kartopu yöntemi mi? İkisinin matematiğini ve davranışsal farkını karşılaştırıyor, kendi durumunuza uygun olanı seçmeniz için basit bir karar çerçevesi sunuyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "seda-yalcin",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-08-04T10:30:00+03:00", updated_at: "2026-08-04T10:30:00+03:00",
-    read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "elif-durak",
+    read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
     tags: ["borç", "kredi", "bütçe"],
     source_name: "FinansIndex editoryal",
@@ -635,9 +648,9 @@ const ARTICLES = [
     id: "a4", slug: "enflasyon-birikim-satin-alma-gucu",
     title: "Enflasyon birikimlerinizin satın alma gücünü nasıl aşındırır?",
     summary: "Nominal getiri ile reel getiri arasındaki fark, birikim kararlarının en çok gözden kaçan kısmı. Bu farkı hesaplamanın yolunu ve bütçeye yansımasını anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Rehber", author: "mert-aksoy",
+    category: "ekonomiyi-anla", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-08-03T11:00:00+03:00", updated_at: "2026-08-03T11:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burak-onder",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     tags: ["enflasyon", "birikim", "reel getiri"],
     source_name: "TÜİK",
@@ -674,9 +687,9 @@ const ARTICLES = [
     id: "a5", slug: "kira-artis-orani-nasil-hesaplanir",
     title: "Kira artış oranı nasıl hesaplanır? Kiracı ve ev sahibi için sade rehber",
     summary: "Yasal üst sınır, hangi endeksin kullanıldığı, hesaplamanın hangi tarihe göre yapıldığı ve anlaşmazlık durumunda izlenecek yol.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "seda-yalcin",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-08-02T09:00:00+03:00", updated_at: "2026-08-02T09:00:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "elif-durak",
+    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "legal", related_tool: "kira",
     tags: ["kira", "enflasyon", "konut"],
     source_name: "TÜİK / Resmî Gazete",
@@ -711,9 +724,9 @@ const ARTICLES = [
     id: "a6", slug: "yatirim-fonu-baslangic-rehberi",
     title: "Yeni başlayanlar için yatırım fonu: ne olduğu, nasıl fiyatlandığı ve nelere bakılacağı",
     summary: "Fon nedir, pay fiyatı nasıl oluşur, toplam gider oranı neden önemlidir? Ürün önerisi yapmadan, karar vermeden önce bakılması gereken başlıkları listeliyoruz.",
-    category: "yatirim", contentType: "Rehber", author: "burak-onder",
+    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-08-01T12:00:00+03:00", updated_at: "2026-08-01T12:00:00+03:00",
-    read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "mert-aksoy",
+    read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     tags: ["fon", "yatırım", "portföy"],
     source_name: "SPK / KAP",
@@ -749,9 +762,9 @@ const ARTICLES = [
     id: "a7", slug: "bes-devlet-katkisi-nasil-calisir",
     title: "BES devlet katkısı nasıl çalışır? Hak kazanma süreleri ve çıkış senaryoları",
     summary: "Katkı payı, devlet katkısı oranı, kademeli hak kazanma takvimi ve sistemden erken ayrılmanın maliyeti. Emeklilik planı kurmadan önce bilinmesi gerekenler.",
-    category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "burak-onder",
+    category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-07-31T09:45:00+03:00", updated_at: "2026-07-31T09:45:00+03:00",
-    read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "elif-durak",
+    read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "mevduat",
     tags: ["BES", "emeklilik", "devlet katkısı"],
     source_name: "SPK / Emeklilik Gözetim Merkezi",
@@ -785,9 +798,9 @@ const ARTICLES = [
     id: "a8", slug: "altin-alirken-makas-araligi",
     title: "Altın alırken makas aralığı neden getirinizden önce gelir?",
     summary: "Alış ve satış fiyatı arasındaki fark, kısa vadeli altın işlemlerinde en görünmez maliyet kalemi. Makasın nasıl oluştuğunu ve ürün türüne göre nasıl değiştiğini anlatıyoruz.",
-    category: "yatirim", contentType: "Analiz", author: "burak-onder",
+    category: "yatirim", contentType: "Analiz", author: "burcu-berk-arslan",
     published_at: "2026-07-30T13:20:00+03:00", updated_at: "2026-07-30T13:20:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "mert-aksoy",
+    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     tags: ["altın", "maliyet", "yatırım"],
     source_name: "Borsa İstanbul / Kuyumculuk sektörü",
@@ -821,9 +834,9 @@ const ARTICLES = [
     id: "a9", slug: "kobi-nakit-akisi-yonetimi",
     title: "KOBİ'ler için nakit akışı yönetimi: kârlı görünüp neden nakit sıkışıklığı yaşanır?",
     summary: "Kâr tablosu ile banka hesabı arasındaki fark, tahsilat ve ödeme vadelerinin uyumsuzluğundan doğar. Nakit döngüsünü ölçmenin ve kısaltmanın yolları.",
-    category: "is-ve-girisim", contentType: "Rehber", author: "elif-durak",
+    category: "is-ve-girisim", contentType: "Rehber", author: "burcu-berk-arslan",
     published_at: "2026-07-29T08:30:00+03:00", updated_at: "2026-07-29T08:30:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "mert-aksoy",
+    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
     tags: ["KOBİ", "nakit akışı", "finansman"],
     source_name: "FinansIndex editoryal",
@@ -858,9 +871,9 @@ const ARTICLES = [
     id: "a10", slug: "sponsorlu-dijital-bankacilik-alaskanliklari",
     title: "Dijital bankacılık alışkanlıkları: işlemlerin çevrim içine taşınması bütçeyi nasıl değiştiriyor?",
     summary: "Şube işlemlerinin dijitale kayması, masraf yapısından bildirim alışkanlıklarına kadar birçok kalemi etkiliyor. Bu içerik Örnek Banka iş birliğiyle hazırlanmıştır.",
-    category: "kredi-ve-mevduat", contentType: "Sponsorlu", author: "elif-durak",
+    category: "kredi-ve-mevduat", contentType: "Sponsorlu", author: "burcu-berk-arslan",
     published_at: "2026-07-28T10:00:00+03:00", updated_at: "2026-07-28T10:00:00+03:00",
-    read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "mert-aksoy",
+    read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: true, sponsor_name: "Örnek Banka", disclaimer: "general", related_tool: "asgari",
     tags: ["dijital bankacılık", "masraf"],
     source_name: "Sponsor bilgilendirmesi",
@@ -1523,6 +1536,7 @@ const STATIC_PAGES = {
       ["Ne yapıyoruz?", "Ekonomi haberlerini aktarmakla yetinmiyoruz. Her gelişmede tek bir soruya cevap arıyoruz: bu, okurun cebini ve finansal kararlarını nasıl etkiliyor? İçeriklerimizi bu soruyu merkeze alarak kuruyor, mümkün olan her yerde hesaplama araçlarıyla destekliyoruz."],
       ["Neyi yapmıyoruz?", "Kişiye özel yatırım tavsiyesi vermiyoruz, kesin kazanç vaadi içeren ifadeler kullanmıyoruz ve ürün sıralaması karşılığında ödeme kabul etmiyoruz. Sponsorlu içerikler editoryal içeriklerden ayrı etiketlenir."],
       ["Bağımsızlık", "Reklam ve iş birliği gelirleri editoryal kararları etkilemez. Sponsorlu içerikler de doğruluk kontrolünden geçer."],
+      ["Şeffaflık", "İçeriklerimizin taslakları yapay zekâ desteğiyle hazırlanır. Bunu saklamıyoruz; her içeriğin altında nasıl hazırlandığı, hangi kaynaklardan doğrulandığı ve kimin yayına aldığı yazar. Finansal danışmanlık yetkimiz bulunmuyor, bu nedenle kişiye özel tavsiye vermiyoruz."],
     ],
   },
   kunye: {
@@ -1539,7 +1553,8 @@ const STATIC_PAGES = {
     body: [
       ["Kaynak kullanımı", "Sayısal veriler yalnızca birincil kaynaklardan alınır: TCMB, TÜİK, KAP, BDDK, SPK, Resmî Gazete, Hazine ve Maliye Bakanlığı, bankaların resmî sayfaları ve lisanslı veri sağlayıcıları. İkincil kaynaklardan alınan bilgi, birincil kaynakla teyit edilmeden yayımlanmaz."],
       ["Doğrulama", "Her içerikte kullanılan oran, tarih ve tutarlar kaynak belgeyle karşılaştırılır. Editör onayı olmayan içerik yayımlanmaz."],
-      ["Yapay zekâ kullanımı", "Taslak hazırlığında yapay zekâ desteği kullanılabilir. Ancak hiçbir içerik editör incelemesinden geçmeden yayına alınmaz; orta ve yüksek riskli içeriklerde ikinci bir editör kontrolü uygulanır. Başka yayınların içeriklerini yeniden yazarak yayımlamayız."],
+      ["Yapay zekâ kullanımı", "FinansIndex içeriklerinin taslakları yapay zekâ desteğiyle hazırlanır ve bu durum her içeriğin altında açıkça belirtilir. Yapay zekâya girdi olarak yalnızca resmî kurumların yayımladığı ham belgeler verilir; başka yayınların içerikleri girdi olarak kullanılmaz, yeniden yazılarak yayımlanmaz. Taslaktaki her oran, tarih ve tutar kaynak belgeyle karşılaştırılarak doğrulanır. Hiçbir içerik bu doğrulama ve editör onayı tamamlanmadan yayına alınmaz."],
+      ["Uzmanlık sınırımız", "FinansIndex bir yayın platformudur; yatırım danışmanlığı, hukuki danışmanlık veya mali müşavirlik hizmeti vermez ve bu alanlarda yetkilendirilmiş değildir. Editoryal işlevimiz, resmî kaynaklardaki bilgiyi doğrulayarak ve sadeleştirerek aktarmaktır. Kişisel finansal kararlarınız için yetkili kurum ve danışmanlara başvurmanızı öneririz."],
       ["Tavsiye sınırı", "Kişiye özel yatırım, hukuk veya vergi tavsiyesi vermeyiz. Gerekli içeriklerde uyarı metni gösterilir."],
     ],
   },
@@ -2022,11 +2037,13 @@ function Article({ slug, go }) {
               <div>
                 <div className="fi-byline-n">{author.name}</div>
                 <div className="fi-byline-r">{author.role}</div>
+                {author.bio && <div className="fi-byline-r" style={{ maxWidth: "40ch", marginTop: 2 }}>{author.bio}</div>}
               </div>
               <div style={{ borderLeft: "1px solid var(--line)", paddingLeft: 14, marginLeft: 4 }}>
                 <div className="fi-byline-r">Yayın: {dateTR(a.published_at)}</div>
                 {a.updated_at !== a.published_at && <div className="fi-byline-r">Güncelleme: {dateTR(a.updated_at)}</div>}
                 <div className="fi-byline-r">{a.read} dakika okuma</div>
+                <div className="fi-byline-r" style={{ color: "var(--petrol)", fontWeight: 600 }}>{AI_NOTE.short}</div>
               </div>
               <div className="fi-share">
                 {[["X", "M4 4l12 12M16 4L4 16"], ["in", "M5 8v8M5 5.2v.1M9 16V8m0 3c0-2 5-2 5 0v5"], ["Bağlantı", "M8 12a3 3 0 0 1 0-4l2-2a3 3 0 1 1 4 4l-1 1"]].map(([l, d]) => (
@@ -2089,6 +2106,17 @@ function Article({ slug, go }) {
               <div className="fi-src">
                 <h3>Kaynaklar</h3>
                 <ol>{a.source_urls.map((s, i) => <li key={i}>{s}</li>)}</ol>
+              </div>
+
+              <div className="fi-aibox">
+                <h3>
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M10 2.5 12 8l5.5 2-5.5 2-2 5.5-2-5.5L2.5 10 8 8z" strokeLinejoin="round" /></svg>
+                  Nasıl hazırlandı?
+                </h3>
+                <p>{AI_NOTE.full}</p>
+                <p>
+                  <b>Doğrulayan:</b> {AUTHORS[a.reviewed_by]?.name || AUTHORS[a.author].name} · <b>Doğrulama tarihi:</b> {dateTR(a.updated_at)} · <b>Risk düzeyi:</b> {a.risk_level}
+                </p>
               </div>
 
               {a.disclaimer && <p className="fi-disc">{DISCLAIMERS[a.disclaimer]}</p>}
