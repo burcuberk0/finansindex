@@ -19,12 +19,15 @@ const CSS = `
 
 .fi *, .fi *::before, .fi *::after { box-sizing: border-box; }
 .fi {
-  --navy:#0B2A45; --navy-2:#123B5C; --petrol:#0E4257;
-  --green:#1B7F5A; --green-soft:#E9F2ED;
-  --gold:#B08514; --gold-soft:#FBF3DE;
-  --bg:#F6F5F1; --surface:#FFFFFF; --line:#E3E0D8; --line-2:#CFCBC0;
-  --ink:#0F1D2A; --ink-2:#2C3E4E; --muted:#5C6B79;
-  --up:#12704A; --down:#A83521;
+  /* Ana renk: mürekkep. Siyah değil, sıcak koyu gri-kahve.
+     Vurgu: şarap kırmızısı — finans sektöründe nadir, editoryal ve ciddi.
+     Zemin: krem kağıt. Beyazdan sıcak, gözü yormayan. */
+  --navy:#2A211E; --navy-2:#3D3129; --petrol:#6B2233;
+  --green:#6B2233; --green-soft:#F7EDEE;
+  --gold:#9A6B1F; --gold-soft:#FBF2E0;
+  --bg:#FBF9F5; --surface:#FFFFFF; --line:#EAE4DA; --line-2:#D6CEC1;
+  --ink:#231C19; --ink-2:#4A4039; --muted:#7A6E64;
+  --up:#2F6B4F; --down:#B3442D;
   --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
   --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -53,11 +56,11 @@ const CSS = `
 .fi-ticker-in { display:flex; align-items:center; gap:0; overflow-x:auto; scrollbar-width:none; }
 .fi-ticker-in::-webkit-scrollbar { display:none; }
 .fi-tick { display:flex; align-items:baseline; gap:8px; padding:9px 16px 9px 0; margin-right:16px; border-right:1px solid rgba(255,255,255,.14); white-space:nowrap; flex:0 0 auto; }
-.fi-tick-k { font:500 11px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#9FB6C9; }
+.fi-tick-k { font:500 11px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#B5A79C; }
 .fi-tick-v { font:600 14px/1 var(--mono); }
 .fi-tick-d { font:500 12px/1 var(--mono); }
-.fi-up { color:#6FD8A6; } .fi-down { color:#F3A28F; }
-.fi-demo { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:#E9C46A; padding:4px 7px; border-radius:2px; flex:0 0 auto; margin-left:auto; }
+.fi-up { color:#8FD4AE; } .fi-down { color:#F0A594; }
+.fi-demo { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:#D9A441; padding:4px 7px; border-radius:2px; flex:0 0 auto; margin-left:auto; }
 
 /* --- header --- */
 .fi-hd { background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:60; }
@@ -123,26 +126,66 @@ const CSS = `
 .fi-b-type { background:var(--bg); color:var(--ink-2); border:1px solid var(--line); }
 
 /* ========== SIGNATURE: Cep Etkisi Defteri ========== */
-.fi-ledger { background:var(--navy); color:#EDF2F6; border-radius:var(--r); overflow:hidden; }
+.fi-ledger { background:var(--navy); color:#F5F0EA; border-radius:var(--r); overflow:hidden; }
 .fi-ledger-hd { padding:26px 30px 22px; border-bottom:1px solid rgba(255,255,255,.13); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
-.fi-ledger-hd .fi-eyebrow { color:#7FD3AA; }
+.fi-ledger-hd .fi-eyebrow { color:#E5A3AE; }
 .fi-ledger-hd h2 { font:600 27px/1.15 var(--serif); margin:0; color:#fff; letter-spacing:-.015em; }
-.fi-ledger-hd p { margin:6px 0 0; font-size:14px; color:#A9BED0; max-width:52ch; }
-.fi-ledger-date { margin-left:auto; font:500 11.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#7FD3AA; padding-bottom:4px; }
+.fi-ledger-hd p { margin:6px 0 0; font-size:14px; color:#C4B7AC; max-width:52ch; }
+.fi-ledger-date { margin-left:auto; font:500 11.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#E5A3AE; padding-bottom:4px; }
 .fi-le { display:grid; grid-template-columns:38px 1fr; border-top:1px solid rgba(255,255,255,.09); }
 .fi-le:first-of-type { border-top:0; }
-.fi-le-n { font:500 12px/1 var(--mono); color:#5D7F9C; padding:26px 0 0 30px; }
+.fi-le-n { font:500 12px/1 var(--mono); color:#8A7A6E; padding:26px 0 0 30px; }
 .fi-le-b { padding:24px 30px 26px 0; }
 .fi-le-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:11px; }
-.fi-le-tag { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; padding:5px 8px; border-radius:2px; background:rgba(127,211,170,.14); color:#8EDEB5; border:1px solid rgba(127,211,170,.28); }
-.fi-le-tag.warn { background:rgba(233,196,106,.13); color:#EFCB7B; border-color:rgba(233,196,106,.3); }
-.fi-le-q { font:600 10.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#5D7F9C; margin:0 0 5px; }
+.fi-le-tag { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; padding:5px 8px; border-radius:2px; background:rgba(127,211,170,.14); color:#EFB9C2; border:1px solid rgba(127,211,170,.28); }
+.fi-le-tag.warn { background:rgba(233,196,106,.13); color:#E8BE7A; border-color:rgba(233,196,106,.3); }
+.fi-le-q { font:600 10.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#8A7A6E; margin:0 0 5px; }
 .fi-le-what { font:600 20px/1.32 var(--serif); color:#fff; margin:0 0 16px; }
-.fi-le-how { font-size:15.5px; color:#C6D5E1; margin:0 0 18px; max-width:62ch; }
+.fi-le-how { font-size:15.5px; color:#DACFC5; margin:0 0 18px; max-width:62ch; }
 .fi-le-acts { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
 .fi-le-lnk { background:none; border:1px solid rgba(255,255,255,.28); color:#fff; padding:9px 14px; border-radius:var(--r); font-size:13.5px; font-weight:600; min-height:40px; }
 .fi-le-lnk:hover { background:rgba(255,255,255,.09); }
-.fi-le-lnk.calc { border-color:#7FD3AA; color:#8EDEB5; }
+.fi-le-lnk.calc { border-color:#E5A3AE; color:#EFB9C2; }
+
+/* --- piyasa paneli --- */
+.fi-mkt-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-mkt-card { background:var(--surface); padding:18px 18px 16px; min-height:118px; display:flex; flex-direction:column; }
+.fi-mkt-k { font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.fi-mkt-v { font:600 27px/1.05 var(--mono); letter-spacing:-.025em; color:var(--ink); font-variant-numeric:tabular-nums; }
+.fi-mkt-u { font-size:15px; color:var(--muted); margin-left:3px; font-weight:400; }
+.fi-mkt-d { display:inline-flex; align-items:center; gap:5px; font:600 13px/1 var(--mono); margin-top:9px; font-variant-numeric:tabular-nums; }
+.fi-mkt-d.up { color:var(--up); } .fi-mkt-d.down { color:var(--down); }
+.fi-mkt-d span[aria-hidden] { font-size:9px; }
+.fi-mkt-s { font:400 11.5px/1.4 var(--mono); color:var(--muted); margin-top:auto; padding-top:10px; }
+.fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
+.fi-skel-l { height:11px; width:52%; background:var(--line); border-radius:2px; margin-bottom:16px; }
+.fi-skel-b { height:26px; width:74%; background:var(--line); border-radius:2px; opacity:.62; }
+
+/* --- öne çıkan hesaplayıcı bölümü --- */
+.fi-calcband { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-calcband-hd { padding:26px 28px 22px; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
+.fi-calcband-hd h2 { font:600 27px/1.18 var(--serif); margin:0; color:var(--ink); letter-spacing:-.018em; }
+.fi-calcband-hd p { margin:7px 0 0; font-size:14.5px; color:var(--muted); max-width:56ch; }
+.fi-calcband-tabs { display:flex; gap:0; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none; }
+.fi-calcband-tabs::-webkit-scrollbar { display:none; }
+.fi-calcband-tabs button { background:none; border:0; border-bottom:2px solid transparent; margin-bottom:-1px; padding:15px 20px; font-size:14.5px; font-weight:500; color:var(--muted); white-space:nowrap; min-height:52px; }
+.fi-calcband-tabs button:hover { color:var(--ink); background:var(--bg); }
+.fi-calcband-tabs button[aria-selected="true"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); background:var(--surface); }
+.fi-calcband .fi-calc { border:0; border-radius:0; }
+.fi-calcband .fi-calc-hd { display:none; }
+.fi-calcband .fi-calc-out { border-radius:0; }
+
+/* --- okunabilir grafik --- */
+.fi-chart { margin:6px 0 0; }
+.fi-chart-legend { display:flex; gap:18px; flex-wrap:wrap; margin:0 0 14px; font-size:13px; color:var(--ink-2); }
+.fi-chart-legend span { display:inline-flex; align-items:center; gap:7px; }
+.fi-chart-sw { width:11px; height:11px; border-radius:2px; flex:0 0 auto; }
+.fi-chart-cap { font-size:12.5px; color:var(--muted); margin:10px 0 0; }
+.fi-bar-row { display:grid; grid-template-columns:minmax(88px,auto) 1fr minmax(76px,auto); align-items:center; gap:14px; padding:9px 0; }
+.fi-bar-lbl { font-size:13.5px; color:var(--ink-2); }
+.fi-bar-track { background:var(--bg); border:1px solid var(--line); border-radius:2px; height:26px; position:relative; overflow:hidden; }
+.fi-bar-fill { height:100%; border-radius:0; }
+.fi-bar-val { font:600 13.5px/1 var(--mono); color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
 
 /* --- cards --- */
 .fi-grid { display:grid; gap:26px; }
@@ -180,13 +223,13 @@ const CSS = `
 .fi-toggle { display:flex; align-items:flex-start; gap:9px; font-size:13.5px; color:var(--ink-2); }
 .fi-toggle input { width:20px; height:20px; margin-top:2px; flex:0 0 auto; }
 .fi-res-main { border-bottom:1px solid rgba(255,255,255,.14); padding-bottom:16px; margin-bottom:16px; }
-.fi-res-k { font:500 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#93AEC5; margin-bottom:8px; }
+.fi-res-k { font:500 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#B5A79C; margin-bottom:8px; }
 .fi-res-v { font:600 32px/1.05 var(--mono); letter-spacing:-.02em; color:#fff; }
 .fi-res-row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; font-size:14px; }
-.fi-res-row span:first-child { color:#A9BED0; }
+.fi-res-row span:first-child { color:#C4B7AC; }
 .fi-res-row span:last-child { font-family:var(--mono); font-weight:500; }
 .fi-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; padding-top:14px; border-top:1px solid var(--line); }
-.fi-calc-out .fi-note { color:#8FA6BA; border-top-color:rgba(255,255,255,.14); }
+.fi-calc-out .fi-note { color:#A2948A; border-top-color:rgba(255,255,255,.14); }
 .fi-samp { display:inline-block; font:500 10px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; background:var(--gold-soft); color:#7A5A05; padding:5px 8px; border-radius:2px; border:1px solid #E8D49B; }
 
 /* --- panels --- */
@@ -195,11 +238,11 @@ const CSS = `
 .fi-dossier-i { min-height:280px; background:var(--navy); }
 .fi-dossier-b { padding:34px; }
 .fi-dossier-b h3 { font:700 30px/1.16 var(--serif); margin:12px 0 12px; letter-spacing:-.02em; }
-.fi-dossier-b p { color:#BCD2DE; font-size:15.5px; margin:0 0 20px; }
-.fi-dossier-b .fi-eyebrow { color:#8FD9C0; }
+.fi-dossier-b p { color:#D5C9BE; font-size:15.5px; margin:0 0 20px; }
+.fi-dossier-b .fi-eyebrow { color:#E5A3AE; }
 .fi-dossier-parts { list-style:none; padding:0; margin:0 0 22px; }
 .fi-dossier-parts li { border-top:1px solid rgba(255,255,255,.16); padding:11px 0; font-size:14.5px; display:flex; gap:12px; }
-.fi-dossier-parts li b { font:500 12px/1.5 var(--mono); color:#8FD9C0; flex:0 0 auto; }
+.fi-dossier-parts li b { font:500 12px/1.5 var(--mono); color:#E5A3AE; flex:0 0 auto; }
 
 /* --- guides --- */
 .fi-guide { background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:var(--r); padding:18px 20px; }
@@ -220,17 +263,17 @@ const CSS = `
 /* --- newsletter --- */
 .fi-nl { background:var(--navy); color:#fff; border-radius:var(--r); padding:38px; display:grid; grid-template-columns:1fr 1fr; gap:38px; align-items:center; }
 .fi-nl h2 { font:600 29px/1.18 var(--serif); margin:10px 0 10px; letter-spacing:-.02em; }
-.fi-nl p { color:#A9BED0; font-size:15px; margin:0; }
-.fi-nl .fi-eyebrow { color:#7FD3AA; }
+.fi-nl p { color:#C4B7AC; font-size:15px; margin:0; }
+.fi-nl .fi-eyebrow { color:#E5A3AE; }
 .fi-nl-f { display:flex; flex-direction:column; gap:12px; }
 .fi-nl-f input { width:100%; padding:13px 14px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.07); color:#fff; border-radius:var(--r); min-height:48px; }
-.fi-nl-f input::placeholder { color:#8FA6BA; }
-.fi-nl-f input[aria-invalid="true"] { border-color:#F3A28F; }
-.fi-consent { display:flex; gap:10px; align-items:flex-start; font-size:12.5px; color:#A9BED0; line-height:1.5; }
+.fi-nl-f input::placeholder { color:#A2948A; }
+.fi-nl-f input[aria-invalid="true"] { border-color:#F0A594; }
+.fi-consent { display:flex; gap:10px; align-items:flex-start; font-size:12.5px; color:#C4B7AC; line-height:1.5; }
 .fi-consent input { width:20px; height:20px; flex:0 0 auto; margin-top:1px; }
 .fi-msg { font-size:13.5px; padding:11px 13px; border-radius:var(--r); margin:0; }
-.fi-msg.err { background:rgba(243,162,143,.14); color:#F3A28F; border:1px solid rgba(243,162,143,.3); }
-.fi-msg.ok { background:rgba(127,211,170,.14); color:#8EDEB5; border:1px solid rgba(127,211,170,.32); }
+.fi-msg.err { background:rgba(243,162,143,.14); color:#F0A594; border:1px solid rgba(243,162,143,.3); }
+.fi-msg.ok { background:rgba(127,211,170,.14); color:#EFB9C2; border:1px solid rgba(127,211,170,.32); }
 
 /* --- article --- */
 .fi-art { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:48px; padding:32px 0 0; }
@@ -288,15 +331,15 @@ const CSS = `
 .fi-rail-t { font:600 15.5px/1.35 var(--serif); color:var(--navy); margin:5px 0 0; }
 .fi-rail-i:hover .fi-rail-t { text-decoration:underline; }
 .fi-relcalc { background:var(--navy); color:#fff; border-radius:var(--r); padding:22px; }
-.fi-relcalc .fi-eyebrow { color:#7FD3AA; }
+.fi-relcalc .fi-eyebrow { color:#E5A3AE; }
 .fi-relcalc h3 { font:600 19px/1.28 var(--serif); margin:0 0 8px; }
-.fi-relcalc p { font-size:13.5px; color:#A9BED0; margin:0 0 16px; }
+.fi-relcalc p { font-size:13.5px; color:#C4B7AC; margin:0 0 16px; }
 
 /* --- media kit --- */
 .fi-mk-hero { background:var(--navy); color:#fff; padding:56px 0; }
 .fi-mk-hero h1 { font:700 44px/1.1 var(--serif); letter-spacing:-.03em; margin:14px 0 16px; max-width:18ch; }
-.fi-mk-hero p { font-size:17.5px; color:#BCD2DE; max-width:58ch; margin:0; }
-.fi-mk-hero .fi-eyebrow { color:#7FD3AA; }
+.fi-mk-hero p { font-size:17.5px; color:#D5C9BE; max-width:58ch; margin:0; }
+.fi-mk-hero .fi-eyebrow { color:#E5A3AE; }
 .fi-prod { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:24px; }
 .fi-prod h3 { font:600 18px/1.3 var(--sans); color:var(--navy); margin:0 0 8px; }
 .fi-prod p { font-size:14px; color:var(--muted); margin:0 0 14px; }
@@ -308,17 +351,17 @@ const CSS = `
 .fi-form textarea { width:100%; padding:11px 12px; border:1px solid var(--line-2); border-radius:var(--r); min-height:110px; font-family:var(--sans); }
 
 /* --- footer --- */
-.fi-ft { background:var(--navy); color:#BCD2DE; margin-top:56px; padding:48px 0 26px; }
+.fi-ft { background:var(--navy); color:#D5C9BE; margin-top:56px; padding:48px 0 26px; }
 .fi-ft-g { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:34px; padding-bottom:34px; border-bottom:1px solid rgba(255,255,255,.13); }
-.fi-ft h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:#7FD3AA; margin:0 0 15px; }
+.fi-ft h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:#E5A3AE; margin:0 0 15px; }
 .fi-ft ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:2px; }
-.fi-ft ul button { background:none; border:0; padding:7px 0; color:#BCD2DE; font-size:14px; text-align:left; min-height:38px; }
+.fi-ft ul button { background:none; border:0; padding:7px 0; color:#D5C9BE; font-size:14px; text-align:left; min-height:38px; }
 .fi-ft ul button:hover { color:#fff; text-decoration:underline; }
-.fi-ft-about p { font-size:14px; color:#A9BED0; margin:14px 0 0; max-width:38ch; }
-.fi-ft-bot { padding-top:22px; display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:#8FA6BA; }
-.fi-ft-bot .fi-devlog { margin-left:auto; background:none; border:1px solid rgba(255,255,255,.2); color:#8FA6BA; padding:7px 12px; border-radius:var(--r); font:500 11px var(--mono); min-height:36px; }
-.fi-log { margin-top:16px; background:rgba(0,0,0,.24); border:1px solid rgba(255,255,255,.13); border-radius:var(--r); padding:14px; font:400 11.5px/1.7 var(--mono); color:#9FB6C9; max-height:220px; overflow:auto; }
-.fi-log b { color:#8EDEB5; font-weight:500; }
+.fi-ft-about p { font-size:14px; color:#C4B7AC; margin:14px 0 0; max-width:38ch; }
+.fi-ft-bot { padding-top:22px; display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:#A2948A; }
+.fi-ft-bot .fi-devlog { margin-left:auto; background:none; border:1px solid rgba(255,255,255,.2); color:#A2948A; padding:7px 12px; border-radius:var(--r); font:500 11px var(--mono); min-height:36px; }
+.fi-log { margin-top:16px; background:rgba(0,0,0,.24); border:1px solid rgba(255,255,255,.13); border-radius:var(--r); padding:14px; font:400 11.5px/1.7 var(--mono); color:#B5A79C; max-height:220px; overflow:auto; }
+.fi-log b { color:#EFB9C2; font-weight:500; }
 
 /* --- misc pages --- */
 .fi-page-hd { padding:40px 0 30px; border-bottom:1px solid var(--line); }
@@ -338,6 +381,7 @@ const CSS = `
   .fi-art, .fi-2col { grid-template-columns:1fr; gap:34px; }
   .fi-sticky { position:static; }
   .fi-g4 { grid-template-columns:repeat(2,1fr); }
+  .fi-mkt-grid { grid-template-columns:repeat(2,1fr); }
   .fi-dossier { grid-template-columns:1fr; }
   .fi-dossier-i { min-height:190px; }
   .fi-nl { grid-template-columns:1fr; gap:26px; padding:30px; }
@@ -347,6 +391,14 @@ const CSS = `
   .fi-nav { display:none; }
   .fi-burger { display:grid; }
   .fi-g3, .fi-g4 { grid-template-columns:1fr; }
+  .fi-mkt-grid { grid-template-columns:repeat(2,1fr); }
+  .fi-mkt-card { padding:14px 13px 13px; min-height:104px; }
+  .fi-mkt-v { font-size:21px; }
+  .fi-mkt-s { display:none; }
+  .fi-calcband-hd { padding:22px 18px 18px; }
+  .fi-calcband-hd h2 { font-size:22px; }
+  .fi-bar-row { grid-template-columns:1fr; gap:5px; padding:11px 0; }
+  .fi-bar-val { text-align:left; }
   .fi-grid { gap:22px; }
   .fi-hero-t { font-size:29px; }
   .fi-art h1, .fi-page-hd h1, .fi-mk-hero h1 { font-size:29px; }
@@ -443,17 +495,38 @@ function useSeo({ title, description, path, jsonLd }) {
  * döndürülür — UI tarafında hiçbir değişiklik gerekmez.
  */
 const MARKET_SOURCE = {
-  isDemo: true,
+  endpoint: "/api/piyasa",
   async fetch() {
-    return [
-      { k: "USD/TRY", v: "00,00", d: null },
-      { k: "EUR/TRY", v: "00,00", d: null },
-      { k: "Gram Altın", v: "0.000", d: null },
-      { k: "BIST 100", v: "0.000", d: null },
-      { k: "Bitcoin", v: "0.000", d: null },
-    ];
+    const res = await window.fetch(this.endpoint, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error("Piyasa verisi alınamadı");
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Kaynak yanıt vermedi");
+    return data;
   },
 };
+
+/* Piyasa verisi durumu: yükleniyor / hazır / hata.
+   Hata durumunda sahte veri gösterilmez, açıkça bildirilir. */
+function useMarket() {
+  const [state, setState] = useState({ status: "loading", items: [], updatedAt: null, source: null });
+
+  const load = useCallback(async () => {
+    try {
+      const d = await MARKET_SOURCE.fetch();
+      setState({ status: "ready", items: d.items, updatedAt: d.updatedAt, source: d.source });
+    } catch (e) {
+      setState({ status: "error", items: [], updatedAt: null, source: null });
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+    const id = setInterval(load, 120000); // 2 dakikada bir tazele
+    return () => clearInterval(id);
+  }, [load]);
+
+  return state;
+}
 
 /* ------------------------------------------------------- 5. REKLAM ENVANTERİ */
 
@@ -586,8 +659,15 @@ const ARTICLES = [
       H("Asgariyi ödediğinizde ne oluyor?"),
       P("Ödenmeyen kısım bir sonraki döneme devreder ve bu tutara akdi faiz işler. Faiz oranları kredi kartlarında konut veya ihtiyaç kredilerine kıyasla yüksektir. Sonuç: her ay asgariyi ödeseniz bile anapara çok yavaş azalır, hatta yeni harcama yapıyorsanız hiç azalmaz."),
       { type: "note", t: "Aşağıdaki örnek hesaplama, mekanizmayı göstermek amacıyla varsayımsal bir faiz oranıyla kurgulanmıştır. Gerçek rakamlar için kendi ekstre oranınızı kullanın." },
-      { type: "table", head: ["Yaklaşım", "Aylık ödeme", "Sonuç"],
-        rows: [["Yalnızca asgari", "Dönem borcunun küçük bir oranı", "Anapara çok yavaş azalır, faiz yükü birikir"], ["Asgari + sabit ilave tutar", "Asgari üzerine düzenli ek", "Kapanış süresi belirgin şekilde kısalır"], ["Tamamı", "Dönem borcunun tamamı", "Faiz işlemez"]] },
+      { type: "chart", title: "25.000 TL borç, aylık %4 faiz: ödeme stratejisine göre kapanma süresi",
+        unit: " ay", dec: 0, highlight: 0,
+        rows: [
+          { k: "Tamamı", v: 1 },
+          { k: "Asgari + 2.000 TL", v: 8 },
+          { k: "Asgari + 1.000 TL", v: 13 },
+          { k: "Yalnızca asgari", v: 47 },
+        ],
+        caption: "Örnek hesaplama. Yeni harcama yapılmadığı ve faiz oranının sabit kaldığı varsayılmıştır. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın." },
       H("Borçtan çıkış planı"),
       { type: "ul", items: [
         "Kartı harcamaya kapatın; borç azalırken yeni harcama eklemek planı sıfırlar.",
@@ -662,8 +742,14 @@ const ARTICLES = [
       H("Reel getiri nasıl hesaplanır?"),
       P("Basit çıkarma işlemi (getiri eksi enflasyon) yaklaşık bir sonuç verir, ancak oranlar yükseldikçe sapma büyür. Doğru hesap şudur: **Reel getiri = ((1 + nominal getiri) ÷ (1 + enflasyon)) − 1.** Sonuç negatifse, paranız büyümüş ama satın alma gücünüz azalmış demektir."),
       { type: "note", t: "Aşağıdaki değerler örnek hesaplamadır; güncel enflasyon verisi için TÜİK bültenlerini esas alın." },
-      { type: "table", head: ["Nominal getiri", "Enflasyon", "Yaklaşık reel getiri"],
-        rows: [["%40", "%30", "%7,7"], ["%30", "%30", "%0"], ["%20", "%30", "−%7,7"]] },
+      { type: "chart", title: "Enflasyon %30 iken, farklı getiri oranlarında reel sonuç",
+        unit: "%", dec: 1, highlight: 1,
+        rows: [
+          { k: "Getiri %40", v: 7.7 },
+          { k: "Getiri %30", v: 0.01, dec: 0 },
+          { k: "Getiri %20", v: -7.7 },
+        ],
+        caption: "Örnek hesaplama. Sıfır çizgisinin altındaki değer, paranın büyümesine rağmen alım gücünün azaldığı anlamına gelir." },
       H("Bütçeye yansıması"),
       P("Reel getirinin negatif olduğu dönemlerde birikimi tamamen nakitte tutmak, sessiz bir maliyet yaratır. Öte yandan reel getiri arayışı, riski göz ardı etmek anlamına gelmez. Farklı araçların vergi, likidite ve dalgalanma özellikleri birbirinden ayrışır."),
       H("Pratik adımlar"),
@@ -969,8 +1055,8 @@ const DISCLAIMERS = {
    Gerçek kurulumda <img srcset> ile CDN görselleri kullanılacak. */
 function Cover({ seed = 0, alt = "" }) {
   const tones = [
-    ["#0B2A45", "#123B5C"], ["#0E4257", "#146073"], ["#123B5C", "#1B7F5A"],
-    ["#0B2A45", "#0E4257"], ["#14324A", "#B08514"],
+    ["#2A211E", "#3D3129"], ["#6B2233", "#8A3244"], ["#3D3129", "#6B2233"],
+    ["#2A211E", "#4A3B33"], ["#3D3129", "#9A6B1F"],
   ];
   const [a, b] = tones[seed % tones.length];
   const gid = `g${seed}-${Math.abs(seed * 37 % 999)}`;
@@ -994,6 +1080,43 @@ function Cover({ seed = 0, alt = "" }) {
         fill="none" stroke="rgba(255,255,255,.55)" strokeWidth="2.5" strokeLinejoin="round" />
       <circle cx="280" cy="46" r="26" fill="rgba(255,255,255,.06)" />
     </svg>
+  );
+}
+
+/**
+ * Okunabilir karşılaştırma grafiği.
+ * Tasarım kararı: renk tek başına anlam taşımaz — her çubuğun değeri
+ * sayı olarak da yazılır ve etiket çubuğun dışında durur. Böylece
+ * ekran okuyucu, renk körlüğü ve küçük ekran koşullarında da okunur.
+ */
+function BarChart({ title, unit = "", rows, caption, highlight }) {
+  const max = Math.max(...rows.map((r) => Math.abs(r.v))) || 1;
+  return (
+    <figure className="fi-chart" style={{ margin: "8px 0 26px" }}>
+      {title && <figcaption style={{ font: "600 14px/1.4 var(--sans)", color: "var(--ink)", marginBottom: 12 }}>{title}</figcaption>}
+      <div role="table" aria-label={title || "Karşılaştırma grafiği"}>
+        {rows.map((r, i) => {
+          const isHi = highlight === i;
+          const pct = (Math.abs(r.v) / max) * 100;
+          return (
+            <div className="fi-bar-row" role="row" key={r.k}>
+              <div className="fi-bar-lbl" role="cell" style={isHi ? { fontWeight: 600, color: "var(--ink)" } : undefined}>{r.k}</div>
+              <div className="fi-bar-track" role="cell" aria-hidden="true">
+                <div className="fi-bar-fill" style={{
+                  width: `${Math.max(2, pct)}%`,
+                  background: isHi ? "var(--petrol)" : r.v < 0 ? "var(--down)" : "var(--ink-2)",
+                  opacity: isHi ? 1 : .78,
+                }} />
+              </div>
+              <div className="fi-bar-val" role="cell">
+                {r.v < 0 ? "−" : ""}{unit === "₺" ? tl(Math.abs(r.v), 0) : `${num(Math.abs(r.v), r.dec ?? 1)}${unit}`}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {caption && <p className="fi-chart-cap">{caption}</p>}
+    </figure>
   );
 }
 
@@ -1093,7 +1216,7 @@ function Field({ label, hint, ...p }) {
   );
 }
 
-function CalcShell({ tool, children, out, note }) {
+function CalcShell({ tool, children, out, note, compact }) {
   return (
     <section className="fi-calc" id={tool.id}>
       <div className="fi-calc-hd">
@@ -1104,6 +1227,12 @@ function CalcShell({ tool, children, out, note }) {
       </div>
       <div className="fi-calc-b">
         <div className="fi-calc-in">
+          {compact && (
+            <div style={{ marginBottom: 2 }}>
+              <span className="fi-samp">Örnek hesaplama aracı</span>
+              <p style={{ margin: "10px 0 0", fontSize: 14, color: "var(--muted)" }}>{tool.desc}</p>
+            </div>
+          )}
           {children}
           {note && <p className="fi-note">{note}</p>}
         </div>
@@ -1122,7 +1251,7 @@ function useCalcTracking(type) {
 }
 
 /* --- Araç 1: Kredi taksit --- */
-function CalcKredi({ tool }) {
+function CalcKredi({ tool, compact }) {
   const [p, setP] = useState("100000");
   const [r, setR] = useState("2,50");
   const [n, setN] = useState("24");
@@ -1142,7 +1271,7 @@ function CalcKredi({ tool }) {
   useEffect(() => { if (res) t(true); }, [res, t]);
 
   return (
-    <CalcShell tool={tool}
+    <CalcShell tool={tool} compact={compact}
       note="Bankalar dosya masrafı, sigorta ve tahsis ücreti gibi ek kalemler uygulayabilir. Sonuç, yalnızca faiz üzerinden hesaplanan gösterge niteliğindedir."
       out={res ? (
         <>
@@ -1156,7 +1285,7 @@ function CalcKredi({ tool }) {
           <div className="fi-res-row"><span>Taksit sayısı</span><span>{res.n}</span></div>
           <p className="fi-note">Vergiler {tax ? "dahil edildi (KKDF %15 + BSMV %10)" : "hariç tutuldu"}.</p>
         </>
-      ) : <p style={{ color: "#A9BED0", margin: 0 }}>Tutar ve faiz oranını girin, taksit tutarı burada hesaplanır.</p>}
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Tutar ve faiz oranını girin, taksit tutarı burada hesaplanır.</p>}
     >
       <Field label="Kredi tutarı (TL)" value={p} onChange={(e) => { setP(e.target.value); t(false); }} />
       <Field label="Aylık faiz oranı (%)" hint="Bankanızın teklif ettiği aylık oranı girin." value={r} onChange={(e) => { setR(e.target.value); t(false); }} />
@@ -1170,7 +1299,7 @@ function CalcKredi({ tool }) {
 }
 
 /* --- Araç 2: Mevduat getirisi --- */
-function CalcMevduat({ tool }) {
+function CalcMevduat({ tool, compact }) {
   const [p, setP] = useState("100000");
   const [r, setR] = useState("");
   const [d, setD] = useState("32");
@@ -1188,7 +1317,7 @@ function CalcMevduat({ tool }) {
   useEffect(() => { if (res) t(true); }, [res, t]);
 
   return (
-    <CalcShell tool={tool}
+    <CalcShell tool={tool} compact={compact}
       note="Stopaj oranı vade, para birimi ve ürün türüne göre değişebilir ve mevzuatla güncellenir. Güncel oranı bankanızdan veya resmî düzenlemeden teyit ederek girin."
       out={res ? (
         <>
@@ -1201,7 +1330,7 @@ function CalcMevduat({ tool }) {
           <div className="fi-res-row"><span>Vade sonu toplam</span><span>{tl(res.end)}</span></div>
           <div className="fi-res-row"><span>Yıllık net getiri oranı</span><span>%{num(res.eff, 2)}</span></div>
         </>
-      ) : <p style={{ color: "#A9BED0", margin: 0 }}>Anapara, faiz oranı ve vadeyi girin.</p>}
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Anapara, faiz oranı ve vadeyi girin.</p>}
     >
       <Field label="Anapara (TL)" value={p} onChange={(e) => { setP(e.target.value); t(false); }} />
       <Field label="Yıllık brüt faiz oranı (%)" hint="Bankanın açıkladığı yıllık oranı girin." placeholder="örn. 40" value={r} onChange={(e) => { setR(e.target.value); t(false); }} />
@@ -1212,7 +1341,7 @@ function CalcMevduat({ tool }) {
 }
 
 /* --- Araç 3: Kredi kartı asgari ödeme --- */
-function CalcAsgari({ tool }) {
+function CalcAsgari({ tool, compact }) {
   const [b, setB] = useState("25000");
   const [rate, setRate] = useState("20");
   const [inst, setInst] = useState("0");
@@ -1231,7 +1360,7 @@ function CalcAsgari({ tool }) {
   useEffect(() => { if (res) t(true); }, [res, t]);
 
   return (
-    <CalcShell tool={tool}
+    <CalcShell tool={tool} compact={compact}
       note="Asgari ödeme oranı kart limitine göre değişir ve mevzuatla güncellenebilir. Kendi ekstrenizdeki oranı ve akdi faiz oranını kullanın."
       out={res ? (
         <>
@@ -1244,7 +1373,7 @@ function CalcAsgari({ tool }) {
           <div className="fi-res-row"><span>Gelecek ay taşınan borç</span><span>{tl(res.next)}</span></div>
           <p className="fi-note">Yeni harcama yapılmadığı varsayılmıştır. Harcama eklendiğinde devreden bakiye büyür.</p>
         </>
-      ) : <p style={{ color: "#A9BED0", margin: 0 }}>Dönem borcu ve asgari ödeme oranını girin.</p>}
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Dönem borcu ve asgari ödeme oranını girin.</p>}
     >
       <Field label="Dönem borcu (TL)" value={b} onChange={(e) => { setB(e.target.value); t(false); }} />
       <div className="fi-fld">
@@ -1261,7 +1390,7 @@ function CalcAsgari({ tool }) {
 }
 
 /* --- Araç 4: Kira artışı --- */
-function CalcKira({ tool }) {
+function CalcKira({ tool, compact }) {
   const [rent, setRent] = useState("18000");
   const [rate, setRate] = useState("");
   const t = useCalcTracking("kira_artis");
@@ -1276,7 +1405,7 @@ function CalcKira({ tool }) {
   useEffect(() => { if (res) t(true); }, [res, t]);
 
   return (
-    <CalcShell tool={tool}
+    <CalcShell tool={tool} compact={compact}
       note="Konut kiralarında artış, on iki aylık ortalamalara göre TÜFE değişim oranı ile sınırlıdır. Yenileme ayınıza ait güncel oranı TÜİK bülteninden alın."
       out={res ? (
         <>
@@ -1287,7 +1416,7 @@ function CalcKira({ tool }) {
           <div className="fi-res-row"><span>Aylık artış tutarı</span><span>{tl(res.diff)}</span></div>
           <div className="fi-res-row"><span>Yıllık ek yük</span><span>{tl(res.year)}</span></div>
         </>
-      ) : <p style={{ color: "#A9BED0", margin: 0 }}>Mevcut kirayı ve uygulanacak oranı girin.</p>}
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Mevcut kirayı ve uygulanacak oranı girin.</p>}
     >
       <Field label="Mevcut aylık kira (TL)" value={rent} onChange={(e) => { setRent(e.target.value); t(false); }} />
       <Field label="Artış oranı (%)" hint="Yenileme ayınızda geçerli olan on iki aylık ortalama TÜFE değişim oranını girin." placeholder="örn. 45,3" value={rate} onChange={(e) => { setRate(e.target.value); t(false); }} />
@@ -1296,7 +1425,7 @@ function CalcKira({ tool }) {
 }
 
 /* --- Araç 5: Enflasyon etkisi --- */
-function CalcEnflasyon({ tool }) {
+function CalcEnflasyon({ tool, compact }) {
   const [amt, setAmt] = useState("100000");
   const [inf, setInf] = useState("");
   const [ret, setRet] = useState("");
@@ -1314,7 +1443,7 @@ function CalcEnflasyon({ tool }) {
   useEffect(() => { if (res) t(true); }, [res, t]);
 
   return (
-    <CalcShell tool={tool}
+    <CalcShell tool={tool} compact={compact}
       note="Reel getiri = ((1 + nominal getiri) ÷ (1 + enflasyon)) − 1. Güncel enflasyon verisi için TÜİK bültenlerini esas alın."
       out={res ? (
         <>
@@ -1323,10 +1452,10 @@ function CalcEnflasyon({ tool }) {
             <div className="fi-res-v">{tl(res.real)}</div>
           </div>
           <div className="fi-res-row"><span>Nominal tutar</span><span>{tl(res.nominal)}</span></div>
-          <div className="fi-res-row"><span>Yıllık reel getiri</span><span style={{ color: res.realRate >= 0 ? "#8EDEB5" : "#F3A28F" }}>%{num(res.realRate, 2)}</span></div>
+          <div className="fi-res-row"><span>Yıllık reel getiri</span><span style={{ color: res.realRate >= 0 ? "#EFB9C2" : "#F0A594" }}>%{num(res.realRate, 2)}</span></div>
           <div className="fi-res-row"><span>Getiri olmasaydı kayıp</span><span>{tl(res.loss)}</span></div>
         </>
-      ) : <p style={{ color: "#A9BED0", margin: 0 }}>Tutar ve enflasyon oranını girin.</p>}
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Tutar ve enflasyon oranını girin.</p>}
     >
       <Field label="Tutar (TL)" value={amt} onChange={(e) => { setAmt(e.target.value); t(false); }} />
       <Field label="Yıllık enflasyon oranı (%)" placeholder="örn. 35" value={inf} onChange={(e) => { setInf(e.target.value); t(false); }} />
@@ -1350,25 +1479,104 @@ const toolById = (id) => TOOLS.find((t) => t.id === id);
 
 /* --------------------------------------------------------- 12. ORTAK PARÇALAR */
 
-function MarketTicker() {
-  const [data, setData] = useState([]);
-  useEffect(() => { MARKET_SOURCE.fetch().then(setData); }, []);
-  if (!data.length) return null;
+function MarketTicker({ market }) {
+  const { status, items } = market;
+
+  if (status === "loading") {
+    return (
+      <div className="fi-ticker">
+        <div className="fi-wrap"><div className="fi-ticker-in"><span className="fi-tick-k" style={{ padding: "10px 0" }}>Piyasa verileri yükleniyor…</span></div></div>
+      </div>
+    );
+  }
+  if (status === "error") {
+    return (
+      <div className="fi-ticker">
+        <div className="fi-wrap"><div className="fi-ticker-in"><span className="fi-tick-k" style={{ padding: "10px 0" }}>Piyasa verisi şu an alınamıyor</span></div></div>
+      </div>
+    );
+  }
+
   return (
     <div className="fi-ticker">
       <div className="fi-wrap">
         <div className="fi-ticker-in" role="region" aria-label="Piyasa göstergeleri">
-          {data.map((d) => (
+          {items.map((d) => (
             <div className="fi-tick" key={d.k}>
               <span className="fi-tick-k">{d.k}</span>
-              <span className="fi-tick-v">{d.v}</span>
-              {d.d != null && <span className={`fi-tick-d ${d.d >= 0 ? "fi-up" : "fi-down"}`}>{d.d >= 0 ? "▲" : "▼"} %{num(Math.abs(d.d), 2)}</span>}
+              <span className="fi-tick-v">{d.unit === "$" ? "$" : ""}{num(d.v, d.v > 1000 ? 0 : 2)}{d.unit === "₺" ? " ₺" : ""}</span>
+              {d.d != null && (
+                <span className={`fi-tick-d ${d.d >= 0 ? "fi-up" : "fi-down"}`}>
+                  {d.d >= 0 ? "▲" : "▼"} %{num(Math.abs(d.d), 2)}
+                </span>
+              )}
             </div>
           ))}
-          {MARKET_SOURCE.isDemo && <span className="fi-demo" title="Veri kaynağı henüz bağlanmadı">Örnek veri</span>}
         </div>
       </div>
     </div>
+  );
+}
+
+/* Ana sayfadaki büyük, okunabilir piyasa paneli.
+   Şeritten farkı: her gösterge ayrı kart, rakamlar büyük,
+   değişim yönü hem renk hem ok hem işaretle veriliyor (renk körlüğü için). */
+function MarketPanel({ market }) {
+  const { status, items, updatedAt, source } = market;
+
+  if (status === "loading") {
+    return (
+      <div className="fi-mkt-grid">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <div className="fi-mkt-card fi-skel" key={i}><div className="fi-skel-l" /><div className="fi-skel-b" /></div>
+        ))}
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="fi-panel" style={{ textAlign: "center", padding: "36px 24px" }}>
+        <p style={{ margin: "0 0 6px", fontWeight: 600, color: "var(--ink)" }}>Piyasa verisi şu an alınamıyor</p>
+        <p style={{ margin: 0, fontSize: 14, color: "var(--muted)" }}>
+          Sağlayıcıdan yanıt gelmedi. Bu alanda tahmini ya da eski veri göstermiyoruz.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="fi-mkt-grid">
+        {items.map((d) => {
+          const up = d.d != null && d.d >= 0;
+          return (
+            <div className="fi-mkt-card" key={d.k}>
+              <div className="fi-mkt-k">{d.k}</div>
+              <div className="fi-mkt-v">
+                {d.unit === "$" ? "$" : ""}{num(d.v, d.v >= 1000 ? 0 : 2)}{d.unit === "₺" ? <span className="fi-mkt-u">₺</span> : ""}
+              </div>
+              {d.d != null && (
+                <div className={`fi-mkt-d ${up ? "up" : "down"}`}>
+                  <span aria-hidden="true">{up ? "▲" : "▼"}</span>
+                  {up ? "+" : "−"}%{num(Math.abs(d.d), 2)}
+                  <span className="fi-hidden">{up ? "yükseliş" : "düşüş"}</span>
+                </div>
+              )}
+              {d.alis != null && d.satis != null && d.alis !== d.satis && (
+                <div className="fi-mkt-s">
+                  Alış {num(d.alis, d.alis >= 1000 ? 0 : 2)} · Satış {num(d.satis, d.satis >= 1000 ? 0 : 2)}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <p className="fi-mkt-note">
+        Kaynak: {source} · Son güncelleme: {updatedAt ? new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "long" }).format(new Date(updatedAt)) : "—"} ·
+        Veriler bilgilendirme amaçlıdır, işlem anındaki kurumsal fiyatlardan farklılık gösterebilir.
+      </p>
+    </>
   );
 }
 
@@ -1376,23 +1584,23 @@ function Logo({ go }) {
   return (
     <button className="fi-logo" onClick={() => go({ n: "home" })} aria-label="FinansIndex ana sayfa">
       <svg className="fi-logo-m" viewBox="0 0 32 32" aria-hidden="true">
-        <rect width="32" height="32" rx="3" fill="#0B2A45" />
+        <rect width="32" height="32" rx="3" fill="#2A211E" />
         <path d="M7 22.5V9.5h11v3.1H10.6v2.5h6.5v3.1h-6.5v4.3z" fill="#fff" />
-        <rect x="20.6" y="9.5" width="3.2" height="13" fill="#1B7F5A" />
+        <rect x="20.6" y="9.5" width="3.2" height="13" fill="#B5485C" />
       </svg>
       <span className="fi-logo-t">Finans<em>Index</em></span>
     </button>
   );
 }
 
-function Header({ route, go, onSearch }) {
+function Header({ route, go, onSearch, market }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   const nav = (r, label) => { track("category_click", { article_category: label, traffic_source: "header" }); go(r); close(); };
 
   return (
     <>
-      <MarketTicker />
+      <MarketTicker market={market} />
       <header className="fi-hd">
         <div className="fi-wrap">
           <div className="fi-hd-top">
@@ -1627,7 +1835,7 @@ function Footer({ go }) {
             <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
               <rect width="32" height="32" rx="3" fill="#fff" fillOpacity=".1" />
               <path d="M7 22.5V9.5h11v3.1H10.6v2.5h6.5v3.1h-6.5v4.3z" fill="#fff" />
-              <rect x="20.6" y="9.5" width="3.2" height="13" fill="#7FD3AA" />
+              <rect x="20.6" y="9.5" width="3.2" height="13" fill="#D98A98" />
             </svg>
             <p style={{ font: "600 20px/1.2 var(--serif)", color: "#fff", margin: "12px 0 0" }}>Paranı anlamanın daha kolay yolu.</p>
             <p>Ekonomi gelişmelerinin bütçenize, birikiminize ve borcunuza etkisini sade bir dille anlatıyoruz. Yatırım tavsiyesi vermiyoruz.</p>
@@ -1681,7 +1889,7 @@ function Footer({ go }) {
 
 /* ------------------------------------------------------------- 13. ANA SAYFA */
 
-function Home({ go }) {
+function Home({ go, market }) {
   useSeo({
     title: "FinansIndex — Paranı anlamanın daha kolay yolu",
     description: "Ekonomi ve finans gelişmelerinin bütçenize etkisini sade bir dille anlatıyoruz. Kredi, mevduat, yatırım ve sigorta rehberleri, çalışan hesaplama araçları.",
@@ -1690,6 +1898,8 @@ function Home({ go }) {
   useEffect(() => { track("article_view", { page_type: "home", content_type: "home" }); }, []);
 
   const [filter, setFilter] = useState("hepsi");
+  const [homeCalc, setHomeCalc] = useState("kredi");
+  const activeCalc = toolById(homeCalc);
   const hero = byId("a1");
   const side = ["a2", "a5", "a4"].map(byId);
   const feed = useMemo(() => {
@@ -1730,6 +1940,42 @@ function Home({ go }) {
         </section>
       </div>
 
+      {/* Piyasa paneli */}
+      <div className="fi-wrap">
+        <section className="fi-sec" aria-labelledby="mkt-h">
+          <div className="fi-sh">
+            <div>
+              <div className="fi-eyebrow">Canlı piyasa</div>
+              <h2 className="fi-h2" id="mkt-h">Döviz ve kıymetli maden</h2>
+            </div>
+          </div>
+          <MarketPanel market={market} />
+        </section>
+
+        {/* HESAPLAYICILAR — sayfanın üst sırasında, çalışır hâlde */}
+        <section className="fi-sec" aria-labelledby="calc-h">
+          <div className="fi-calcband">
+            <div className="fi-calcband-hd">
+              <div>
+                <div className="fi-eyebrow">Hesapla</div>
+                <h2 id="calc-h">Karar vermeden önce rakamı görün</h2>
+                <p>Oranları siz girersiniz. Girdiğiniz hiçbir veri sunucularımıza gönderilmez, hesaplama tarayıcınızda yapılır.</p>
+              </div>
+              <button className="fi-more" onClick={() => go({ n: "tools" })}>Tüm araçlar →</button>
+            </div>
+            <div className="fi-calcband-tabs" role="tablist" aria-label="Hesaplama aracı seçimi">
+              {TOOLS.filter((t) => t.ready).map((t) => (
+                <button key={t.id} role="tab" aria-selected={homeCalc === t.id}
+                  onClick={() => { setHomeCalc(t.id); track("calculator_start", { calculator_type: t.id, page_type: "home", traffic_source: "home_band" }); }}>
+                  {t.short}
+                </button>
+              ))}
+            </div>
+            {activeCalc && <activeCalc.C tool={activeCalc} compact />}
+          </div>
+        </section>
+      </div>
+
       {/* İMZA BÖLÜM: Cep Etkisi Defteri */}
       <div className="fi-wrap">
         <section className="fi-sec" aria-labelledby="ledger-h">
@@ -1763,29 +2009,6 @@ function Home({ go }) {
                 </div>
               );
             })}
-          </div>
-        </section>
-
-        {/* Finansal araçlar */}
-        <section className="fi-sec" aria-labelledby="tools-h">
-          <div className="fi-sh">
-            <div>
-              <div className="fi-eyebrow">Finansal araçlar</div>
-              <h2 className="fi-h2" id="tools-h">Hesaplayın, sonra karar verin</h2>
-              <p className="fi-sub">Girdiğiniz veriler tarayıcınızdan çıkmaz. Oranları siz girersiniz; hiçbir güncel oran araca gömülü değildir.</p>
-            </div>
-            <button className="fi-more" onClick={() => go({ n: "tools" })}>Tüm araçlar →</button>
-          </div>
-          <div className="fi-grid fi-g4">
-            {TOOLS.slice(0, 8).map((t) => (
-              <button className="fi-tool" key={t.id} onClick={() => go({ n: "tools", tool: t.id })}>
-                <div className="fi-tool-i" aria-hidden="true">
-                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3.5" y="2.5" width="13" height="15" rx="2" /><path d="M6.5 6.5h7M6.5 10h2M6.5 13.5h2M12 10v3.5M10.5 11.8h3" strokeLinecap="round" /></svg>
-                </div>
-                <h3 className="fi-tool-t">{t.short}</h3>
-                <p className="fi-tool-d">{t.ready ? t.desc : "Yakında"}</p>
-              </button>
-            ))}
           </div>
         </section>
 
@@ -2078,6 +2301,7 @@ function Article({ slug, go }) {
                   {b.type === "ul" && <ul>{b.items.map((it, j) => <li key={j} dangerouslySetInnerHTML={{ __html: it.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />)}</ul>}
                   {b.type === "quote" && <blockquote className="fi-quote">{b.t}</blockquote>}
                   {b.type === "note" && <p className="fi-disc" style={{ margin: "0 0 20px" }}><span className="fi-samp" style={{ marginRight: 8 }}>Örnek hesaplama</span>{b.t}</p>}
+                  {b.type === "chart" && <BarChart title={b.title} unit={b.unit} rows={b.rows} caption={b.caption} highlight={b.highlight} />}
                   {b.type === "table" && (
                     <table className="fi-tbl">
                       <thead><tr>{b.head.map((h) => <th key={h} scope="col">{h}</th>)}</tr></thead>
@@ -2448,6 +2672,7 @@ function NotFound({ go }) {
 export default function FinansIndex() {
   const [route, setRoute] = useState({ n: "home" });
   const [search, setSearch] = useState(false);
+  const market = useMarket();
 
   const go = useCallback((r) => {
     setRoute(r);
@@ -2459,7 +2684,7 @@ export default function FinansIndex() {
 
   const page = (() => {
     switch (route.n) {
-      case "home": return <Home go={go} />;
+      case "home": return <Home go={go} market={market} />;
       case "category": return <Category slug={route.slug} go={go} />;
       case "article": return <Article slug={route.slug} go={go} />;
       case "tools": return <Tools activeTool={route.tool} go={go} />;
@@ -2474,7 +2699,7 @@ export default function FinansIndex() {
     <div className="fi">
       <style>{CSS}</style>
       <a href="#icerik" className="fi-hidden fi-skip">İçeriğe geç</a>
-      <Header route={route} go={go} onSearch={() => setSearch(true)} />
+      <Header route={route} go={go} onSearch={() => setSearch(true)} market={market} />
       {page}
       {search && <SearchOverlay onClose={() => setSearch(false)} go={go} />}
       <Footer go={go} />
