@@ -75,7 +75,7 @@ const CSS = `
 .fi-ico:hover { background:var(--bg); border-color:var(--line-2); }
 .fi-btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:0 18px; border-radius:var(--r); border:1px solid transparent; font-weight:600; font-size:14px; letter-spacing:.01em; }
 .fi-btn-p { background:var(--navy); color:#fff; } .fi-btn-p:hover { background:var(--navy-2); }
-.fi-btn-g { background:var(--green); color:#fff; } .fi-btn-g:hover { background:#166C4C; }
+.fi-btn-g { background:var(--navy); color:#fff; } .fi-btn-g:hover { background:var(--navy-2); }
 .fi-btn-o { background:transparent; color:var(--navy); border-color:var(--line-2); } .fi-btn-o:hover { background:var(--bg); }
 .fi-nav { display:flex; gap:2px; border-top:1px solid var(--line); overflow-x:auto; scrollbar-width:none; }
 .fi-nav::-webkit-scrollbar { display:none; }
@@ -100,7 +100,7 @@ const CSS = `
 .fi-sec { padding:44px 0; border-top:1px solid var(--line); }
 .fi-sec:first-child { border-top:0; }
 .fi-sh { display:flex; align-items:flex-end; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
-.fi-eyebrow { font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--green); margin-bottom:9px; }
+.fi-eyebrow { font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--petrol); margin-bottom:9px; }
 .fi-h2 { font:600 27px/1.2 var(--serif); letter-spacing:-.015em; margin:0; color:var(--navy); }
 .fi-sub { color:var(--muted); font-size:14.5px; margin:6px 0 0; max-width:60ch; }
 .fi-more { margin-left:auto; font-size:14px; font-weight:600; color:var(--navy); background:none; border:0; padding:8px 0; }
@@ -108,7 +108,7 @@ const CSS = `
 
 /* --- hero --- */
 .fi-hero { display:grid; grid-template-columns:1.55fr 1fr; gap:34px; padding:34px 0 44px; }
-.fi-hero-i { aspect-ratio:16/9; background:var(--navy); border-radius:var(--r); overflow:hidden; margin-bottom:16px; }
+.fi-hero-i { aspect-ratio:2/1; background:var(--navy); border-radius:var(--r); overflow:hidden; margin-bottom:16px; }
 .fi-hero-t { font:700 38px/1.14 var(--serif); letter-spacing:-.025em; margin:10px 0 12px; color:var(--navy); }
 .fi-hero-s { font-size:17px; color:var(--ink-2); margin:0 0 14px; max-width:56ch; }
 .fi-side { display:flex; flex-direction:column; gap:18px; border-left:1px solid var(--line); padding-left:26px; }
@@ -119,7 +119,7 @@ const CSS = `
 
 /* --- meta chips --- */
 .fi-meta { display:flex; align-items:center; gap:9px; flex-wrap:wrap; font:500 11.5px/1 var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
-.fi-cat { color:var(--green); font-weight:600; }
+.fi-cat { color:var(--ink-2); font-weight:600; }
 .fi-dot { width:3px; height:3px; border-radius:50%; background:var(--line-2); flex:0 0 auto; }
 .fi-badge { font:600 10px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; padding:5px 7px; border-radius:2px; }
 .fi-b-spon { background:var(--gold-soft); color:#7A5A05; border:1px solid #E8D49B; }
@@ -1054,9 +1054,12 @@ const DISCLAIMERS = {
 /* Basit görsel yerine, kategoriye göre üretilen soyut kapak deseni.
    Gerçek kurulumda <img srcset> ile CDN görselleri kullanılacak. */
 function Cover({ seed = 0, alt = "" }) {
+  /* Kapaklar ağırlıklı olarak nötr mürekkep tonlarında.
+     Bordo yalnızca bir tonda ve ikincil konumda görünür —
+     vurgu rengi vurgu olarak kalsın diye. */
   const tones = [
-    ["#2A211E", "#3D3129"], ["#6B2233", "#8A3244"], ["#3D3129", "#6B2233"],
-    ["#2A211E", "#4A3B33"], ["#3D3129", "#9A6B1F"],
+    ["#2A211E", "#463A33"], ["#38302B", "#544539"], ["#463A33", "#6B2233"],
+    ["#2A211E", "#3D3129"], ["#413830", "#7A5A2A"],
   ];
   const [a, b] = tones[seed % tones.length];
   const gid = `g${seed}-${Math.abs(seed * 37 % 999)}`;
@@ -1068,7 +1071,7 @@ function Cover({ seed = 0, alt = "" }) {
         </linearGradient>
       </defs>
       <rect width="320" height="180" fill={`url(#${gid})`} />
-      <g stroke="rgba(255,255,255,.14)" strokeWidth="1">
+      <g stroke="rgba(255,255,255,.09)" strokeWidth="1">
         {[36, 72, 108, 144].map((y) => <line key={y} x1="0" y1={y} x2="320" y2={y} />)}
       </g>
       <polyline
@@ -1077,8 +1080,8 @@ function Cover({ seed = 0, alt = "" }) {
           const y = 130 - ((Math.sin(i * 1.1 + seed) + 1) * 26 + (i * 4));
           return `${x},${Math.max(24, Math.min(160, y))}`;
         }).join(" ")}
-        fill="none" stroke="rgba(255,255,255,.55)" strokeWidth="2.5" strokeLinejoin="round" />
-      <circle cx="280" cy="46" r="26" fill="rgba(255,255,255,.06)" />
+        fill="none" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinejoin="round" />
+      <circle cx="280" cy="46" r="26" fill="rgba(255,255,255,.04)" />
     </svg>
   );
 }
