@@ -5,7 +5,19 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA yönlendirmesi: tüm yollar index.html'e döner (404 sayfası uygulama içinde çalışır)
+[functions]
+  directory = "netlify/functions"
+
+# ÖNEMLİ: /api/* yolu SPA yönlendirmesinden ÖNCE tanımlanmalı.
+# Netlify kuralları sırayla değerlendirir; aksi hâlde aşağıdaki
+# yakala-tümü kuralı fonksiyon çağrılarını da index.html'e yönlendirir.
+[[redirects]]
+  from = "/api/piyasa"
+  to = "/.netlify/functions/piyasa"
+  status = 200
+  force = true
+
+# SPA yönlendirmesi: kalan tüm yollar index.html'e döner
 [[redirects]]
   from = "/*"
   to = "/index.html"
