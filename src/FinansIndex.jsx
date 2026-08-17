@@ -508,14 +508,14 @@ const MARKET_SOURCE = {
 /* Piyasa verisi durumu: yükleniyor / hazır / hata.
    Hata durumunda sahte veri gösterilmez, açıkça bildirilir. */
 function useMarket() {
-  const [state, setState] = useState({ status: "loading", items: [], updatedAt: null, source: null });
+  const [state, setState] = useState({ status: "loading", items: [], updatedAt: null, source: null, tcmbDate: null });
 
   const load = useCallback(async () => {
     try {
       const d = await MARKET_SOURCE.fetch();
-      setState({ status: "ready", items: d.items, updatedAt: d.updatedAt, source: d.source });
+      setState({ status: "ready", items: d.items, updatedAt: d.updatedAt, source: d.source, tcmbDate: d.tcmbDate });
     } catch (e) {
-      setState({ status: "error", items: [], updatedAt: null, source: null });
+      setState({ status: "error", items: [], updatedAt: null, source: null, tcmbDate: null });
     }
   }, []);
 
@@ -1525,7 +1525,7 @@ function MarketTicker({ market }) {
    Şeritten farkı: her gösterge ayrı kart, rakamlar büyük,
    değişim yönü hem renk hem ok hem işaretle veriliyor (renk körlüğü için). */
 function MarketPanel({ market }) {
-  const { status, items, updatedAt, source } = market;
+  const { status, items, updatedAt, tcmbDate } = market;
 
   if (status === "loading") {
     return (
@@ -1576,8 +1576,9 @@ function MarketPanel({ market }) {
         })}
       </div>
       <p className="fi-mkt-note">
-        Kaynak: {source} · Son güncelleme: {updatedAt ? new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "long" }).format(new Date(updatedAt)) : "—"} ·
-        Veriler bilgilendirme amaçlıdır, işlem anındaki kurumsal fiyatlardan farklılık gösterebilir.
+        Döviz: TCMB resmî kuru{tcmbDate ? ` (${tcmbDate})` : ""}. Değişim, bir önceki iş gününün resmî kuruna göre hesaplanmıştır.
+        Kıymetli maden: serbest piyasa verisi. Son çekim: {updatedAt ? new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt)) : "—"}.
+        Bankalar ve kuyumcularda uygulanan fiyatlar bu değerlerden farklılık gösterir.
       </p>
     </>
   );
