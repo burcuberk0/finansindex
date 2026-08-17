@@ -1,23 +1,21 @@
 /**
  * Piyasa verisi proxy'si — çok kaynaklı.
  *
- * Tasarım kararı: tek sağlayıcıya bağımlı kalmıyoruz.
- *  1) Döviz için TCMB'nin resmî XML servisi (birincil kaynak).
- *     FinansIndex'in editoryal ilkesi birincil kaynak kullanmak; döviz
- *     tarafında bunu doğrudan uygulayabiliyoruz.
- *  2) Kıymetli maden için serbest piyasa sağlayıcısı (TCMB altın/gümüş
- *     serbest piyasa fiyatı yayımlamıyor).
- *  3) Biri çökerse diğeri çalışmaya devam eder; kısmi veri gösterilir.
+ * Döviz: TCMB resmî XML (birincil kaynak).
+ *   Günlük değişim, bir önceki iş gününün resmî kuruyla karşılaştırılarak
+ *   hesaplanır. TCMB değişim yüzdesi yayımlamadığı için farkı biz çıkarıyoruz;
+ *   böylece hem değer hem değişim tek bir resmî kaynağa dayanır.
+ *
+ * Kıymetli maden: serbest piyasa sağlayıcısı (TCMB serbest piyasa altın/gümüş
+ *   fiyatı yayımlamaz). Birden çok sağlayıcı sırayla denenir.
  *
  * Hiçbir koşulda tahmini, eski ya da uydurma değer üretilmez.
- *
  * Teşhis: /api/piyasa?debug=1
  */
 
-const TCMB_URL = "https://www.tcmb.gov.tr/kurlar/today.xml";
 const METAL_URLS = [
-  "https://api.genelpara.com/embed/altin.json",
   "https://finans.truncgil.com/today.json",
+  "https://api.genelpara.com/embed/altin.json",
 ];
 
 const UA = {
@@ -27,19 +25,24 @@ const UA = {
 
 const num = (v) => {
   if (v === null || v === undefined) return null;
-  const raw = String(v).trim();
+  let raw = String(v).trim().replace(/%/g, "").replace(/\s/g, "");
   if (!raw) return null;
-  const norm = raw.includes(",") ? raw.replace(/\./g, "").replace(",", ".") : raw;
-  const n = parseFloat(norm);
+  // "1.234,56" (TR) → 1234.56 · "1234.56" (EN) olduğu gibi
+  if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+  const n = parseFloat(raw);
   return isNaN(n) ? null : n;
 };
 
-/* --- TCMB: resmî döviz kurları (XML) --- */
-async function fetchTcmb() {
-  const res = await fetch(TCMB_URL, { headers: UA });
-  if (!res.ok) throw new Error("TCMB " + res.status);
-  const xml = await res.text();
+/* ---------------------------------------------------------------- TCMB --- */
 
+const tcmbUrlFor = (d) => {
+  if (!d) return "https://www.tcmb.gov.tr/kurlar/today.xml";
+  const p = (x) => String(x).padStart(2, "0");
+  const yyyy = d.getFullYear(), mm = p(d.getMonth() + 1), dd = p(d.getDate());
+  return `https://www.tcmb.gov.tr/kurlar/${yyyy}${mm}/${dd}${mm}${yyyy}.xml`;
+};
+
+function parseTcmb(xml) {
   const pick = (code) => {
     const re = new RegExp(`<Currency[^>]*CurrencyCode="${code}"[\\s\\S]*?</Currency>`, "i");
     const block = xml.match(re);
@@ -52,80 +55,119 @@ async function fetchTcmb() {
     const alis = get("ForexBuying");
     const satis = get("ForexSelling");
     if (satis == null && alis == null) return null;
-    return { alis: alis ? alis / unit : null, satis: satis ? satis / unit : null };
+    return { alis: alis != null ? alis / unit : null, satis: satis != null ? satis / unit : null };
   };
-
   const dateM = xml.match(/Tarih="([^"]+)"/);
-  return {
-    date: dateM ? dateM[1] : null,
-    USD: pick("USD"),
-    EUR: pick("EUR"),
-    GBP: pick("GBP"),
-  };
+  return { date: dateM ? dateM[1] : null, USD: pick("USD"), EUR: pick("EUR"), GBP: pick("GBP") };
 }
 
-/* --- Kıymetli maden: serbest piyasa --- */
+async function fetchTcmbAt(date) {
+  const res = await fetch(tcmbUrlFor(date), { headers: UA });
+  if (!res.ok) return null;
+  const xml = await res.text();
+  if (!/<Currency/i.test(xml)) return null;   // tatil günlerinde boş sayfa döner
+  return parseTcmb(xml);
+}
+
+/** Bir önceki yayımlanmış kuru bulur; hafta sonu ve tatilleri atlar. */
+async function fetchTcmbPrevious(maxBack = 7) {
+  const d = new Date();
+  for (let i = 1; i <= maxBack; i++) {
+    d.setDate(d.getDate() - 1);
+    if (d.getDay() === 0 || d.getDay() === 6) continue;  // pazar / cumartesi
+    try {
+      const r = await fetchTcmbAt(new Date(d));
+      if (r && (r.USD || r.EUR || r.GBP)) return r;
+    } catch { /* sıradaki güne bak */ }
+  }
+  return null;
+}
+
+/* -------------------------------------------------------------- METAL --- */
+
+const norm = (s) => String(s).toLocaleLowerCase("tr").replace(/[\s_\-.]/g, "");
+
+const findKey = (obj, ...cands) => {
+  if (!obj || typeof obj !== "object") return null;
+  const keys = Object.keys(obj);
+  for (const c of cands) {
+    const hit = keys.find((k) => norm(k) === norm(c));
+    if (hit !== undefined) return obj[hit];
+  }
+  return null;
+};
+
+/** Alan adı bilinmiyorsa: anahtar adında ipucu arar (degisim/change/fark/%). */
+const findChange = (obj) => {
+  const direct = findKey(obj, "degisim", "değişim", "change", "fark", "rate", "yuzde", "yüzde");
+  if (direct !== null && direct !== undefined) return num(direct);
+  if (!obj || typeof obj !== "object") return null;
+  for (const k of Object.keys(obj)) {
+    const n = norm(k);
+    if (n.includes("degisim") || n.includes("change") || n.includes("fark")) return num(obj[k]);
+  }
+  return null;
+};
+
 async function fetchMetals() {
   for (const url of METAL_URLS) {
     try {
       const res = await fetch(url, { headers: UA });
       if (!res.ok) continue;
-      const text = await res.text();
-      const data = JSON.parse(text);
-      if (data && typeof data === "object" && Object.keys(data).length) {
-        return { source: url, data };
-      }
-    } catch { /* sıradaki kaynağı dene */ }
+      const data = JSON.parse(await res.text());
+      if (data && typeof data === "object" && Object.keys(data).length) return { source: url, data };
+    } catch { /* sıradaki kaynak */ }
   }
   return null;
 }
 
-const findKey = (obj, ...cands) => {
-  if (!obj) return null;
-  const keys = Object.keys(obj);
-  for (const c of cands) {
-    const hit = keys.find((k) => k.toLowerCase().replace(/[\s_-]/g, "") === c.toLowerCase().replace(/[\s_-]/g, ""));
-    if (hit) return obj[hit];
-  }
-  return null;
+const metalItem = (md, cands, label) => {
+  const d = findKey(md, ...cands);
+  if (!d || typeof d !== "object") return null;
+  const alis = num(findKey(d, "alis", "alış", "buying", "bid"));
+  const satis = num(findKey(d, "satis", "satış", "selling", "ask"));
+  const v = satis ?? alis;
+  if (v == null) return null;
+  return { k: label, v, unit: "₺", alis, satis, d: findChange(d) };
 };
 
-const metalItem = (metals, cands, label) => {
-  const d = findKey(metals, ...cands);
-  if (!d || typeof d !== "object") return null;
-  const alis = num(findKey(d, "alis", "alış", "Alış", "buying"));
-  const satis = num(findKey(d, "satis", "satış", "Satış", "selling"));
-  const val = satis ?? alis;
-  if (val == null) return null;
-  return {
-    k: label, v: val, unit: "₺", alis, satis,
-    d: num(findKey(d, "degisim", "değişim", "Değişim", "change")),
-  };
-};
+/* ---------------------------------------------------------------- MAIN --- */
 
 export default async (req) => {
   const headers = {
     "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "public, max-age=300, s-maxage=600, stale-while-revalidate=1800",
+    "Cache-Control": "public, max-age=300, s-maxage=900, stale-while-revalidate=1800",
   };
-
   const debug = new URL(req.url).searchParams.get("debug") === "1";
+
   const items = [];
   const errors = {};
   let tcmbDate = null;
+  let prevDate = null;
 
-  // 1) Döviz — TCMB
+  // 1) Döviz — TCMB bugün + önceki iş günü (değişim hesabı için)
   try {
-    const t = await fetchTcmb();
-    tcmbDate = t.date;
-    const add = (o, label) => {
+    const [today, prev] = await Promise.all([
+      fetchTcmbAt(null),
+      fetchTcmbPrevious().catch(() => null),
+    ]);
+    if (!today) throw new Error("TCMB bugünkü kur yayımlanmamış");
+    tcmbDate = today.date;
+    prevDate = prev ? prev.date : null;
+
+    const add = (key, label) => {
+      const o = today[key];
       if (!o) return;
       const v = o.satis ?? o.alis;
-      if (v != null) items.push({ k: label, v, unit: "₺", alis: o.alis, satis: o.satis, d: null });
+      if (v == null) return;
+      let change = null;
+      const p = prev && prev[key] ? (prev[key].satis ?? prev[key].alis) : null;
+      if (p != null && p > 0) change = ((v - p) / p) * 100;
+      items.push({ k: label, v, unit: "₺", alis: o.alis, satis: o.satis, d: change });
     };
-    add(t.USD, "Dolar");
-    add(t.EUR, "Euro");
-    add(t.GBP, "Sterlin");
+    add("USD", "Dolar");
+    add("EUR", "Euro");
+    add("GBP", "Sterlin");
   } catch (e) {
     errors.tcmb = String(e.message || e);
   }
@@ -138,22 +180,25 @@ export default async (req) => {
     metalsRaw = m;
     const md = m.data;
     const push = (it) => { if (it) items.push(it); };
-    push(metalItem(md, ["GA", "gram-altin", "gramaltin", "Gram Altın", "gram altın"], "Gram Altın"));
-    push(metalItem(md, ["C", "ceyrek-altin", "ceyrekaltin", "Çeyrek Altın", "çeyrek altın"], "Çeyrek Altın"));
-    push(metalItem(md, ["GUMUS", "gumus", "Gümüş", "gümüş"], "Gümüş"));
-    push(metalItem(md, ["PLATIN", "platin", "Platin"], "Platin"));
+    push(metalItem(md, ["gram-altin", "GA", "gramaltin", "Gram Altın", "gram altın"], "Gram Altın"));
+    push(metalItem(md, ["ceyrek-altin", "C", "ceyrekaltin", "Çeyrek Altın", "çeyrek altın"], "Çeyrek Altın"));
+    push(metalItem(md, ["yarim-altin", "Y", "Yarım Altın", "yarım altın"], "Yarım Altın"));
+    push(metalItem(md, ["tam-altin", "T", "Tam Altın", "tam altın", "cumhuriyet-altini"], "Tam Altın"));
+    push(metalItem(md, ["gumus", "GUMUS", "Gümüş", "gümüş", "silver"], "Gümüş"));
   } catch (e) {
     errors.metals = String(e.message || e);
   }
 
   if (debug) {
+    const sampleKey = metalsRaw ? Object.keys(metalsRaw.data).find((k) => norm(k).includes("gram")) : null;
     return new Response(JSON.stringify({
       itemsFound: items.length,
       items,
       errors,
+      tcmbDate, prevDate,
       metalSource: metalsRaw ? metalsRaw.source : null,
-      metalKeys: metalsRaw ? Object.keys(metalsRaw.data).slice(0, 40) : null,
-      metalSample: metalsRaw ? Object.entries(metalsRaw.data).slice(0, 4) : null,
+      metalKeysSample: metalsRaw ? Object.keys(metalsRaw.data).filter((k) => /alt|gum|gümü|gram|ceyrek|çeyrek/i.test(k)).slice(0, 20) : null,
+      oneMetalEntry: sampleKey ? { key: sampleKey, value: metalsRaw.data[sampleKey] } : null,
     }, null, 2), { headers: { ...headers, "Cache-Control": "no-store" } });
   }
 
@@ -166,7 +211,7 @@ export default async (req) => {
     ok: true,
     updatedAt: new Date().toISOString(),
     source: errors.tcmb ? "Serbest piyasa" : "TCMB (döviz) · serbest piyasa (maden)",
-    tcmbDate,
+    tcmbDate, prevDate,
     items,
   }), { headers });
 };
