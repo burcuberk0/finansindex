@@ -175,17 +175,28 @@ const CSS = `
 .fi-calcband .fi-calc-hd { display:none; }
 .fi-calcband .fi-calc-out { border-radius:0; }
 
-/* --- okunabilir grafik --- */
-.fi-chart { margin:6px 0 0; }
-.fi-chart-legend { display:flex; gap:18px; flex-wrap:wrap; margin:0 0 14px; font-size:13px; color:var(--ink-2); }
-.fi-chart-legend span { display:inline-flex; align-items:center; gap:7px; }
-.fi-chart-sw { width:11px; height:11px; border-radius:2px; flex:0 0 auto; }
-.fi-chart-cap { font-size:12.5px; color:var(--muted); margin:10px 0 0; }
-.fi-bar-row { display:grid; grid-template-columns:minmax(88px,auto) 1fr minmax(76px,auto); align-items:center; gap:14px; padding:9px 0; }
-.fi-bar-lbl { font-size:13.5px; color:var(--ink-2); }
-.fi-bar-track { background:var(--bg); border:1px solid var(--line); border-radius:2px; height:26px; position:relative; overflow:hidden; }
-.fi-bar-fill { height:100%; border-radius:0; }
-.fi-bar-val { font:600 13.5px/1 var(--mono); color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
+/* --- okunabilir grafik: rakam her zaman görünür --- */
+.fi-chart { margin:24px 0 28px; padding:20px 22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
+.fi-chart-t { font:600 16px/1.35 var(--sans); color:var(--ink); margin:0 0 16px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+.fi-chart-body { display:flex; flex-direction:column; gap:4px; }
+.fi-chart-cap { font-size:12.5px; line-height:1.55; color:var(--muted); margin:14px 0 0; padding-top:12px; border-top:1px solid var(--line); }
+.fi-chart-note { font-size:13px; color:var(--ink-2); margin:14px 0 0; padding:11px 13px; background:var(--bg); border-left:2px solid var(--petrol); }
+.fi-bar-row { display:grid; grid-template-columns:minmax(96px,150px) 1fr; align-items:center; gap:16px; padding:7px 0; }
+.fi-bar-lbl { font-size:14px; color:var(--ink-2); line-height:1.3; }
+.fi-bar-lbl.hi { font-weight:600; color:var(--ink); }
+.fi-bar-sub { display:block; font-size:12px; color:var(--muted); margin-top:2px; }
+.fi-bar-track { position:relative; height:34px; display:flex; align-items:center; }
+.fi-bar-fill { height:34px; border-radius:2px; display:flex; align-items:center; justify-content:flex-end; padding-right:11px; min-width:3%; transition:width .3s ease; }
+.fi-bar-in { font:600 15px/1 var(--mono); color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.fi-bar-out { font:600 15px/1 var(--mono); color:var(--ink); font-variant-numeric:tabular-nums; margin-left:11px; white-space:nowrap; }
+
+/* --- öne çıkan rakam blokları --- */
+.fi-stats { margin:24px 0 28px; padding:0; }
+.fi-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-stat { background:var(--surface); padding:20px 18px; }
+.fi-stat-v { font:600 30px/1.05 var(--mono); letter-spacing:-.025em; color:var(--petrol); font-variant-numeric:tabular-nums; }
+.fi-stat-k { font-size:13.5px; color:var(--ink-2); margin-top:9px; line-height:1.4; }
+.fi-stat-s { font-size:12px; color:var(--muted); margin-top:5px; line-height:1.4; }
 
 /* --- cards --- */
 .fi-grid { display:grid; gap:26px; }
@@ -397,8 +408,11 @@ const CSS = `
   .fi-mkt-s { display:none; }
   .fi-calcband-hd { padding:22px 18px 18px; }
   .fi-calcband-hd h2 { font-size:22px; }
-  .fi-bar-row { grid-template-columns:1fr; gap:5px; padding:11px 0; }
-  .fi-bar-val { text-align:left; }
+  .fi-chart { padding:16px 15px; margin:20px 0 24px; }
+  .fi-bar-row { grid-template-columns:1fr; gap:6px; padding:10px 0; }
+  .fi-bar-track { height:30px; }
+  .fi-bar-fill { height:30px; }
+  .fi-stat-v { font-size:25px; }
   .fi-grid { gap:22px; }
   .fi-hero-t { font-size:29px; }
   .fi-art h1, .fi-page-hd h1, .fi-mk-hero h1 { font-size:29px; }
@@ -954,6 +968,140 @@ const ARTICLES = [
     },
   },
   {
+    id: "a11", slug: "tasarruf-finansmani-nasil-calisir",
+    title: "Tasarruf finansmanı nasıl çalışır? Sözleşme imzalamadan önce bilmeniz gerekenler",
+    summary: "Faizsiz konut ve taşıt finansmanı modeli BDDK denetiminde. Sistemin işleyişini, organizasyon ücretinin toplam maliyete etkisini ve sözleşme öncesi sorulması gereken soruları anlatıyoruz.",
+    category: "kredi-ve-mevduat", contentType: "Rehber", author: "burcu-berk-arslan",
+    published_at: "2026-08-16T10:00:00+03:00", updated_at: "2026-08-16T10:00:00+03:00",
+    read: 9, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    sponsored: false, disclaimer: "legal", related_tool: "karsilastir",
+    tags: ["tasarruf finansmanı", "konut", "taşıt", "BDDK"],
+    source_name: "BDDK / Resmî Gazete",
+    source_urls: [
+      "6361 sayılı Finansal Kiralama, Faktoring, Finansman ve Tasarruf Finansman Şirketleri Kanunu",
+      "BDDK — Tasarruf Finansman Şirketlerinin Faaliyet Esasları Hakkında Yönetmelik",
+      "BDDK — Faaliyet izni bulunan kuruluşlar listesi",
+    ],
+    seo_title: "Tasarruf finansmanı nasıl çalışır? | FinansIndex",
+    meta_description: "Tasarruf finansmanı sisteminin işleyişi, organizasyon ücreti, teslimat sırası ve sözleşme öncesi kontrol edilmesi gerekenler. Yatırım tavsiyesi içermez.",
+    body: [
+      P("Tasarruf finansmanı, konut veya taşıt almak isteyen kişilerin bir sistem içinde biriktirme yaptıktan sonra sıraya göre finansman kullandığı bir modeldir. Faiz yerine **organizasyon ücreti** alınır. Model 2021'den bu yana BDDK denetimindedir ve yalnızca faaliyet izni bulunan şirketler bu işi yapabilir."),
+      P("Bu yazı sistemin nasıl işlediğini anlatır; herhangi bir şirketi önermez ve şirketler arasında sıralama yapmaz."),
+
+      H("Sistem nasıl işliyor?"),
+      P("İşleyiş üç aşamalıdır. **Birikim dönemi**nde sözleşmede belirlenen tutarı taksitler hâlinde ödersiniz. **Tahsis** aşamasında sözleşmedeki koşullar sağlandığında finansman kullanma hakkı doğar. **Geri ödeme dönemi**nde ise kullandığınız tutarı kalan takvim boyunca ödemeye devam edersiniz."),
+      P("Kritik nokta şudur: parayı hemen almazsınız. Ne zaman alacağınız sözleşmedeki teslimat planına bağlıdır ve bu plan şirketten şirkete, hatta aynı şirket içinde ürüne göre değişir."),
+
+      H("Organizasyon ücreti neyi değiştirir?"),
+      P("Sistemde faiz işlemez, ancak şirket hizmeti karşılığında organizasyon ücreti alır. Bu ücret sözleşme tutarı üzerinden hesaplanır ve **toplam maliyetin belirleyici kalemidir**. “Faizsiz” ifadesi tek başına “maliyetsiz” anlamına gelmez."),
+      P("Karşılaştırma yaparken bakmanız gereken rakam aylık taksit değil, **sözleşme süresi boyunca ödeyeceğiniz toplam tutardır.** Bu tutarı hesaplamak için üç veriye ihtiyacınız var: toplam ödeyeceğiniz taksitlerin tümü, organizasyon ücreti ve varsa diğer masraflar."),
+      { type: "note", t: "Organizasyon ücreti oranı şirkete ve sözleşmeye göre değişir. Bu yazıda örnek bir oran verilmemiştir; kendi teklifinizdeki oranı sözleşmenizden okuyun ve toplam tutarı kendiniz hesaplayın." },
+
+      H("Üç yöntemi neye göre karşılaştırmalı?"),
+      P("Konut veya taşıt alırken önünüzde genellikle üç yol var: peşin ödeme, banka kredisi, tasarruf finansmanı. Bunları tek bir rakamla karşılaştırmak yanıltıcı olur; her birinin farklı bir maliyet ve zaman profili vardır."),
+      { type: "table", head: ["Kriter", "Banka kredisi", "Tasarruf finansmanı"],
+        rows: [
+          ["Maliyet kalemi", "Faiz + vergiler (KKDF, BSMV) + masraflar", "Organizasyon ücreti + masraflar"],
+          ["Parayı ne zaman alırsınız", "Onay sonrası kısa sürede", "Sözleşmedeki teslimat sırasına göre"],
+          ["Ödeme öngörülebilirliği", "Sabit faizde taksit bellidir", "Taksit bellidir, teslimat zamanı sözleşmeye bağlıdır"],
+          ["Erken çıkış", "Erken kapama mümkün, kurallar mevzuatta", "Cayma ve fesih koşulları sözleşmede tanımlı"],
+          ["Denetim", "BDDK", "BDDK"],
+        ] },
+      P("Karar verirken sorulacak asıl soru şu: **paraya ne zaman ihtiyacınız var?** Yakın vadede taşınmanız gerekiyorsa teslimat sırası belirsizliği sizin için ciddi bir risktir. Beklemeye tahammülünüz varsa maliyet karşılaştırması öne çıkar."),
+
+      H("Sözleşme öncesi kontrol listesi"),
+      { type: "ul", items: [
+        "**Şirketin BDDK faaliyet izni var mı?** BDDK'nın internet sitesindeki güncel listeden kontrol edin. İzni olmayan bir kuruluşla sözleşme yapmayın.",
+        "**Toplam ödeme tutarı ne kadar?** Aylık taksit değil, sözleşme boyunca ödeyeceğiniz toplamı yazılı olarak isteyin.",
+        "**Organizasyon ücreti ne kadar ve ne zaman tahsil ediliyor?** Peşin mi, taksite mi yayılıyor?",
+        "**Teslimat sırası neye göre belirleniyor?** Kriterler sözleşmede açıkça yazıyor mu?",
+        "**Cayma hakkım ne kadar süre geçerli?** Cayma hâlinde hangi tutar iade edilir, hangisi kesilir?",
+        "**Fesih durumunda param ne zaman geri ödenir?** İade takvimi sözleşmede tanımlı mı?",
+        "**Ödemeye ara verirsem ne olur?** Sıramı kaybeder miyim?",
+        "**Sözleşme değişikliği hangi koşullarda yapılabilir?**",
+      ] },
+
+      H("Dikkat edilmesi gereken sinyaller"),
+      { type: "ul", items: [
+        "Kesin teslimat tarihi sözlü olarak vaat ediliyor ama sözleşmede yazmıyorsa, yazılı olmayan hiçbir vaat geçerli değildir.",
+        "“Faizsiz olduğu için daha ucuz” denip toplam maliyet karşılaştırması yapılmıyorsa, karşılaştırmayı kendiniz isteyin.",
+        "Sözleşmeyi okumanız için yeterli süre verilmiyorsa acele etmeyin.",
+        "Şirketin BDDK listesinde olmadığını fark ederseniz süreci durdurun.",
+      ] },
+      P("Tasarruf finansmanı, doğru koşullarda ve doğru beklentiyle bazı kişiler için uygun bir yöntem olabilir. Uygun olup olmadığını belirleyen şey sistemin kendisi değil, sizin nakit ihtiyacınızın zamanlaması ve sözleşmenin somut şartlarıdır."),
+    ],
+    impact: {
+      lead: "Tasarruf finansmanında belirleyici olan aylık taksit değil, toplam maliyet ve paraya ne zaman ulaşacağınızdır.",
+      points: [
+        "Şirketin BDDK faaliyet iznini resmî listeden kendiniz doğrulayın.",
+        "Sözleşme boyunca ödeyeceğiniz toplam tutarı yazılı olarak isteyin ve banka kredisi teklifiyle aynı tabloda karşılaştırın.",
+        "Teslimat sırasının nasıl belirlendiğinin sözleşmede yazılı olduğundan emin olun.",
+      ],
+    },
+  },
+  {
+    id: "a12", slug: "kredi-faizi-nasil-okunur-toplam-maliyet",
+    title: "Kredi teklifini doğru okumak: aylık faiz oranı size toplam maliyeti söylemez",
+    summary: "İki bankanın aynı faiz oranı, farklı toplam geri ödeme anlamına gelebilir. Vade, vergiler ve masrafların hesabı nasıl değiştirdiğini rakamlarla gösteriyoruz.",
+    category: "kredi-ve-mevduat", contentType: "Rehber", author: "burcu-berk-arslan",
+    published_at: "2026-08-15T09:30:00+03:00", updated_at: "2026-08-15T09:30:00+03:00",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    sponsored: false, disclaimer: "general", related_tool: "kredi",
+    tags: ["kredi", "faiz", "maliyet"],
+    source_name: "TCMB / BDDK",
+    source_urls: [
+      "TCMB — Bankalarca tüketici kredilerine uygulanan ağırlıklı ortalama faiz oranları",
+      "BDDK — Tüketici kredisi sözleşmelerine ilişkin düzenlemeler",
+      "Resmî Gazete — KKDF ve BSMV oranlarına ilişkin düzenlemeler",
+    ],
+    seo_title: "Kredi faizi ve toplam maliyet nasıl hesaplanır? | FinansIndex",
+    meta_description: "Aylık faiz oranı, vade, KKDF ve BSMV'nin toplam geri ödemeye etkisi. Kredi tekliflerini doğru karşılaştırmanın yolu.",
+    body: [
+      P("Kredi teklifi alırken en çok konuşulan rakam aylık faiz oranıdır. Oysa cebinizden çıkacak toplam para üç şeyin birlikte sonucudur: oran, vade ve vergiler. Bunlardan yalnızca birine bakmak, en pahalı teklifi en ucuz sanmanıza yol açabilir."),
+
+      H("Vade, oranı gölgede bırakır"),
+      P("Aynı faiz oranıyla, vadeyi uzattığınızda aylık taksit düşer ama toplam ödeme artar. Aradaki fark küçük değildir."),
+      { type: "chart", title: "100.000 TL kredi, aylık %2,50 faiz: vadeye göre toplam geri ödeme",
+        unit: "₺", highlight: 0,
+        rows: [
+          { k: "12 ay", sub: "Taksit ≈ 9.900 TL", v: 118800 },
+          { k: "24 ay", sub: "Taksit ≈ 5.985 TL", v: 143600 },
+          { k: "36 ay", sub: "Taksit ≈ 4.760 TL", v: 171400 },
+          { k: "48 ay", sub: "Taksit ≈ 4.190 TL", v: 201100 },
+        ],
+        note: "Vadeyi 12 aydan 48 aya çıkarmak aylık taksiti yarıdan fazla düşürüyor, ancak toplam ödemeye yaklaşık 82.000 TL ekliyor.",
+        caption: "Örnek hesaplama. KKDF %15 ve BSMV %10 dahil edilmiştir. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın." },
+
+      H("Vergiler oranı sessizce yükseltir"),
+      P("Tüketici kredilerinde faiz tutarı üzerinden **KKDF** ve **BSMV** alınır. Bu, bankanın söylediği oranın efektif olarak daha yüksek bir orana karşılık gelmesi anlamına gelir. Konut kredilerinde ve ticari kredilerde bu kalemler farklı uygulanır."),
+      { type: "stats", items: [
+        { v: "%2,50", k: "Bankanın söylediği aylık oran", sub: "Sözleşmede yazan nominal oran" },
+        { v: "%3,13", k: "Vergiler dahil efektif oran", sub: "KKDF ve BSMV eklendikten sonra" },
+        { v: "%25", k: "Faiz maliyetindeki artış", sub: "Yalnızca vergilerden kaynaklanan" },
+      ], caption: "Örnek hesaplama. Oranlar mevzuatla değişebildiği için kendi sözleşmenizdeki güncel oranları esas alın." },
+
+      H("Karşılaştırmayı nasıl yapmalı?"),
+      P("İki teklifi karşılaştırırken oranları yan yana koymak yeterli değildir. Şu üç rakamı aynı tabloya yazın:"),
+      { type: "ul", items: [
+        "**Toplam geri ödeme:** taksit × vade sayısı.",
+        "**Toplam maliyet:** toplam geri ödeme eksi anapara.",
+        "**Masraflar:** dosya masrafı, tahsis ücreti, zorunlu sigorta varsa primi.",
+      ] },
+      P("Bankalar tüketici kredilerinde toplam maliyeti gösteren bir oran bildirmek zorundadır. Teklifi sözlü almayın; yazılı ödeme planını isteyin ve toplam rakamı orada görün."),
+
+      H("Sık yapılan hata"),
+      P("En yaygın hata, ödeyebileceğiniz aylık taksite göre vade seçmektir. Bu, bütçe açısından anlaşılır bir refleks ama uzun vadede pahalıya mal olur. Daha sağlıklı yaklaşım: ödeyebileceğiniz **en kısa vadeyi** seçmek ve gerekirse kredi tutarını düşürmektir."),
+    ],
+    impact: {
+      lead: "Kredi tekliflerini aylık faiz oranıyla değil, toplam geri ödeme tutarıyla karşılaştırın.",
+      points: [
+        "Her bankadan yazılı ödeme planı isteyin ve toplam geri ödeme rakamını karşılaştırın.",
+        "Vadeyi uzatmanın toplam maliyete etkisini hesaplayıcıyla önceden görün.",
+        "Dosya masrafı, tahsis ücreti ve sigorta primlerini toplam maliyete ekleyin.",
+      ],
+    },
+  },
+  {
     id: "a10", slug: "sponsorlu-dijital-bankacilik-alaskanliklari",
     title: "Dijital bankacılık alışkanlıkları: işlemlerin çevrim içine taşınması bütçeyi nasıl değiştiriyor?",
     summary: "Şube işlemlerinin dijitale kayması, masraf yapısından bildirim alışkanlıklarına kadar birçok kalemi etkiliyor. Bu içerik Örnek Banka iş birliğiyle hazırlanmıştır.",
@@ -995,30 +1143,36 @@ const bySlug = (s) => ARTICLES.find((a) => a.slug === s);
 /* Cep Etkisi Defteri — ana sayfanın imza bölümü */
 const LEDGER = [
   {
-    what: "Vadeli mevduat yenileme dönemine giren tasarruf sahipleri için oran karşılaştırması gündemde.",
-    how: "Vadesi dolan hesabınız otomatik yenilenirse, yeni oran bankanın o günkü kotasyonu olur. Farklı bankaların aynı vadedeki oranlarını karşılaştırmadan yenilemek, getiriyi tesadüfe bırakır.",
-    tags: ["Mevduat", "Birikim"],
-    article: "a1", tool: "mevduat",
-  },
-  {
-    what: "Kredi kartı borcunu yalnızca asgari tutarla çevirenlerin sayısı bankacılık verilerinde izleniyor.",
-    how: "Asgari ödeme borcu kapatmaz, erteler. Kalan tutara işleyen faiz, çoğu tüketici kredisinden yüksektir. Sabit bir ek ödeme belirlemek kapanış süresini belirgin şekilde kısaltır.",
+    what: "Kredi kartı borcunu yalnızca asgari tutarla çevirenler, borcu kapatmıyor; ödeme takvimini uzatıyor.",
+    how: "Asgari ödeme sonrası kalan bakiyeye akdi faiz işler. 25.000 TL borçta, aylık %4 faizle sadece asgariyi ödemek borcu kapatmayı 47 aya çıkarır. Aylık 2.000 TL ek ödeme bu süreyi 8 aya indirir.",
     tags: ["Kredi kartı", "Borç"], warn: true,
     article: "a2", tool: "asgari",
   },
   {
-    what: "Kira yenileme sezonunda artış oranı hesaplaması yeniden tartışılıyor.",
-    how: "Artışta kullanılan seri, yıllık enflasyon değil on iki aylık ortalama TÜFE değişimidir. İki rakamı karıştırmak, hem kiracı hem ev sahibi açısından hatalı sonuç doğurur.",
-    tags: ["Kira", "Konut"],
-    article: "a5", tool: "kira",
+    what: "Kredi teklifinde aylık faiz oranı, ödeyeceğiniz toplam tutarı tek başına göstermez.",
+    how: "Vergiler (KKDF ve BSMV) faiz maliyetini yaklaşık dörtte bir oranında artırır. Vadeyi uzatmak aylık taksiti düşürür ama toplam ödemeyi belirgin şekilde büyütür. Karşılaştırmayı toplam geri ödeme üzerinden yapın.",
+    tags: ["Kredi", "Faiz"],
+    article: "a12", tool: "kredi",
+  },
+  {
+    what: "Tasarruf finansmanı sözleşmelerinde belirleyici olan taksit değil, organizasyon ücreti ve teslimat sırası.",
+    how: "Sistemde faiz işlemez ama organizasyon ücreti alınır; “faizsiz” maliyetsiz demek değildir. Parayı ne zaman alacağınız sözleşmedeki teslimat planına bağlıdır. Şirketin BDDK faaliyet iznini resmî listeden kontrol edin.",
+    tags: ["Tasarruf finansmanı", "Konut"], warn: true,
+    article: "a11", tool: "karsilastir",
+  },
+  {
+    what: "Vadeli mevduatta oran, hesabınız yenilendiği gün bankanın o günkü kotasyonuna göre belirlenir.",
+    how: "Otomatik yenilemede karşılaştırma yapılmadan devam edilir. Vade bitiminden önce farklı bankaların aynı vadedeki oranlarını kontrol etmek, getiriyi tesadüfe bırakmamanızı sağlar.",
+    tags: ["Mevduat", "Birikim"],
+    article: "a1", tool: "mevduat",
   },
 ];
 
 const GUIDES = [
-  { id: "a2", label: "Temel rehber" },
+  { id: "a12", label: "Kredi rehberi" },
+  { id: "a11", label: "Sözleşme rehberi" },
+  { id: "a2", label: "Borç rehberi" },
   { id: "a3", label: "Karar rehberi" },
-  { id: "a6", label: "Başlangıç rehberi" },
-  { id: "a7", label: "Ürün rehberi" },
 ];
 
 const DOSSIER = {
@@ -1092,33 +1246,61 @@ function Cover({ seed = 0, alt = "" }) {
  * sayı olarak da yazılır ve etiket çubuğun dışında durur. Böylece
  * ekran okuyucu, renk körlüğü ve küçük ekran koşullarında da okunur.
  */
-function BarChart({ title, unit = "", rows, caption, highlight }) {
+function BarChart({ title, unit = "", rows, caption, highlight, note }) {
   const max = Math.max(...rows.map((r) => Math.abs(r.v))) || 1;
+  const fmt = (v, dec) =>
+    unit === "₺" ? tl(Math.abs(v), 0) : `${num(Math.abs(v), dec ?? 1)}${unit}`;
+
   return (
-    <figure className="fi-chart" style={{ margin: "8px 0 26px" }}>
-      {title && <figcaption style={{ font: "600 14px/1.4 var(--sans)", color: "var(--ink)", marginBottom: 12 }}>{title}</figcaption>}
-      <div role="table" aria-label={title || "Karşılaştırma grafiği"}>
+    <figure className="fi-chart">
+      {title && <figcaption className="fi-chart-t">{title}</figcaption>}
+      <div className="fi-chart-body">
         {rows.map((r, i) => {
           const isHi = highlight === i;
           const pct = (Math.abs(r.v) / max) * 100;
+          const wide = pct > 42;
           return (
-            <div className="fi-bar-row" role="row" key={r.k}>
-              <div className="fi-bar-lbl" role="cell" style={isHi ? { fontWeight: 600, color: "var(--ink)" } : undefined}>{r.k}</div>
-              <div className="fi-bar-track" role="cell" aria-hidden="true">
-                <div className="fi-bar-fill" style={{
-                  width: `${Math.max(2, pct)}%`,
-                  background: isHi ? "var(--petrol)" : r.v < 0 ? "var(--down)" : "var(--ink-2)",
-                  opacity: isHi ? 1 : .78,
-                }} />
+            <div className="fi-bar-row" key={r.k}>
+              <div className={`fi-bar-lbl ${isHi ? "hi" : ""}`}>
+                {r.k}
+                {r.sub && <span className="fi-bar-sub">{r.sub}</span>}
               </div>
-              <div className="fi-bar-val" role="cell">
-                {r.v < 0 ? "−" : ""}{unit === "₺" ? tl(Math.abs(r.v), 0) : `${num(Math.abs(r.v), r.dec ?? 1)}${unit}`}
+              <div className="fi-bar-track">
+                <div className="fi-bar-fill" style={{
+                  width: `${Math.max(3, pct)}%`,
+                  background: isHi ? "var(--petrol)" : r.v < 0 ? "var(--down)" : "var(--ink-2)",
+                }}>
+                  {wide && <span className="fi-bar-in">{r.v < 0 ? "−" : ""}{fmt(r.v, r.dec)}</span>}
+                </div>
+                {!wide && <span className="fi-bar-out">{r.v < 0 ? "−" : ""}{fmt(r.v, r.dec)}</span>}
               </div>
             </div>
           );
         })}
       </div>
+      {note && <p className="fi-chart-note">{note}</p>}
       {caption && <p className="fi-chart-cap">{caption}</p>}
+    </figure>
+  );
+}
+
+/**
+ * Tek bir rakamı öne çıkaran istatistik bloğu.
+ * Uzun paragrafın içinde kaybolan sayıyı görünür kılar.
+ */
+function StatRow({ items, caption }) {
+  return (
+    <figure className="fi-stats">
+      <div className="fi-stats-grid">
+        {items.map((it) => (
+          <div className="fi-stat" key={it.k}>
+            <div className="fi-stat-v">{it.v}</div>
+            <div className="fi-stat-k">{it.k}</div>
+            {it.sub && <div className="fi-stat-s">{it.sub}</div>}
+          </div>
+        ))}
+      </div>
+      {caption && <figcaption className="fi-chart-cap">{caption}</figcaption>}
     </figure>
   );
 }
@@ -1468,12 +1650,110 @@ function CalcEnflasyon({ tool, compact }) {
   );
 }
 
+/* --- Araç 6: Toplam maliyet karşılaştırma (kredi vs tasarruf finansmanı) --- */
+function CalcKarsilastir({ tool, compact }) {
+  const [amt, setAmt] = useState("1000000");
+  // Banka kredisi tarafı
+  const [kr, setKr] = useState("2,50");
+  const [kn, setKn] = useState("36");
+  const [kMasraf, setKMasraf] = useState("0");
+  // Tasarruf finansmanı tarafı
+  const [tOrg, setTOrg] = useState("");
+  const [tn, setTn] = useState("60");
+  const [tMasraf, setTMasraf] = useState("0");
+  const t = useCalcTracking("toplam_maliyet_karsilastirma");
+
+  const res = useMemo(() => {
+    const P0 = toNum(amt);
+    if (P0 <= 0) return null;
+
+    // Banka kredisi: anüite + KKDF %15 + BSMV %10
+    const i = (toNum(kr) / 100) * 1.25;
+    const n1 = Math.max(1, Math.round(toNum(kn)));
+    let kredi = null;
+    if (i > 0) {
+      const k = Math.pow(1 + i, n1);
+      const inst = (P0 * i * k) / (k - 1);
+      const total = inst * n1 + toNum(kMasraf);
+      kredi = { inst, total, cost: total - P0 };
+    }
+
+    // Tasarruf finansmanı: anapara + organizasyon ücreti, taksite bölünür
+    const org = toNum(tOrg);
+    const n2 = Math.max(1, Math.round(toNum(tn)));
+    let tasarruf = null;
+    if (org > 0) {
+      const orgTutar = P0 * (org / 100);
+      const total = P0 + orgTutar + toNum(tMasraf);
+      tasarruf = { inst: total / n2, total, cost: total - P0, orgTutar };
+    }
+
+    return { P0, kredi, tasarruf, fark: kredi && tasarruf ? kredi.total - tasarruf.total : null };
+  }, [amt, kr, kn, kMasraf, tOrg, tn, tMasraf]);
+
+  useEffect(() => { if (res && res.kredi && res.tasarruf) t(true); }, [res, t]);
+
+  return (
+    <CalcShell tool={tool} compact={compact}
+      note="Tasarruf finansmanında teslimat zamanı sözleşmeye bağlıdır ve bu hesaplamaya dahil edilemez. İki yöntem yalnızca maliyet açısından karşılaştırılır; paraya ne zaman ulaşacağınız ayrı bir karar kriteridir."
+      out={res ? (
+        <>
+          {res.kredi && (
+            <>
+              <div className="fi-res-k">Banka kredisi</div>
+              <div className="fi-res-row"><span>Aylık taksit</span><span>{tl(res.kredi.inst)}</span></div>
+              <div className="fi-res-row"><span>Toplam geri ödeme</span><span>{tl(res.kredi.total)}</span></div>
+              <div className="fi-res-row" style={{ borderBottom: "1px solid rgba(255,255,255,.14)", paddingBottom: 14, marginBottom: 14 }}>
+                <span>Toplam maliyet</span><span>{tl(res.kredi.cost)}</span>
+              </div>
+            </>
+          )}
+          {res.tasarruf ? (
+            <>
+              <div className="fi-res-k">Tasarruf finansmanı</div>
+              <div className="fi-res-row"><span>Aylık taksit</span><span>{tl(res.tasarruf.inst)}</span></div>
+              <div className="fi-res-row"><span>Organizasyon ücreti</span><span>{tl(res.tasarruf.orgTutar)}</span></div>
+              <div className="fi-res-row"><span>Toplam ödeme</span><span>{tl(res.tasarruf.total)}</span></div>
+            </>
+          ) : (
+            <p style={{ color: "#C4B7AC", fontSize: 13.5, margin: "8px 0 0" }}>
+              Karşılaştırma için teklifinizdeki organizasyon ücreti oranını girin.
+            </p>
+          )}
+          {res.fark != null && (
+            <div className="fi-res-main" style={{ borderBottom: 0, borderTop: "1px solid rgba(255,255,255,.14)", paddingTop: 16, marginTop: 16, marginBottom: 0 }}>
+              <div className="fi-res-k">Toplam ödeme farkı</div>
+              <div className="fi-res-v" style={{ fontSize: 24 }}>
+                {tl(Math.abs(res.fark))}
+              </div>
+              <p style={{ fontSize: 13, color: "#C4B7AC", margin: "8px 0 0" }}>
+                {res.fark > 0 ? "Tasarruf finansmanı bu senaryoda daha düşük toplam ödeme üretiyor." : "Banka kredisi bu senaryoda daha düşük toplam ödeme üretiyor."}
+              </p>
+            </div>
+          )}
+        </>
+      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Finansman tutarını girin.</p>}
+    >
+      <Field label="Finansman tutarı (TL)" value={amt} onChange={(e) => { setAmt(e.target.value); t(false); }} />
+      <p style={{ font: "600 11px/1 var(--mono)", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)", margin: "6px 0 0" }}>Banka kredisi</p>
+      <Field label="Aylık faiz oranı (%)" hint="Bankanızın teklif ettiği oran." value={kr} onChange={(e) => { setKr(e.target.value); t(false); }} />
+      <Field label="Vade (ay)" value={kn} onChange={(e) => { setKn(e.target.value); t(false); }} />
+      <Field label="Masraflar (TL)" hint="Dosya, tahsis ve zorunlu sigorta toplamı." value={kMasraf} onChange={(e) => { setKMasraf(e.target.value); t(false); }} />
+      <p style={{ font: "600 11px/1 var(--mono)", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)", margin: "10px 0 0" }}>Tasarruf finansmanı</p>
+      <Field label="Organizasyon ücreti oranı (%)" hint="Sözleşmenizde yazan oranı girin. Bu alan boşken karşılaştırma yapılmaz." placeholder="örn. 12" value={tOrg} onChange={(e) => { setTOrg(e.target.value); t(false); }} />
+      <Field label="Toplam sözleşme süresi (ay)" hint="Birikim ve geri ödeme dönemlerinin toplamı." value={tn} onChange={(e) => { setTn(e.target.value); t(false); }} />
+      <Field label="Diğer masraflar (TL)" value={tMasraf} onChange={(e) => { setTMasraf(e.target.value); t(false); }} />
+    </CalcShell>
+  );
+}
+
 const TOOLS = [
   { id: "kredi", name: "Kredi taksit hesaplama", short: "Kredi taksiti", desc: "Anapara, faiz ve vadeye göre aylık taksiti ve toplam geri ödemeyi hesaplayın.", C: CalcKredi, ready: true },
   { id: "mevduat", name: "Mevduat getirisi hesaplama", short: "Mevduat getirisi", desc: "Vade sonunda elinize geçecek net tutarı stopaj dahil görün.", C: CalcMevduat, ready: true },
   { id: "asgari", name: "Kredi kartı asgari ödeme", short: "Asgari ödeme", desc: "Asgari tutarı, devreden bakiyeyi ve bir aylık faiz yükünü hesaplayın.", C: CalcAsgari, ready: true },
   { id: "kira", name: "Kira artışı hesaplama", short: "Kira artışı", desc: "Yenileme döneminde uygulanacak yeni kira tutarını hesaplayın.", C: CalcKira, ready: true },
   { id: "enflasyon", name: "Enflasyon etkisi hesaplama", short: "Enflasyon etkisi", desc: "Birikiminizin alım gücündeki değişimi ve reel getiriyi ölçün.", C: CalcEnflasyon, ready: true },
+  { id: "karsilastir", name: "Kredi ve tasarruf finansmanı karşılaştırma", short: "Finansman karşılaştır", desc: "Banka kredisi ile tasarruf finansmanının toplam maliyetini yan yana görün.", C: CalcKarsilastir, ready: true },
   { id: "borc", name: "Borç kapatma planlayıcısı", short: "Borç planlayıcı", desc: "Çığ ve kartopu yöntemlerini kendi borç listenizle karşılaştırın.", ready: false },
   { id: "maas", name: "Net–brüt maaş hesaplama", short: "Net–brüt maaş", desc: "Güncel vergi dilimleri ve kesinti oranları bağlandığında yayına alınacak.", ready: false },
   { id: "altin", name: "Altın kâr/zarar hesaplama", short: "Altın kâr/zarar", desc: "Alış ve satış fiyatı ile makas dahil sonucu hesaplayın.", ready: false },
@@ -1944,6 +2224,43 @@ function Home({ go, market }) {
         </section>
       </div>
 
+      {/* İMZA BÖLÜM: Cep Etkisi Defteri */}
+      <div className="fi-wrap">
+        <section className="fi-sec" aria-labelledby="ledger-h">
+          <div className="fi-ledger">
+            <div className="fi-ledger-hd">
+              <div>
+                <div className="fi-eyebrow">Cep Etkisi Defteri</div>
+                <h2 id="ledger-h">Bugün cebini etkileyenler</h2>
+                <p>Günün gelişmeleri, bütçenize dokunduğu yerden anlatılıyor. Her madde bir hesaplama aracına bağlanır.</p>
+              </div>
+              <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
+            </div>
+            {LEDGER.map((l, i) => {
+              const a = byId(l.article); const tool = toolById(l.tool);
+              return (
+                <div className="fi-le" key={i}>
+                  <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="fi-le-b">
+                    <div className="fi-le-tags">
+                      {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
+                    </div>
+                    <p className="fi-le-q">Ne oldu?</p>
+                    <p className="fi-le-what">{l.what}</p>
+                    <p className="fi-le-q">Seni nasıl etkileyebilir?</p>
+                    <p className="fi-le-how">{l.how}</p>
+                    <div className="fi-le-acts">
+                      <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
+                      {tool && <button className="fi-le-lnk calc" onClick={() => go({ n: "tools", tool: tool.id })}>{tool.short} hesapla →</button>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+
       {/* Piyasa paneli */}
       <div className="fi-wrap">
         <section className="fi-sec" aria-labelledby="mkt-h">
@@ -1980,42 +2297,7 @@ function Home({ go, market }) {
         </section>
       </div>
 
-      {/* İMZA BÖLÜM: Cep Etkisi Defteri */}
       <div className="fi-wrap">
-        <section className="fi-sec" aria-labelledby="ledger-h">
-          <div className="fi-ledger">
-            <div className="fi-ledger-hd">
-              <div>
-                <div className="fi-eyebrow">Cep Etkisi Defteri</div>
-                <h2 id="ledger-h">Bugün cebini etkileyenler</h2>
-                <p>Günün gelişmeleri, bütçenize dokunduğu yerden anlatılıyor. Her madde bir hesaplama aracına bağlanır.</p>
-              </div>
-              <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
-            </div>
-            {LEDGER.map((l, i) => {
-              const a = byId(l.article); const tool = toolById(l.tool);
-              return (
-                <div className="fi-le" key={i}>
-                  <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
-                  <div className="fi-le-b">
-                    <div className="fi-le-tags">
-                      {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
-                    </div>
-                    <p className="fi-le-q">Ne oldu?</p>
-                    <p className="fi-le-what">{l.what}</p>
-                    <p className="fi-le-q">Seni nasıl etkileyebilir?</p>
-                    <p className="fi-le-how">{l.how}</p>
-                    <div className="fi-le-acts">
-                      <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
-                      {tool && <button className="fi-le-lnk calc" onClick={() => go({ n: "tools", tool: tool.id })}>{tool.short} hesapla →</button>}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
         {/* Güncel içerikler + sağ sütun */}
         <section className="fi-sec" aria-labelledby="feed-h">
           <div className="fi-sh">
@@ -2305,7 +2587,8 @@ function Article({ slug, go }) {
                   {b.type === "ul" && <ul>{b.items.map((it, j) => <li key={j} dangerouslySetInnerHTML={{ __html: it.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />)}</ul>}
                   {b.type === "quote" && <blockquote className="fi-quote">{b.t}</blockquote>}
                   {b.type === "note" && <p className="fi-disc" style={{ margin: "0 0 20px" }}><span className="fi-samp" style={{ marginRight: 8 }}>Örnek hesaplama</span>{b.t}</p>}
-                  {b.type === "chart" && <BarChart title={b.title} unit={b.unit} rows={b.rows} caption={b.caption} highlight={b.highlight} />}
+                  {b.type === "stats" && <StatRow items={b.items} caption={b.caption} />}
+                  {b.type === "chart" && <BarChart title={b.title} unit={b.unit} rows={b.rows} caption={b.caption} highlight={b.highlight} note={b.note} />}
                   {b.type === "table" && (
                     <table className="fi-tbl">
                       <thead><tr>{b.head.map((h) => <th key={h} scope="col">{h}</th>)}</tr></thead>
