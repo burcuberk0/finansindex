@@ -22,12 +22,14 @@ const CSS = `
   /* Ana renk: mürekkep. Siyah değil, sıcak koyu gri-kahve.
      Vurgu: şarap kırmızısı — finans sektöründe nadir, editoryal ve ciddi.
      Zemin: krem kağıt. Beyazdan sıcak, gözü yormayan. */
-  --navy:#2A211E; --navy-2:#3D3129; --petrol:#6B2233;
-  --green:#6B2233; --green-soft:#F7EDEE;
-  --gold:#9A6B1F; --gold-soft:#FBF2E0;
-  --bg:#FBF9F5; --surface:#FFFFFF; --line:#EAE4DA; --line-2:#D6CEC1;
-  --ink:#231C19; --ink-2:#4A4039; --muted:#7A6E64;
-  --up:#2F6B4F; --down:#B3442D;
+  /* Mürekkep: nötr koyu gri, kahve değil. Zemin: krem kağıt.
+     Vurgu: şarap kırmızısı, yalnızca küçük alanlarda. */
+  --navy:#1A1A1A; --navy-2:#2E2E2E; --petrol:#8C1D33;
+  --green:#8C1D33; --green-soft:#FAEFF1;
+  --gold:#8A6410; --gold-soft:#FAF3E3;
+  --bg:#FAF8F4; --surface:#FFFFFF; --line:#E6E1D8; --line-2:#CFC8BC;
+  --ink:#14100E; --ink-2:#3A3634; --muted:#6E6A66;
+  --up:#1E6B47; --down:#B0301F;
   --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
   --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -52,14 +54,14 @@ const CSS = `
 .fi-a:hover .fi-ttl { text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:2px; }
 
 /* --- ticker --- */
-.fi-ticker { background:var(--navy); color:#fff; border-bottom:1px solid rgba(255,255,255,.12); }
+.fi-ticker { background:var(--ink); color:#fff; border-bottom:0; }
 .fi-ticker-in { display:flex; align-items:center; gap:0; overflow-x:auto; scrollbar-width:none; }
 .fi-ticker-in::-webkit-scrollbar { display:none; }
 .fi-tick { display:flex; align-items:baseline; gap:8px; padding:9px 16px 9px 0; margin-right:16px; border-right:1px solid rgba(255,255,255,.14); white-space:nowrap; flex:0 0 auto; }
-.fi-tick-k { font:500 11px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#B5A79C; }
+.fi-tick-k { font:500 11px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#9C948C; }
 .fi-tick-v { font:600 14px/1 var(--mono); }
 .fi-tick-d { font:500 12px/1 var(--mono); }
-.fi-up { color:#8FD4AE; } .fi-down { color:#F0A594; }
+.fi-up { color:#7FCFA6; } .fi-down { color:#F09A88; }
 .fi-demo { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:#D9A441; padding:4px 7px; border-radius:2px; flex:0 0 auto; margin-left:auto; }
 
 /* --- header --- */
@@ -106,16 +108,26 @@ const CSS = `
 .fi-more { margin-left:auto; font-size:14px; font-weight:600; color:var(--navy); background:none; border:0; padding:8px 0; }
 .fi-more:hover { text-decoration:underline; }
 
-/* --- hero --- */
-.fi-hero { display:grid; grid-template-columns:1.55fr 1fr; gap:34px; padding:34px 0 44px; }
-.fi-hero-i { aspect-ratio:2/1; background:var(--navy); border-radius:var(--r); overflow:hidden; margin-bottom:16px; }
-.fi-hero-t { font:700 38px/1.14 var(--serif); letter-spacing:-.025em; margin:10px 0 12px; color:var(--navy); }
-.fi-hero-s { font-size:17px; color:var(--ink-2); margin:0 0 14px; max-width:56ch; }
-.fi-side { display:flex; flex-direction:column; gap:18px; border-left:1px solid var(--line); padding-left:26px; }
-.fi-side-i { display:grid; grid-template-columns:1fr 88px; gap:14px; padding-bottom:18px; border-bottom:1px solid var(--line); }
-.fi-side:last-child .fi-side-i:last-child { border-bottom:0; padding-bottom:0; }
-.fi-side-th { width:88px; height:66px; border-radius:var(--r); overflow:hidden; background:var(--navy); }
-.fi-side-t { font:600 17px/1.3 var(--serif); color:var(--navy); margin:5px 0 0; }
+/* --- manşet: dekoratif görsel yok, hiyerarşi tipografiyle kurulur --- */
+.fi-lead { display:grid; grid-template-columns:1.6fr 1fr; gap:0; padding:0 0 44px; border-bottom:2px solid var(--ink); }
+.fi-lead-main { padding:38px 40px 34px 0; border-right:1px solid var(--line); }
+.fi-lead-t { font:700 46px/1.08 var(--serif); letter-spacing:-.032em; margin:14px 0 16px; color:var(--ink); max-width:19ch; }
+.fi-lead-s { font:400 19px/1.55 var(--serif); color:var(--ink-2); margin:0; max-width:52ch; }
+
+/* Öne çıkan rakam: manşetin görsel ağırlık merkezi */
+.fi-lead-stat { display:flex; align-items:flex-start; gap:20px; margin:28px 0 0; padding:22px 24px; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--petrol); }
+.fi-lead-stat-v { font:600 54px/.9 var(--mono); letter-spacing:-.04em; color:var(--petrol); font-variant-numeric:tabular-nums; flex:0 0 auto; }
+.fi-lead-stat-v span { font-size:15px; font-weight:500; margin-left:6px; letter-spacing:0; }
+.fi-lead-stat-b p { font-size:15px; line-height:1.45; color:var(--ink); margin:0; max-width:34ch; }
+.fi-lead-stat-b span { display:block; font:500 12px/1.4 var(--mono); color:var(--muted); margin-top:7px; }
+.fi-lead-acts { display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 0; }
+
+.fi-lead-side { padding:38px 0 34px 34px; display:flex; flex-direction:column; }
+.fi-side-h { font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--petrol); margin:0 0 20px; padding-bottom:14px; border-bottom:1px solid var(--line-2); }
+.fi-side-i { padding:0 0 20px; margin-bottom:20px; border-bottom:1px solid var(--line); }
+.fi-side-i:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0; }
+.fi-side-t { font:600 19px/1.3 var(--serif); color:var(--ink); margin:7px 0 0; letter-spacing:-.012em; }
+.fi-side-hook { font:500 13px/1.45 var(--mono); color:var(--petrol); margin:9px 0 0; }
 
 /* --- meta chips --- */
 .fi-meta { display:flex; align-items:center; gap:9px; flex-wrap:wrap; font:500 11.5px/1 var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
@@ -126,26 +138,28 @@ const CSS = `
 .fi-b-type { background:var(--bg); color:var(--ink-2); border:1px solid var(--line); }
 
 /* ========== SIGNATURE: Cep Etkisi Defteri ========== */
-.fi-ledger { background:var(--navy); color:#F5F0EA; border-radius:var(--r); overflow:hidden; }
-.fi-ledger-hd { padding:26px 30px 22px; border-bottom:1px solid rgba(255,255,255,.13); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
-.fi-ledger-hd .fi-eyebrow { color:#E5A3AE; }
-.fi-ledger-hd h2 { font:600 27px/1.15 var(--serif); margin:0; color:#fff; letter-spacing:-.015em; }
-.fi-ledger-hd p { margin:6px 0 0; font-size:14px; color:#C4B7AC; max-width:52ch; }
-.fi-ledger-date { margin-left:auto; font:500 11.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#E5A3AE; padding-bottom:4px; }
-.fi-le { display:grid; grid-template-columns:38px 1fr; border-top:1px solid rgba(255,255,255,.09); }
+/* Cep Etkisi Defteri — koyu blok yerine kağıt zemin.
+   Sayfada tek bir büyük koyu alan olmaması, okuma yorgunluğunu azaltır. */
+.fi-ledger { background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); }
+.fi-ledger-hd { padding:26px 30px 22px; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
+.fi-ledger-hd h2 { font:600 28px/1.15 var(--serif); margin:0; color:var(--ink); letter-spacing:-.018em; }
+.fi-ledger-hd p { margin:7px 0 0; font-size:14.5px; color:var(--muted); max-width:52ch; }
+.fi-ledger-date { margin-left:auto; font:500 11.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding-bottom:4px; }
+.fi-le { display:grid; grid-template-columns:46px 1fr; border-top:1px solid var(--line); }
 .fi-le:first-of-type { border-top:0; }
-.fi-le-n { font:500 12px/1 var(--mono); color:#8A7A6E; padding:26px 0 0 30px; }
-.fi-le-b { padding:24px 30px 26px 0; }
-.fi-le-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:11px; }
-.fi-le-tag { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; padding:5px 8px; border-radius:2px; background:rgba(127,211,170,.14); color:#EFB9C2; border:1px solid rgba(127,211,170,.28); }
-.fi-le-tag.warn { background:rgba(233,196,106,.13); color:#E8BE7A; border-color:rgba(233,196,106,.3); }
-.fi-le-q { font:600 10.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#8A7A6E; margin:0 0 5px; }
-.fi-le-what { font:600 20px/1.32 var(--serif); color:#fff; margin:0 0 16px; }
-.fi-le-how { font-size:15.5px; color:#DACFC5; margin:0 0 18px; max-width:62ch; }
+.fi-le-n { font:600 13px/1 var(--mono); color:var(--petrol); padding:28px 0 0 30px; }
+.fi-le-b { padding:26px 30px 28px 0; }
+.fi-le-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.fi-le-tag { font:600 10px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; padding:5px 8px; border-radius:2px; background:var(--green-soft); color:var(--petrol); border:1px solid #EFD9DE; }
+.fi-le-tag.warn { background:var(--gold-soft); color:#6B4E08; border-color:#EADFC0; }
+.fi-le-q { font:600 10.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin:0 0 6px; }
+.fi-le-what { font:600 21px/1.32 var(--serif); color:var(--ink); margin:0 0 18px; letter-spacing:-.012em; }
+.fi-le-how { font-size:15.5px; line-height:1.6; color:var(--ink-2); margin:0 0 18px; max-width:64ch; }
 .fi-le-acts { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-.fi-le-lnk { background:none; border:1px solid rgba(255,255,255,.28); color:#fff; padding:9px 14px; border-radius:var(--r); font-size:13.5px; font-weight:600; min-height:40px; }
-.fi-le-lnk:hover { background:rgba(255,255,255,.09); }
-.fi-le-lnk.calc { border-color:#E5A3AE; color:#EFB9C2; }
+.fi-le-lnk { background:none; border:1px solid var(--line-2); color:var(--ink); padding:9px 14px; border-radius:var(--r); font-size:13.5px; font-weight:600; min-height:40px; }
+.fi-le-lnk:hover { background:var(--bg); border-color:var(--ink); }
+.fi-le-lnk.calc { border-color:var(--petrol); color:var(--petrol); }
+.fi-le-lnk.calc:hover { background:var(--green-soft); }
 
 /* --- piyasa paneli --- */
 .fi-mkt-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
@@ -202,9 +216,10 @@ const CSS = `
 .fi-grid { display:grid; gap:26px; }
 .fi-g3 { grid-template-columns:repeat(3,1fr); }
 .fi-g4 { grid-template-columns:repeat(4,1fr); }
-.fi-card-i { aspect-ratio:16/10; background:var(--navy); border-radius:var(--r); overflow:hidden; margin-bottom:13px; }
-.fi-ttl { font:600 18.5px/1.32 var(--serif); color:var(--navy); margin:9px 0 7px; letter-spacing:-.01em; }
-.fi-exc { font-size:14.5px; color:var(--muted); margin:0; }
+.fi-card { border-top:2px solid var(--ink); padding-top:14px; }
+.fi-ttl { font:600 19px/1.3 var(--serif); color:var(--ink); margin:10px 0 8px; letter-spacing:-.014em; }
+.fi-exc { font-size:14.5px; line-height:1.55; color:var(--muted); margin:0; }
+.fi-card-hook { font:500 13px/1.5 var(--mono); color:var(--petrol); margin:0; }
 
 /* --- filter --- */
 .fi-filters { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:24px; }
@@ -245,7 +260,7 @@ const CSS = `
 
 /* --- panels --- */
 .fi-panel { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:24px; }
-.fi-dossier { display:grid; grid-template-columns:1fr 1fr; gap:0; background:var(--petrol); color:#fff; border-radius:var(--r); overflow:hidden; }
+.fi-dossier { display:block; background:var(--petrol); color:#fff; border-radius:var(--r); overflow:hidden; }
 .fi-dossier-i { min-height:280px; background:var(--navy); }
 .fi-dossier-b { padding:34px; }
 .fi-dossier-b h3 { font:700 30px/1.16 var(--serif); margin:12px 0 12px; letter-spacing:-.02em; }
@@ -387,7 +402,9 @@ const CSS = `
 
 /* --- responsive --- */
 @media (max-width:1000px) {
-  .fi-hero { grid-template-columns:1fr; gap:30px; }
+  .fi-lead { grid-template-columns:1fr; }
+  .fi-lead-main { padding:28px 0 30px; border-right:0; border-bottom:1px solid var(--line); }
+  .fi-lead-side { padding:28px 0 30px; }
   .fi-side { border-left:0; padding-left:0; border-top:1px solid var(--line); padding-top:22px; }
   .fi-art, .fi-2col { grid-template-columns:1fr; gap:34px; }
   .fi-sticky { position:static; }
@@ -414,7 +431,10 @@ const CSS = `
   .fi-bar-fill { height:30px; }
   .fi-stat-v { font-size:25px; }
   .fi-grid { gap:22px; }
-  .fi-hero-t { font-size:29px; }
+  .fi-lead-t { font-size:31px; max-width:none; }
+  .fi-lead-s { font-size:17px; }
+  .fi-lead-stat { flex-direction:column; gap:12px; padding:18px 16px; }
+  .fi-lead-stat-v { font-size:42px; }
   .fi-art h1, .fi-page-hd h1, .fi-mk-hero h1 { font-size:29px; }
   .fi-h2, .fi-ledger-hd h2, .fi-nl h2 { font-size:22px; }
   .fi-dossier-b h3 { font-size:24px; }
@@ -643,6 +663,7 @@ const ARTICLES = [
       ] },
       P("Faiz kararlarını izlemek faydalıdır, ancak bütçenizi asıl etkileyen şey kararın kendisi değil; sizin vade, tutar ve ürün tercihlerinizdir."),
     ],
+    keyStat: { v: "3", unit: "durak", k: "Politika faizinin mevduat faizine ulaşması için geçtiği aşama sayısı", sub: "Aktarım haftalar sürebilir" },
     impact: {
       lead: "Politika faizindeki değişiklik, vadeli hesabınıza genellikle vade yenileme tarihinizde yansır.",
       points: [
@@ -691,6 +712,7 @@ const ARTICLES = [
       ] },
       P("Asgari ödeme, nakit akışınızın daraldığı bir ayda size zaman kazandırır. Kalıcı bir çözüm hâline geldiğinde ise maliyeti en yüksek borçlanma biçimlerinden birine dönüşür."),
     ],
+    hook: "Sadece asgari ödeyen 25.000 TL borcu 47 ayda kapatır",
     impact: {
       lead: "Yalnızca asgariyi ödemek, borcunuzu kapatmaz; ödeme takviminizi uzatır ve toplam faiz yükünü artırır.",
       points: [
@@ -774,6 +796,7 @@ const ARTICLES = [
       ] },
       P("Enflasyon, bütçenin görünmeyen kalemidir. Hesaba katılmadığı sürece, kâğıt üzerinde kazanırken pratikte kaybetmek mümkündür."),
     ],
+    hook: "%30 getiri, %30 enflasyonda sıfır kazanç demek",
     impact: {
       lead: "Nominal getiriniz enflasyonun altında kaldığında, birikiminizin alım gücü azalır.",
       points: [
@@ -811,6 +834,7 @@ const ARTICLES = [
       ] },
       P("Kira artışı, iki tarafın da aynı veriye baktığında büyük ölçüde tartışmasız hâle gelen bir konudur. Anlaşmazlıkların çoğu farklı endeks serilerinin karıştırılmasından doğar."),
     ],
+    hook: "Yıllık enflasyon değil, 12 aylık ortalama TÜFE esas alınır",
     impact: {
       lead: "Yenileme ayınızda geçerli olan on iki aylık ortalama TÜFE oranı, artışın üst sınırını belirler.",
       points: [
@@ -1030,6 +1054,7 @@ const ARTICLES = [
       ] },
       P("Tasarruf finansmanı, doğru koşullarda ve doğru beklentiyle bazı kişiler için uygun bir yöntem olabilir. Uygun olup olmadığını belirleyen şey sistemin kendisi değil, sizin nakit ihtiyacınızın zamanlaması ve sözleşmenin somut şartlarıdır."),
     ],
+    hook: "“Faizsiz” maliyetsiz demek değil: organizasyon ücreti var",
     impact: {
       lead: "Tasarruf finansmanında belirleyici olan aylık taksit değil, toplam maliyet ve paraya ne zaman ulaşacağınızdır.",
       points: [
@@ -1092,6 +1117,7 @@ const ARTICLES = [
       H("Sık yapılan hata"),
       P("En yaygın hata, ödeyebileceğiniz aylık taksite göre vade seçmektir. Bu, bütçe açısından anlaşılır bir refleks ama uzun vadede pahalıya mal olur. Daha sağlıklı yaklaşım: ödeyebileceğiniz **en kısa vadeyi** seçmek ve gerekirse kredi tutarını düşürmektir."),
     ],
+    hook: "Vadeyi 12'den 48 aya çıkarmak toplam ödemeye ~82.000 TL ekliyor",
     impact: {
       lead: "Kredi tekliflerini aylık faiz oranıyla değil, toplam geri ödeme tutarıyla karşılaştırın.",
       points: [
@@ -1207,39 +1233,6 @@ const DISCLAIMERS = {
 
 /* Basit görsel yerine, kategoriye göre üretilen soyut kapak deseni.
    Gerçek kurulumda <img srcset> ile CDN görselleri kullanılacak. */
-function Cover({ seed = 0, alt = "" }) {
-  /* Kapaklar ağırlıklı olarak nötr mürekkep tonlarında.
-     Bordo yalnızca bir tonda ve ikincil konumda görünür —
-     vurgu rengi vurgu olarak kalsın diye. */
-  const tones = [
-    ["#2A211E", "#463A33"], ["#38302B", "#544539"], ["#463A33", "#6B2233"],
-    ["#2A211E", "#3D3129"], ["#413830", "#7A5A2A"],
-  ];
-  const [a, b] = tones[seed % tones.length];
-  const gid = `g${seed}-${Math.abs(seed * 37 % 999)}`;
-  return (
-    <svg viewBox="0 0 320 180" width="100%" height="100%" role="img" aria-label={alt} preserveAspectRatio="xMidYMid slice" style={{ display: "block" }}>
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={a} /><stop offset="100%" stopColor={b} />
-        </linearGradient>
-      </defs>
-      <rect width="320" height="180" fill={`url(#${gid})`} />
-      <g stroke="rgba(255,255,255,.09)" strokeWidth="1">
-        {[36, 72, 108, 144].map((y) => <line key={y} x1="0" y1={y} x2="320" y2={y} />)}
-      </g>
-      <polyline
-        points={Array.from({ length: 9 }, (_, i) => {
-          const x = i * 40;
-          const y = 130 - ((Math.sin(i * 1.1 + seed) + 1) * 26 + (i * 4));
-          return `${x},${Math.max(24, Math.min(160, y))}`;
-        }).join(" ")}
-        fill="none" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinejoin="round" />
-      <circle cx="280" cy="46" r="26" fill="rgba(255,255,255,.04)" />
-    </svg>
-  );
-}
-
 /**
  * Okunabilir karşılaştırma grafiği.
  * Tasarım kararı: renk tek başına anlam taşımaz — her çubuğun değeri
@@ -1367,23 +1360,30 @@ function AdSlot({ placementId, pageType, className = "" }) {
 
 /* -------------------------------------------------------------- 10. KARTLAR */
 
-function ArticleCard({ a, go, source, showImage = true }) {
+/**
+ * İçerik kartı.
+ * Tasarım kararı: dekoratif görsel kullanılmıyor. Anlamsız bir grafik deseni,
+ * finans yayınında güven kaybettirir. Hiyerarşi tipografi, hairline kural ve
+ * varsa içerikten çıkarılmış somut bir çengel rakamıyla kuruluyor.
+ */
+function ArticleCard({ a, go, source }) {
   const open = () => {
     track("related_article_click", { article_id: a.id, article_category: a.category, content_type: a.contentType, traffic_source: source });
     go({ n: "article", slug: a.slug });
   };
   return (
-    <article>
+    <article className="fi-card">
       <button className="fi-a" onClick={open}>
-        {showImage && <div className="fi-card-i"><Cover seed={parseInt(a.id.slice(1))} alt="" /></div>}
         <div className="fi-meta">
           <span className="fi-cat">{catName(a.category)}</span>
           <span className="fi-dot" />
-          <span>{a.read} dk okuma</span>
+          <span className="fi-badge fi-b-type">{a.contentType}</span>
+          <span className="fi-dot" />
+          <span>{a.read} dk</span>
           {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
         </div>
         <h3 className="fi-ttl">{a.title}</h3>
-        <p className="fi-exc">{a.summary.slice(0, 118)}…</p>
+        {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 116)}…</p>}
       </button>
     </article>
   );
@@ -1788,7 +1788,7 @@ function MarketTicker({ market }) {
             <div className="fi-tick" key={d.k}>
               <span className="fi-tick-k">{d.k}</span>
               <span className="fi-tick-v">{d.unit === "$" ? "$" : ""}{num(d.v, d.v > 1000 ? 0 : 2)}{d.unit === "₺" ? " ₺" : ""}</span>
-              {d.d != null && (
+              {d.d != null && Math.abs(d.d) >= 0.005 && (
                 <span className={`fi-tick-d ${d.d >= 0 ? "fi-up" : "fi-down"}`}>
                   {d.d >= 0 ? "▲" : "▼"} %{num(Math.abs(d.d), 2)}
                 </span>
@@ -1839,7 +1839,7 @@ function MarketPanel({ market }) {
               <div className="fi-mkt-v">
                 {d.unit === "$" ? "$" : ""}{num(d.v, d.v >= 1000 ? 0 : 2)}{d.unit === "₺" ? <span className="fi-mkt-u">₺</span> : ""}
               </div>
-              {d.d != null && (
+              {d.d != null && Math.abs(d.d) >= 0.005 && (
                 <div className={`fi-mkt-d ${up ? "up" : "down"}`}>
                   <span aria-hidden="true">{up ? "▲" : "▼"}</span>
                   {up ? "+" : "−"}%{num(Math.abs(d.d), 2)}
@@ -2185,7 +2185,7 @@ function Home({ go, market }) {
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
   const hero = byId("a1");
-  const side = ["a2", "a5", "a4"].map(byId);
+  const side = ["a12", "a2", "a11"].map(byId);
   const feed = useMemo(() => {
     const list = ARTICLES.filter((a) => a.id !== hero.id);
     return filter === "hepsi" ? list : list.filter((a) => a.category === filter);
@@ -2196,28 +2196,46 @@ function Home({ go, market }) {
       <div className="fi-wrap">
         <AdSlot placementId="home_top_banner" pageType="home" className="fi-sec" />
 
-        {/* Manşet */}
-        <section className="fi-hero" aria-label="Manşet">
-          <div>
+        {/* Manşet — dekoratif görsel yok. Editoryal hiyerarşi tipografiyle kurulur. */}
+        <section className="fi-lead" aria-label="Manşet">
+          <div className="fi-lead-main">
             <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
-              <div className="fi-hero-i"><Cover seed={1} alt="" /></div>
               <div className="fi-meta">
                 <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
                 <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
                 <span>{dateTR(hero.published_at)}</span><span className="fi-dot" /><span>{hero.read} dk</span>
               </div>
-              <h1 className="fi-hero-t fi-ttl">{hero.title}</h1>
-              <p className="fi-hero-s">{hero.summary}</p>
+              <h1 className="fi-lead-t fi-ttl">{hero.title}</h1>
+              <p className="fi-lead-s">{hero.summary}</p>
             </button>
-          </div>
-          <div className="fi-side">
-            {side.map((a, i) => (
-              <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })} style={i === side.length - 1 ? { borderBottom: 0, paddingBottom: 0 } : undefined}>
-                <div>
-                  <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
-                  <h3 className="fi-side-t fi-ttl">{a.title}</h3>
+
+            {hero.keyStat && (
+              <div className="fi-lead-stat">
+                <div className="fi-lead-stat-v">{hero.keyStat.v}<span>{hero.keyStat.unit}</span></div>
+                <div className="fi-lead-stat-b">
+                  <p>{hero.keyStat.k}</p>
+                  {hero.keyStat.sub && <span>{hero.keyStat.sub}</span>}
                 </div>
-                <div className="fi-side-th"><Cover seed={parseInt(a.id.slice(1)) + 2} alt="" /></div>
+              </div>
+            )}
+
+            <div className="fi-lead-acts">
+              <button className="fi-btn fi-btn-p" onClick={() => go({ n: "article", slug: hero.slug })}>Yazıyı oku</button>
+              {hero.related_tool && (
+                <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools", tool: hero.related_tool })}>
+                  {toolById(hero.related_tool)?.short} hesapla →
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="fi-lead-side">
+            <h2 className="fi-side-h">Öne çıkanlar</h2>
+            {side.map((a) => (
+              <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
+                <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
+                <h3 className="fi-side-t fi-ttl">{a.title}</h3>
+                {a.hook && <p className="fi-side-hook">{a.hook}</p>}
               </button>
             ))}
           </div>
@@ -2375,7 +2393,6 @@ function Home({ go, market }) {
         {/* Dosya */}
         <section className="fi-sec" aria-labelledby="dossier-h">
           <div className="fi-dossier">
-            <div className="fi-dossier-i"><Cover seed={4} alt="" /></div>
             <div className="fi-dossier-b">
               <div className="fi-eyebrow">FinansIndex Dosya · {DOSSIER.eyebrow}</div>
               <h3 id="dossier-h">{DOSSIER.title}</h3>
@@ -2563,10 +2580,6 @@ function Article({ slug, go }) {
               </div>
             </div>
 
-            <figure style={{ margin: 0 }}>
-              <div className="fi-cover"><Cover seed={parseInt(a.id.slice(1))} alt="" /></div>
-              <figcaption className="fi-cap">Görsel: FinansIndex · Temsilî</figcaption>
-            </figure>
 
             {heads.length > 1 && (
               <nav className="fi-toc" aria-label="İçindekiler">
@@ -2641,7 +2654,7 @@ function Article({ slug, go }) {
             <section className="fi-sec" aria-labelledby="rel-h">
               <div className="fi-sh"><h2 className="fi-h2" id="rel-h">İlgili içerikler</h2></div>
               <div className="fi-grid fi-g3">
-                {related.slice(0, 3).map((r) => <ArticleCard key={r.id} a={r} go={go} source="article_related" showImage={false} />)}
+                {related.slice(0, 3).map((r) => <ArticleCard key={r.id} a={r} go={go} source="article_related" />)}
               </div>
             </section>
 
