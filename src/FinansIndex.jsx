@@ -291,6 +291,20 @@ const CSS = `
 .fi-ad-lbl { font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
 .fi-ad-banner { display:flex; align-items:center; gap:18px; }
 .fi-sticky { position:sticky; top:150px; }
+/* Yan panolar: yalnızca içerik sütununa yer kalan geniş ekranlarda */
+.fi-rail-ad { display:none; }
+@media (min-width:1400px) {
+  .fi-rail-ad { display:block; position:fixed; top:170px; width:160px; z-index:40; }
+  .fi-rail-ad-l { left:calc((100vw - 1180px) / 2 - 176px); }
+  .fi-rail-ad-r { right:calc((100vw - 1180px) / 2 - 176px); }
+  .fi-rail-ad-b { display:block; width:160px; min-height:600px; text-align:left; padding:18px 16px;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
+  .fi-rail-ad-b:hover { border-color:var(--line-2); }
+  .fi-rail-ad-lbl { display:block; font:500 9.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  .fi-rail-ad-t { display:block; font:600 16px/1.35 var(--serif); color:var(--ink); margin:14px 0 0; }
+  .fi-rail-ad-s { display:block; font:500 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-top:14px; }
+}
+
 .fi-sticky-ad { display:none; }
 @media (max-width:760px) {
   .fi-sticky-ad { display:block; position:fixed; left:0; right:0; bottom:0; z-index:70;
@@ -652,6 +666,12 @@ const AD_INVENTORY = {
 
   /* Ana sayfa orta bandı: defter ile piyasa paneli arasında. */
   home_mid_banner: null,
+
+  /* Masaüstü yan panolar (skyscraper). Yalnızca 1400px üzeri ekranlarda
+     görünür; içerik sütununa hiçbir koşulda müdahale etmez. Dar ekranda
+     render edilmezler, böylece yatay taşma oluşmaz. */
+  rail_left: null,
+  rail_right: null,
 
   /* Mobil alt sabit bant. Kapatılabilir, güvenli alan payı bırakır,
      yalnızca mobilde görünür. Yanlış kullanıldığında okuma deneyimini
@@ -1450,6 +1470,41 @@ function AdSlot({ placementId, pageType, className = "" }) {
  * tercihi oturum boyunca hatırlanır, yüksekliği sınırlıdır ve
  * içeriğin altına padding eklenerek son satırı örtmesi engellenir.
  */
+/**
+ * Masaüstü yan panolar.
+ * Kurallar: yalnızca geniş ekranda (>=1400px) görünür, içerik genişliğini
+ * daraltmaz, sayfayla birlikte kaymaz (sticky). Kreatif tanımlı değilse
+ * hiçbir DOM düğümü oluşturmaz.
+ */
+function RailAds({ pageType }) {
+  const left = AD_INVENTORY.rail_left;
+  const right = AD_INVENTORY.rail_right;
+  const seen = useRef({});
+
+  useEffect(() => {
+    [["rail_left", left], ["rail_right", right]].forEach(([id, c]) => {
+      if (!c || seen.current[id]) return;
+      seen.current[id] = true;
+      track("ad_impression", { placement_id: id, sponsor_name: c.sponsor, page_type: pageType });
+    });
+  }, [left, right, pageType]);
+
+  if (!left && !right) return null;
+
+  const rail = (id, c, side) => c ? (
+    <aside className={`fi-rail-ad fi-rail-ad-${side}`} aria-label="Reklam">
+      <button className="fi-rail-ad-b"
+        onClick={() => track("ad_click", { placement_id: id, sponsor_name: c.sponsor, page_type: pageType })}>
+        <span className="fi-rail-ad-lbl">Reklam</span>
+        <span className="fi-rail-ad-t">{c.title}</span>
+        <span className="fi-rail-ad-s">{c.sponsor}</span>
+      </button>
+    </aside>
+  ) : null;
+
+  return <>{rail("rail_left", left, "l")}{rail("rail_right", right, "r")}</>;
+}
+
 function StickyFooterAd({ pageType }) {
   const creative = AD_INVENTORY.mobile_sticky_footer;
   const [closed, setClosed] = useState(false);
@@ -2945,6 +3000,8 @@ function MediaKit({ go }) {
       items: [["Araçlar sayfası native kart", "tools_index_native"], ["Arama sonuçları native kart", "search_native_01"], ["Kategori akışı native kart", "category_native_01"]] },
     { t: "Display envanteri", d: "Okuma akışını bölmeyen, sabit boyutlu görsel alanlar. Pop-up, sayfa arası geçiş reklamı ve otomatik oynayan video kullanılmaz.",
       items: [["Header altı geniş alan", "home_top_banner"], ["Ana sayfa orta bandı", "home_mid_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi birinci", "article_inline_01"], ["Makale içi ikinci", "article_inline_02"], ["Makale sonu", "article_end"]] },
+    { t: "Masaüstü yan panolar", d: "Geniş ekranlarda içerik sütununun iki yanında sabit duran dikey alanlar. İçerik genişliğini daraltmaz, dar ekranda görünmez.",
+      items: [["Sol pano", "rail_left"], ["Sağ pano", "rail_right"]] },
     { t: "Mobil sabit bant", d: "Mobilde sayfa altında sabit duran, kullanıcının kapatabildiği tek satırlık alan. Yüksekliği sınırlıdır ve içeriğin üzerini örtmez.",
       items: [["Mobil alt bant", "mobile_sticky_footer"]] },
   ];
@@ -3172,6 +3229,7 @@ export default function FinansIndex() {
       {page}
       {search && <SearchOverlay onClose={() => setSearch(false)} go={go} />}
       <Footer go={go} />
+      <RailAds pageType={route.n} />
       <StickyFooterAd pageType={route.n} />
     </div>
   );
