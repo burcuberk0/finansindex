@@ -279,10 +279,34 @@ const CSS = `
 /* --- native ad --- */
 .fi-native { border:1px solid var(--line-2); border-radius:var(--r); background:var(--surface); padding:18px; position:relative; }
 .fi-native::before { content:''; position:absolute; inset:0 auto 0 0; width:3px; background:var(--gold); border-radius:var(--r) 0 0 var(--r); }
+.fi-adres { border-top:1px solid rgba(255,255,255,.16); margin-top:18px; padding-top:18px; }
+.fi-adres-t { font:600 15px/1.4 var(--sans); color:#fff; margin:10px 0 6px; }
+.fi-adres-x { font-size:12.5px; line-height:1.5; color:#B5ADA6; margin:0 0 14px; }
+.fi-adres-f { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.fi-adres-f .fi-btn-o { background:transparent; color:#fff; border-color:rgba(255,255,255,.34); min-height:40px; }
+.fi-adres-f .fi-btn-o:hover { background:rgba(255,255,255,.08); }
+.fi-adres-s { font:500 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
+.fi-le-ad { border-top:1px solid var(--line); padding:22px 30px; }
 .fi-ad { border:1px dashed var(--line-2); border-radius:var(--r); background:var(--surface); padding:16px; }
 .fi-ad-lbl { font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
 .fi-ad-banner { display:flex; align-items:center; gap:18px; }
 .fi-sticky { position:sticky; top:150px; }
+.fi-sticky-ad { display:none; }
+@media (max-width:760px) {
+  .fi-sticky-ad { display:block; position:fixed; left:0; right:0; bottom:0; z-index:70;
+    background:var(--surface); border-top:1px solid var(--line-2);
+    box-shadow:0 -2px 12px rgba(0,0,0,.08); padding-bottom:env(safe-area-inset-bottom,0); }
+  .fi-sticky-ad-in { display:flex; align-items:center; gap:12px; padding:10px 14px; max-height:76px; }
+  .fi-sticky-ad-b { flex:1 1 auto; min-width:0; }
+  .fi-sticky-ad-l { font:500 9.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .fi-sticky-ad-b p { font-size:13.5px; line-height:1.35; color:var(--ink); margin:4px 0 0;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .fi-sticky-ad-c { flex:0 0 auto; min-height:40px; padding:0 14px; font-size:13px; }
+  .fi-sticky-ad-x { flex:0 0 auto; width:32px; height:32px; display:grid; place-items:center;
+    background:none; border:0; color:var(--muted); }
+  /* Bandın son içerik satırını örtmemesi için */
+  .fi-has-sticky-ad .fi-ft { padding-bottom:96px; }
+}
 .fi-2col { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:40px; }
 .fi-skip:focus-visible { position:fixed; top:10px; left:10px; width:auto; height:auto; clip:auto; background:var(--navy); color:#fff; padding:12px 18px; border-radius:var(--r); z-index:200; }
 
@@ -591,8 +615,48 @@ const AD_INVENTORY = {
     sponsor: "Örnek Yatırım",
     title: "Bu hesaplama aracı Örnek Yatırım katkılarıyla sunulmaktadır.",
   },
+  /* En yüksek niyetli an: kullanıcı hesaplamayı tamamladı, rakamı gördü.
+     Bu alan araç bazında ayrı satılabilir (kredi → banka, mevduat → banka,
+     kira → emlak, asgari → borç yapılandırma). */
+  calculator_result: {
+    type: "result",
+    sponsor: "Örnek Banka",
+    title: "Hesapladığınız tutara uygun teklifleri karşılaştırın",
+    excerpt: "Koşullar başvuru anında kurumca belirlenir. FinansIndex ürün tavsiyesi vermez.",
+    cta: "Teklifleri gör",
+  },
   category_sponsor: null,
   newsletter_sponsor: null,
+  /* Cep Etkisi Defteri içinde tek native blok. Sınırlı envanter olduğu için
+     yüksek fiyatlanabilir; okuma akışını bozmadığından performansı iyi olur. */
+  ledger_native: null,
+  article_tool_sponsor: null,
+  dossier_sponsor: null,
+
+  /* --- Yeni konumlar --- */
+
+  /* Araçlar sayfasındaki araç ızgarasında sponsorlu kart.
+     Sayfaya gelen herkes zaten hesaplama niyetinde. */
+  tools_index_native: null,
+
+  /* Arama sonuçları. Sorgu, niyetin en açık sinyali.
+     İleride sorguya göre hedefleme yapılabilir. */
+  search_native_01: null,
+
+  /* Kategori akışında native kart. Kategori sponsorluğundan ayrı satılır. */
+  category_native_01: null,
+
+  /* Uzun yazılar için ikinci makale içi alan.
+     Yalnızca 8+ bloklu yazılarda gösterilir; kısa yazılarda render edilmez. */
+  article_inline_02: null,
+
+  /* Ana sayfa orta bandı: defter ile piyasa paneli arasında. */
+  home_mid_banner: null,
+
+  /* Mobil alt sabit bant. Kapatılabilir, güvenli alan payı bırakır,
+     yalnızca mobilde görünür. Yanlış kullanıldığında okuma deneyimini
+     bozduğu için yüksekliği sınırlı tutulmuştur. */
+  mobile_sticky_footer: null,
 };
 
 /* ------------------------------------------------------------ 6. TAKSONOMİ */
@@ -1337,6 +1401,20 @@ function AdSlot({ placementId, pageType, className = "" }) {
     );
   }
 
+  if (creative.type === "result") {
+    return (
+      <div ref={ref} className={`fi-adres ${className}`}>
+        <span className="fi-badge fi-b-spon">Sponsorlu</span>
+        <p className="fi-adres-t">{creative.title}</p>
+        <p className="fi-adres-x">{creative.excerpt}</p>
+        <div className="fi-adres-f">
+          <button className="fi-btn fi-btn-o" onClick={click}>{creative.cta}</button>
+          <span className="fi-adres-s">{creative.sponsor}</span>
+        </div>
+      </div>
+    );
+  }
+
   if (creative.type === "native") {
     return (
       <article ref={ref} className={`fi-native ${className}`}>
@@ -1366,6 +1444,44 @@ function AdSlot({ placementId, pageType, className = "" }) {
  * finans yayınında güven kaybettirir. Hiyerarşi tipografi, hairline kural ve
  * varsa içerikten çıkarılmış somut bir çengel rakamıyla kuruluyor.
  */
+/**
+ * Mobil alt sabit reklam bandı.
+ * Kurallar: yalnızca mobilde görünür, kullanıcı kapatabilir, kapatma
+ * tercihi oturum boyunca hatırlanır, yüksekliği sınırlıdır ve
+ * içeriğin altına padding eklenerek son satırı örtmesi engellenir.
+ */
+function StickyFooterAd({ pageType }) {
+  const creative = AD_INVENTORY.mobile_sticky_footer;
+  const [closed, setClosed] = useState(false);
+  const seen = useRef(false);
+
+  useEffect(() => {
+    if (!creative || closed || seen.current) return;
+    seen.current = true;
+    track("ad_impression", { placement_id: "mobile_sticky_footer", sponsor_name: creative.sponsor, page_type: pageType });
+  }, [creative, closed, pageType]);
+
+  if (!creative || closed) return null;
+
+  return (
+    <div className="fi-sticky-ad" role="complementary" aria-label="Reklam">
+      <div className="fi-sticky-ad-in">
+        <div className="fi-sticky-ad-b">
+          <span className="fi-sticky-ad-l">Reklam · {creative.sponsor}</span>
+          <p>{creative.title}</p>
+        </div>
+        <button className="fi-btn fi-btn-p fi-sticky-ad-c"
+          onClick={() => track("ad_click", { placement_id: "mobile_sticky_footer", sponsor_name: creative.sponsor, page_type: pageType })}>
+          {creative.cta || "İncele"}
+        </button>
+        <button className="fi-sticky-ad-x" onClick={() => setClosed(true)} aria-label="Reklamı kapat">
+          <svg width="16" height="16" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.9" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" /></svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ArticleCard({ a, go, source }) {
   const open = () => {
     track("related_article_click", { article_id: a.id, article_category: a.category, content_type: a.contentType, traffic_source: source });
@@ -1421,7 +1537,10 @@ function CalcShell({ tool, children, out, note, compact }) {
           {children}
           {note && <p className="fi-note">{note}</p>}
         </div>
-        <div className="fi-calc-out">{out}</div>
+        <div className="fi-calc-out">
+          {out}
+          <AdSlot placementId="calculator_result" pageType="tool" />
+        </div>
       </div>
     </section>
   );
@@ -2275,8 +2394,13 @@ function Home({ go, market }) {
                 </div>
               );
             })}
+            <AdSlot placementId="ledger_native" pageType="home" className="fi-le-ad" />
           </div>
         </section>
+      </div>
+
+      <div className="fi-wrap">
+        <AdSlot placementId="home_mid_banner" pageType="home" className="fi-sec" />
       </div>
 
       {/* Piyasa paneli */}
@@ -2401,6 +2525,7 @@ function Home({ go, market }) {
                 {DOSSIER.parts.map((p) => <li key={p.n}><b>{p.n}</b><span>{p.t}</span></li>)}
               </ul>
               <button className="fi-btn fi-btn-g" onClick={() => go({ n: "category", slug: "finansindex-dosya" })}>Dosyayı incele</button>
+              <AdSlot placementId="dossier_sponsor" pageType="home" />
             </div>
           </div>
         </section>
@@ -2468,7 +2593,12 @@ function Category({ slug, go }) {
                   <p>İlk içerikler yayımlandığında haberdar olmak için bültene katılabilirsiniz.</p>
                   <button className="fi-btn fi-btn-p" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
                 </div>
-              ) : list.map((a) => <ArticleCard key={a.id} a={a} go={go} source="category" />)}
+              ) : list.map((a, i) => (
+                <React.Fragment key={a.id}>
+                  <ArticleCard a={a} go={go} source="category" />
+                  {i === 1 && <AdSlot placementId="category_native_01" pageType="category" />}
+                </React.Fragment>
+              ))}
             </div>
             <aside><div className="fi-sticky"><AdSlot placementId="desktop_sidebar_sticky" pageType="category" /></div></aside>
           </div>
@@ -2530,7 +2660,8 @@ function Article({ slug, go }) {
   const heads = a.body.filter((b) => b.type === "h2");
   const tool = a.related_tool ? toolById(a.related_tool) : null;
   const related = ARTICLES.filter((x) => x.id !== a.id && (x.category === a.category || x.tags.some((t) => a.tags.includes(t)))).slice(0, 4);
-  const inlineAt = Math.floor(a.body.length / 2);
+  const inlineAt = Math.floor(a.body.length / 3);
+  const inlineAt2 = Math.floor((a.body.length * 2) / 3);
 
   const share = (ch) => track("sponsor_click", { page_type: "article", article_id: a.id, placement_id: `share_${ch}` });
 
@@ -2609,6 +2740,7 @@ function Article({ slug, go }) {
                     </table>
                   )}
                   {i === inlineAt && <AdSlot placementId="article_inline_01" pageType="article" className="" />}
+                  {a.body.length >= 8 && i === inlineAt2 && <AdSlot placementId="article_inline_02" pageType="article" className="" />}
                 </React.Fragment>
               ))}
 
@@ -2624,6 +2756,7 @@ function Article({ slug, go }) {
                   <h3>{tool.name}</h3>
                   <p>{tool.desc}</p>
                   <button className="fi-btn fi-btn-g" onClick={() => go({ n: "tools", tool: tool.id })}>Aracı aç</button>
+                  <AdSlot placementId="article_tool_sponsor" pageType="article" />
                 </div>
               )}
 
@@ -2735,6 +2868,7 @@ function Tools({ activeTool, go }) {
             <section className="fi-sec" aria-labelledby="ot-h">
               <div className="fi-sh"><h2 className="fi-h2" id="ot-h">Diğer araçlar</h2></div>
               <div className="fi-grid fi-g3">
+                <AdSlot placementId="tools_index_native" pageType="tools" />
                 {ready.filter((t) => t.id !== active).map((t) => (
                   <button className="fi-tool" key={t.id} onClick={() => setActive(t.id)}>
                     <div className="fi-tool-i" aria-hidden="true">
@@ -2794,13 +2928,25 @@ function MediaKit({ go }) {
     setForm({ name: "", company: "", email: "", phone: "", budget: "", msg: "" });
   };
 
+  /* Envanter, değer sırasına göre listelenir: niyet yoğunluğu yüksek
+     alanlar üstte. Placement ID'ler koddaki AD_INVENTORY ile birebir aynıdır. */
   const PRODUCTS = [
-    { t: "Sponsorlu içerik", d: "Editoryal ekibin doğruluk kontrolünden geçen, açıkça etiketlenmiş marka içeriği.", items: [["Makale detay + ana sayfa kartı", "sponsored_article"], ["Kategori sayfası dağıtımı", "home_native_01"]] },
-    { t: "Kategori sponsorluğu", d: "Bir kategorinin belirli dönem boyunca marka iş birliğiyle sunulması.", items: [["Kategori üst bandı", "category_sponsor"], ["Kategori içi native", "home_native_01"]] },
-    { t: "Finansal araç sponsorluğu", d: "Yüksek niyetli kullanıcıların bulunduğu hesaplama araçlarında marka görünürlüğü.", items: [["Araç başlık altı", "calculator_sponsor"], ["Araç sonuç alanı", "calculator_sponsor"]] },
-    { t: "Bülten sponsorluğu", d: "Haftalık bültende tek sponsorlu blok; içerik akışının içinde, ayrı etiketli.", items: [["Bülten blok", "newsletter_sponsor"], ["Site içi bülten alanı", "newsletter_sponsor"]] },
-    { t: "Display envanteri", d: "Okumayı bölmeyen, sabit boyutlu görsel alanlar.", items: [["Header altı geniş alan", "home_top_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi", "article_inline_01"], ["Makale sonu", "article_end"]] },
-    { t: "Özel dosya ve araştırma", d: "Bir konunun tüm yönleriyle ele alındığı çok bölümlü dosya iş birliği.", items: [["FinansIndex Dosya sponsorluğu", "dossier_sponsor"], ["Özel proje / araştırma", "custom"]] },
+    { t: "Finansal araç sponsorluğu", d: "Kredi, mevduat veya kira hesaplaması yapan kullanıcıya, kararın verildiği anda ulaşırsınız. Envanterimizdeki en yüksek niyetli alan.",
+      items: [["Araç başlığı altı", "calculator_sponsor"], ["Hesaplama sonucu alanı", "calculator_result"], ["Makale içi ilgili araç kutusu", "article_tool_sponsor"]] },
+    { t: "Kategori sponsorluğu", d: "Bir kategorinin belirli dönem boyunca tek markayla sunulması. Kredi ve Mevduat, Sigorta ve Emeklilik kategorileri sektörle doğrudan eşleşir.",
+      items: [["Kategori üst bandı", "category_sponsor"], ["Kategori içi native kart", "home_native_01"]] },
+    { t: "Sponsorlu içerik", d: "Editoryal ekibin doğruluk kontrolünden geçen, açıkça etiketlenmiş marka içeriği. Ürün tavsiyesi içermez.",
+      items: [["Makale + ana sayfa kartı", "sponsored_article"], ["Cep Etkisi Defteri native bloğu", "ledger_native"]] },
+    { t: "Bülten sponsorluğu", d: "Haftalık bültende tek sponsorlu blok. Sınırlı envanter, düşük rekabet, yüksek dikkat.",
+      items: [["Bülten içi blok", "newsletter_sponsor"]] },
+    { t: "Özel dosya sponsorluğu", d: "Bir konunun tüm yönleriyle ele alındığı çok bölümlü araştırma dosyasının marka iş birliğiyle sunulması.",
+      items: [["FinansIndex Dosya paneli", "dossier_sponsor"], ["Özel proje / araştırma", "custom"]] },
+    { t: "Yüksek niyetli sayfalar", d: "Araçlar ve arama sayfaları, kullanıcının aktif olarak araştırma yaptığı alanlardır. Sorgu ve araç seçimi, niyeti doğrudan gösterir.",
+      items: [["Araçlar sayfası native kart", "tools_index_native"], ["Arama sonuçları native kart", "search_native_01"], ["Kategori akışı native kart", "category_native_01"]] },
+    { t: "Display envanteri", d: "Okuma akışını bölmeyen, sabit boyutlu görsel alanlar. Pop-up, sayfa arası geçiş reklamı ve otomatik oynayan video kullanılmaz.",
+      items: [["Header altı geniş alan", "home_top_banner"], ["Ana sayfa orta bandı", "home_mid_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi birinci", "article_inline_01"], ["Makale içi ikinci", "article_inline_02"], ["Makale sonu", "article_end"]] },
+    { t: "Mobil sabit bant", d: "Mobilde sayfa altında sabit duran, kullanıcının kapatabildiği tek satırlık alan. Yüksekliği sınırlıdır ve içeriğin üzerini örtmez.",
+      items: [["Mobil alt bant", "mobile_sticky_footer"]] },
   ];
 
   return (
@@ -2841,6 +2987,22 @@ function MediaKit({ go }) {
                 <h3>{p.t}</h3>
                 <p>{p.d}</p>
                 <ul>{p.items.map(([n, id]) => <li key={id + n}><span>{n}</span><code>{id}</code></li>)}</ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="fi-sec" aria-labelledby="pricing-h">
+          <div className="fi-sh"><div><div className="fi-eyebrow">Fiyatlama</div><h2 className="fi-h2" id="pricing-h">Nasıl çalışıyoruz?</h2></div></div>
+          <div className="fi-grid fi-g3">
+            {[
+              ["Dönemsel sponsorluk", "Envanteri gösterim başına değil, konum ve dönem üzerinden fiyatlıyoruz. Aylık veya üç aylık sponsorluk paketleri sunuyoruz."],
+              ["Şeffaf raporlama", "Kampanya süresince gösterim, tıklama ve görünürlük verilerini paylaşıyoruz. Her reklam alanının ayrı bir ölçüm kimliği var."],
+              ["Yeni yayın koşulları", "FinansIndex yeni bir yayın. Geçmiş trafik verisi paylaşmıyoruz; bunun yerine ilk dönem için avantajlı koşullar ve açık veri paylaşımı sunuyoruz."],
+            ].map(([t, d]) => (
+              <div className="fi-panel" key={t}>
+                <h3 style={{ font: "600 17px/1.3 var(--sans)", color: "var(--ink)", margin: "0 0 8px" }}>{t}</h3>
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--muted)", margin: 0 }}>{d}</p>
               </div>
             ))}
           </div>
@@ -2920,7 +3082,14 @@ function SearchPage({ q, go }) {
               <button className="fi-btn fi-btn-p" onClick={() => go({ n: "home" })}>Ana sayfaya dön</button>
             </div>
           ) : (
-            <div className="fi-grid fi-g3">{results.map((a) => <ArticleCard key={a.id} a={a} go={go} source="search" />)}</div>
+            <div className="fi-grid fi-g3">
+              {results.map((a, i) => (
+                <React.Fragment key={a.id}>
+                  <ArticleCard a={a} go={go} source="search" />
+                  {i === 1 && <AdSlot placementId="search_native_01" pageType="search" />}
+                </React.Fragment>
+              ))}
+            </div>
           )}
         </section>
       </div>
@@ -2996,13 +3165,14 @@ export default function FinansIndex() {
   })();
 
   return (
-    <div className="fi">
+    <div className={`fi ${AD_INVENTORY.mobile_sticky_footer ? "fi-has-sticky-ad" : ""}`}>
       <style>{CSS}</style>
       <a href="#icerik" className="fi-hidden fi-skip">İçeriğe geç</a>
       <Header route={route} go={go} onSearch={() => setSearch(true)} market={market} />
       {page}
       {search && <SearchOverlay onClose={() => setSearch(false)} go={go} />}
       <Footer go={go} />
+      <StickyFooterAd pageType={route.n} />
     </div>
   );
 }
