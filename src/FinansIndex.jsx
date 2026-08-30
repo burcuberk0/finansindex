@@ -114,8 +114,9 @@ const CSS = `
 .fi-lead-fig { margin-bottom:20px; }
 .fi-art-fig { margin:26px 0 30px; }
 .fi-side-i { display:grid; grid-template-columns:1fr 92px; gap:14px; align-items:start; }
-.fi-side-fig { width:92px; }
-.fi-lead-t { font:700 46px/1.08 var(--serif); letter-spacing:-.032em; margin:14px 0 16px; color:var(--ink); max-width:19ch; }
+.fi-side-fig { width:92px; overflow:hidden; }
+.fi-side-fig .fi-fig-w { border-radius:3px; }
+.fi-lead-t { font:700 44px/1.1 var(--serif); letter-spacing:-.03em; margin:14px 0 16px; color:var(--ink); max-width:26ch; }
 .fi-lead-s { font:400 19px/1.55 var(--serif); color:var(--ink-2); margin:0; max-width:52ch; }
 
 /* Öne çıkan rakam: manşetin görsel ağırlık merkezi */
@@ -222,7 +223,7 @@ const CSS = `
 .fi-g4 { grid-template-columns:repeat(4,1fr); }
 .fi-fig { margin:0; }
 .fi-fig-w { width:100%; background:var(--line); border-radius:var(--r); overflow:hidden; }
-.fi-fig-w img { width:100%; height:100%; object-fit:cover; display:block; }
+.fi-fig-w img { width:100%; height:100%; object-fit:cover; display:block; color:transparent; font-size:0; }
 .fi-fig-c { font-size:11.5px; line-height:1.4; color:var(--muted); margin:7px 0 0; }
 .fi-card { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
 .fi-card .fi-a { padding:0; }
@@ -1354,7 +1355,16 @@ const DISCLAIMERS = {
  *    Manşet görselinde priority=true verilir; o görsel ekranın üstünde.
  */
 function Figure({ image, ratio = "16 / 9", className = "", priority = false, showCredit = true }) {
-  if (!image || !image.src) return null;
+  /* Dosya sunucuda yoksa (henüz yüklenmemişse) tarayıcı kırık görsel ve alt
+     metni gösterir. Bu, boş bir alandan çok daha kötü görünür. onError ile
+     tüm figure'ü DOM'dan kaldırıyoruz — görsel yüklenene kadar sayfa,
+     görselsiz tasarımıyla çalışmaya devam eder. */
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => { setFailed(false); }, [image && image.src]);
+
+  if (!image || !image.src || failed) return null;
+
   return (
     <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
       <div className="fi-fig-w" style={{ aspectRatio: ratio }}>
@@ -1363,7 +1373,7 @@ function Figure({ image, ratio = "16 / 9", className = "", priority = false, sho
           alt={image.alt || ""}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
-          fetchpriority={priority ? "high" : undefined}
+          onError={() => setFailed(true)}
         />
       </div>
       {showCredit && image.credit && <figcaption className="fi-fig-c">{image.credit}</figcaption>}
