@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from "react"
 
 /* ============================================================================
    FinansIndex — Finans ve ekonomi yayın platformu
-   "Paranı anlamanın daha kolay yolu."
+   "Finansı anlamanın en kolay yolu."
 
    Mimari notu:
    - Veri katmanı (ARTICLES, TOOLS, AD_INVENTORY, MARKET_SOURCE) UI'dan ayrık.
@@ -111,6 +111,10 @@ const CSS = `
 /* --- manşet: dekoratif görsel yok, hiyerarşi tipografiyle kurulur --- */
 .fi-lead { display:grid; grid-template-columns:1.6fr 1fr; gap:0; padding:0 0 44px; border-bottom:2px solid var(--ink); }
 .fi-lead-main { padding:38px 40px 34px 0; border-right:1px solid var(--line); }
+.fi-lead-fig { margin-bottom:20px; }
+.fi-art-fig { margin:26px 0 30px; }
+.fi-side-i { display:grid; grid-template-columns:1fr 92px; gap:14px; align-items:start; }
+.fi-side-fig { width:92px; }
 .fi-lead-t { font:700 46px/1.08 var(--serif); letter-spacing:-.032em; margin:14px 0 16px; color:var(--ink); max-width:19ch; }
 .fi-lead-s { font:400 19px/1.55 var(--serif); color:var(--ink-2); margin:0; max-width:52ch; }
 
@@ -216,7 +220,14 @@ const CSS = `
 .fi-grid { display:grid; gap:26px; }
 .fi-g3 { grid-template-columns:repeat(3,1fr); }
 .fi-g4 { grid-template-columns:repeat(4,1fr); }
-.fi-card { border-top:2px solid var(--ink); padding-top:14px; }
+.fi-fig { margin:0; }
+.fi-fig-w { width:100%; background:var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-fig-w img { width:100%; height:100%; object-fit:cover; display:block; }
+.fi-fig-c { font-size:11.5px; line-height:1.4; color:var(--muted); margin:7px 0 0; }
+.fi-card { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.fi-card .fi-a { padding:0; }
+.fi-card-body { padding:15px 16px 17px; }
+.fi-card .fi-fig-w { border-radius:0; }
 .fi-ttl { font:600 19px/1.3 var(--serif); color:var(--ink); margin:10px 0 8px; letter-spacing:-.014em; }
 .fi-exc { font-size:14.5px; line-height:1.55; color:var(--muted); margin:0; }
 .fi-card-hook { font:500 13px/1.5 var(--mono); color:var(--petrol); margin:0; }
@@ -470,6 +481,8 @@ const CSS = `
   .fi-stat-v { font-size:25px; }
   .fi-grid { gap:22px; }
   .fi-lead-t { font-size:31px; max-width:none; }
+  .fi-side-i { grid-template-columns:1fr 78px; }
+  .fi-side-fig { width:78px; }
   .fi-lead-s { font-size:17px; }
   .fi-lead-stat { flex-direction:column; gap:12px; padding:18px 16px; }
   .fi-lead-stat-v { font-size:42px; }
@@ -527,7 +540,7 @@ function useEventLog() {
 
 /* --------------------------------------------------------------- 3. SEO KATMANI */
 
-const SITE = { name: "FinansIndex", url: "https://finansindex.com", promise: "Paranı anlamanın daha kolay yolu." };
+const SITE = { name: "FinansIndex", url: "https://finansindex.com", promise: "Finansı anlamanın en kolay yolu." };
 
 function useSeo({ title, description, path, jsonLd }) {
   useEffect(() => {
@@ -723,6 +736,7 @@ const ARTICLES = [
     published_at: "2026-08-06T09:15:00+03:00", updated_at: "2026-08-06T14:40:00+03:00",
     read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "mevduat",
+    featured_image: { src: "/img/faiz-mevduat.jpg", alt: "Bir bankanın vadeli mevduat ekranında görünen faiz oranı tablosu", credit: "Görsel: Unsplash" },
     tags: ["faiz", "mevduat", "para politikası"],
     source_name: "TCMB", source_urls: ["TCMB — Para Politikası Kurulu karar metinleri", "TCMB — Ağırlıklı ortalama mevduat faiz oranları istatistikleri", "BDDK — Aylık bankacılık sektörü verileri"],
     seo_title: "Politika faizi mevduat faizini nasıl etkiler? | FinansIndex",
@@ -765,6 +779,7 @@ const ARTICLES = [
     published_at: "2026-08-05T08:00:00+03:00", updated_at: "2026-08-05T08:00:00+03:00",
     read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "asgari",
+    featured_image: { src: "/img/kredi-karti.jpg", alt: "Masada duran kredi kartı ve hesap ekstresi", credit: "Görsel: Unsplash" },
     tags: ["kredi kartı", "borç", "bütçe"],
     source_name: "BDDK / Resmî Gazete",
     source_urls: ["BDDK — Banka Kartları ve Kredi Kartları Hakkında Yönetmelik", "Resmî Gazete — İlgili yönetmelik değişiklikleri", "TCMB — Kredi kartı işlemlerinde uygulanacak azami faiz oranları duyuruları"],
@@ -814,6 +829,7 @@ const ARTICLES = [
     published_at: "2026-08-04T10:30:00+03:00", updated_at: "2026-08-04T10:30:00+03:00",
     read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
+    featured_image: { src: "/img/borc-kapatma.jpg", alt: "Üzerinde ödeme planı yazılı not defteri ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["borç", "kredi", "bütçe"],
     source_name: "FinansIndex editoryal",
     source_urls: ["TCMB — Tüketici kredileri faiz oranları istatistikleri", "BDDK — Tüketici kredileri ve bireysel kredi kartları verileri"],
@@ -852,6 +868,7 @@ const ARTICLES = [
     published_at: "2026-08-03T11:00:00+03:00", updated_at: "2026-08-03T11:00:00+03:00",
     read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
+    featured_image: { src: "/img/enflasyon-birikim.jpg", alt: "Türk lirası banknotlar ve bozuk paralar", credit: "Görsel: Unsplash" },
     tags: ["enflasyon", "birikim", "reel getiri"],
     source_name: "TÜİK",
     source_urls: ["TÜİK — Tüketici Fiyat Endeksi bülteni", "TCMB — Enflasyon Raporu"],
@@ -898,6 +915,7 @@ const ARTICLES = [
     published_at: "2026-08-02T09:00:00+03:00", updated_at: "2026-08-02T09:00:00+03:00",
     read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "legal", related_tool: "kira",
+    featured_image: { src: "/img/kira-artis.jpg", alt: "Bir apartman dairesinin salonu ve kira sözleşmesi", credit: "Görsel: Unsplash" },
     tags: ["kira", "enflasyon", "konut"],
     source_name: "TÜİK / Resmî Gazete",
     source_urls: ["TÜİK — Tüketici Fiyat Endeksi, on iki aylık ortalamalara göre değişim oranları", "Türk Borçlar Kanunu — Kira bedelinin belirlenmesine ilişkin hükümler"],
@@ -936,6 +954,7 @@ const ARTICLES = [
     published_at: "2026-08-01T12:00:00+03:00", updated_at: "2026-08-01T12:00:00+03:00",
     read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
+    featured_image: { src: "/img/yatirim-fonu.jpg", alt: "Bilgisayar ekranında görünen yatırım fonu performans grafiği", credit: "Görsel: Unsplash" },
     tags: ["fon", "yatırım", "portföy"],
     source_name: "SPK / KAP",
     source_urls: ["SPK — Yatırım fonlarına ilişkin mevzuat", "KAP — Fon bilgilendirme dokümanları ve içtüzükler", "TEFAS — Fon karşılaştırma platformu"],
@@ -974,6 +993,7 @@ const ARTICLES = [
     published_at: "2026-07-31T09:45:00+03:00", updated_at: "2026-07-31T09:45:00+03:00",
     read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "mevduat",
+    featured_image: { src: "/img/bes-emeklilik.jpg", alt: "Emeklilik planı üzerine çalışan bir kişinin elleri ve belgeler", credit: "Görsel: Unsplash" },
     tags: ["BES", "emeklilik", "devlet katkısı"],
     source_name: "SPK / Emeklilik Gözetim Merkezi",
     source_urls: ["Bireysel Emeklilik Tasarruf ve Yatırım Sistemi Kanunu", "Emeklilik Gözetim Merkezi — Sistem istatistikleri ve bilgilendirme sayfaları"],
@@ -1010,6 +1030,7 @@ const ARTICLES = [
     published_at: "2026-07-30T13:20:00+03:00", updated_at: "2026-07-30T13:20:00+03:00",
     read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
+    featured_image: { src: "/img/altin-makas.jpg", alt: "Üst üste dizilmiş külçe altınlar", credit: "Görsel: Unsplash" },
     tags: ["altın", "maliyet", "yatırım"],
     source_name: "Borsa İstanbul / Kuyumculuk sektörü",
     source_urls: ["Borsa İstanbul — Kıymetli Madenler Piyasası verileri", "Darphane ve Damga Matbaası — Ürün bilgilendirmeleri"],
@@ -1046,6 +1067,7 @@ const ARTICLES = [
     published_at: "2026-07-29T08:30:00+03:00", updated_at: "2026-07-29T08:30:00+03:00",
     read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
+    featured_image: { src: "/img/kobi-nakit.jpg", alt: "Küçük bir işletmenin tezgâhında duran defter ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["KOBİ", "nakit akışı", "finansman"],
     source_name: "FinansIndex editoryal",
     source_urls: ["KOSGEB — İşletme finansmanı bilgilendirme kaynakları", "TCMB — Ticari krediler faiz oranları istatistikleri"],
@@ -1083,6 +1105,7 @@ const ARTICLES = [
     published_at: "2026-08-16T10:00:00+03:00", updated_at: "2026-08-16T10:00:00+03:00",
     read: 9, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "legal", related_tool: "karsilastir",
+    featured_image: { src: "/img/tasarruf-finansmani.jpg", alt: "İmzalanmak üzere masada duran finansman sözleşmesi", credit: "Görsel: Unsplash" },
     tags: ["tasarruf finansmanı", "konut", "taşıt", "BDDK"],
     source_name: "BDDK / Resmî Gazete",
     source_urls: [
@@ -1156,6 +1179,7 @@ const ARTICLES = [
     published_at: "2026-08-15T09:30:00+03:00", updated_at: "2026-08-15T09:30:00+03:00",
     read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
+    featured_image: { src: "/img/kredi-faizi.jpg", alt: "Kredi ödeme planı çıktısı ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["kredi", "faiz", "maliyet"],
     source_name: "TCMB / BDDK",
     source_urls: [
@@ -1219,6 +1243,7 @@ const ARTICLES = [
     published_at: "2026-07-28T10:00:00+03:00", updated_at: "2026-07-28T10:00:00+03:00",
     read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
     sponsored: true, sponsor_name: "Örnek Banka", disclaimer: "general", related_tool: "asgari",
+    featured_image: { src: "/img/dijital-bankacilik.jpg", alt: "Mobil bankacılık uygulaması açık bir telefon", credit: "Görsel: Unsplash" },
     tags: ["dijital bankacılık", "masraf"],
     source_name: "Sponsor bilgilendirmesi",
     source_urls: ["BDDK — Dijital bankacılık istatistikleri", "Sponsor kurum bilgilendirme materyalleri"],
@@ -1317,6 +1342,35 @@ const DISCLAIMERS = {
 
 /* Basit görsel yerine, kategoriye göre üretilen soyut kapak deseni.
    Gerçek kurulumda <img srcset> ile CDN görselleri kullanılacak. */
+/**
+ * İçerik görseli.
+ *
+ * Kurallar:
+ *  - Görsel tanımlı değilse hiçbir şey render edilmez (yer tutucu yok).
+ *  - En-boy oranı CSS ile sabitlenir, böylece yüklenirken sayfa zıplamaz.
+ *  - alt metni zorunludur; boş alt yalnızca tamamen dekoratif görsellerde.
+ *  - Telif künyesi görselin altında gösterilir.
+ *  - loading="lazy" ve decoding="async" ile ilk yükleme hızı korunur.
+ *    Manşet görselinde priority=true verilir; o görsel ekranın üstünde.
+ */
+function Figure({ image, ratio = "16 / 9", className = "", priority = false, showCredit = true }) {
+  if (!image || !image.src) return null;
+  return (
+    <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
+      <div className="fi-fig-w" style={{ aspectRatio: ratio }}>
+        <img
+          src={image.src}
+          alt={image.alt || ""}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          fetchpriority={priority ? "high" : undefined}
+        />
+      </div>
+      {showCredit && image.credit && <figcaption className="fi-fig-c">{image.credit}</figcaption>}
+    </figure>
+  );
+}
+
 /**
  * Okunabilir karşılaştırma grafiği.
  * Tasarım kararı: renk tek başına anlam taşımaz — her çubuğun değeri
@@ -1545,16 +1599,17 @@ function ArticleCard({ a, go, source }) {
   return (
     <article className="fi-card">
       <button className="fi-a" onClick={open}>
-        <div className="fi-meta">
-          <span className="fi-cat">{catName(a.category)}</span>
-          <span className="fi-dot" />
-          <span className="fi-badge fi-b-type">{a.contentType}</span>
-          <span className="fi-dot" />
-          <span>{a.read} dk</span>
-          {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
+        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false} />
+        <div className="fi-card-body">
+          <div className="fi-meta">
+            <span className="fi-cat">{catName(a.category)}</span>
+            <span className="fi-dot" />
+            <span>{a.read} dk</span>
+            {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
+          </div>
+          <h3 className="fi-ttl">{a.title}</h3>
+          {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>}
         </div>
-        <h3 className="fi-ttl">{a.title}</h3>
-        {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 116)}…</p>}
       </button>
     </article>
   );
@@ -2063,7 +2118,7 @@ function Header({ route, go, onSearch, market }) {
         <div className="fi-wrap">
           <div className="fi-hd-top">
             <Logo go={go} />
-            <span className="fi-tag">Paranı anlamanın daha kolay yolu</span>
+            <span className="fi-tag">Finansı anlamanın en kolay yolu</span>
             <div className="fi-hd-acts">
               <button className="fi-ico" onClick={onSearch} aria-label="Sitede ara">
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6" /><path d="m13.5 13.5 4 4" strokeLinecap="round" /></svg>
@@ -2295,7 +2350,7 @@ function Footer({ go }) {
               <path d="M7 22.5V9.5h11v3.1H10.6v2.5h6.5v3.1h-6.5v4.3z" fill="#fff" />
               <rect x="20.6" y="9.5" width="3.2" height="13" fill="#D98A98" />
             </svg>
-            <p style={{ font: "600 20px/1.2 var(--serif)", color: "#fff", margin: "12px 0 0" }}>Paranı anlamanın daha kolay yolu.</p>
+            <p style={{ font: "600 20px/1.2 var(--serif)", color: "#fff", margin: "12px 0 0" }}>Finansı anlamanın en kolay yolu.</p>
             <p>Ekonomi gelişmelerinin bütçenize, birikiminize ve borcunuza etkisini sade bir dille anlatıyoruz. Yatırım tavsiyesi vermiyoruz.</p>
           </div>
           <div>
@@ -2349,7 +2404,7 @@ function Footer({ go }) {
 
 function Home({ go, market }) {
   useSeo({
-    title: "FinansIndex — Paranı anlamanın daha kolay yolu",
+    title: "FinansIndex — Finansı anlamanın en kolay yolu",
     description: "Ekonomi ve finans gelişmelerinin bütçenize etkisini sade bir dille anlatıyoruz. Kredi, mevduat, yatırım ve sigorta rehberleri, çalışan hesaplama araçları.",
     path: "/",
   });
@@ -2374,6 +2429,7 @@ function Home({ go, market }) {
         <section className="fi-lead" aria-label="Manşet">
           <div className="fi-lead-main">
             <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
+              <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
               <div className="fi-meta">
                 <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
                 <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
@@ -2407,9 +2463,12 @@ function Home({ go, market }) {
             <h2 className="fi-side-h">Öne çıkanlar</h2>
             {side.map((a) => (
               <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
-                <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
-                <h3 className="fi-side-t fi-ttl">{a.title}</h3>
-                {a.hook && <p className="fi-side-hook">{a.hook}</p>}
+                <div className="fi-side-txt">
+                  <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
+                  <h3 className="fi-side-t fi-ttl">{a.title}</h3>
+                  {a.hook && <p className="fi-side-hook">{a.hook}</p>}
+                </div>
+                {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
               </button>
             ))}
           </div>
@@ -2766,6 +2825,10 @@ function Article({ slug, go }) {
               </div>
             </div>
 
+
+            {a.featured_image && (
+              <Figure image={a.featured_image} ratio="16 / 9" priority className="fi-art-fig" />
+            )}
 
             {heads.length > 1 && (
               <nav className="fi-toc" aria-label="İçindekiler">
