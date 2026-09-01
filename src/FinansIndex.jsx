@@ -111,6 +111,14 @@ const CSS = `
 /* --- manşet: dekoratif görsel yok, hiyerarşi tipografiyle kurulur --- */
 .fi-lead { display:grid; grid-template-columns:1.6fr 1fr; gap:0; padding:0 0 44px; border-bottom:2px solid var(--ink); }
 .fi-lead-main { padding:38px 40px 34px 0; border-right:1px solid var(--line); }
+/* Üst ızgara: manşet solda, canlı akış sağda.
+   Capital'ın yoğun üst bölümüyle aynı mantık, ancak sağ sütun
+   başka yayından çekilmiş haberle değil, kendi verimizle dolar. */
+.fi-topgrid { display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:32px; padding:26px 0 40px; align-items:start; }
+.fi-topgrid-side { display:flex; flex-direction:column; gap:20px; position:sticky; top:150px; }
+.fi-topgrid .fi-lead { padding-bottom:0; border-bottom:0; grid-template-columns:1.5fr 1fr; }
+.fi-topgrid .fi-lead-main { padding:0 28px 0 0; }
+.fi-topgrid .fi-lead-side { padding:0 0 0 26px; border-left:1px solid var(--line); }
 .fi-lead-fig { margin-bottom:20px; }
 .fi-art-fig { margin:26px 0 30px; }
 .fi-side-i { display:grid; grid-template-columns:1fr 92px; gap:14px; align-items:start; }
@@ -177,6 +185,21 @@ const CSS = `
 .fi-mkt-d span[aria-hidden] { font-size:9px; }
 .fi-mkt-s { font:400 11.5px/1.4 var(--mono); color:var(--muted); margin-top:auto; padding-top:10px; }
 .fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
+
+/* --- son güncellemeler paneli --- */
+.fi-log-panel { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.fi-log-hd { display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line); background:var(--ink); }
+.fi-log-hd h2 { font:600 13px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#fff; margin:0; }
+.fi-log-live { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:500 10.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#7FCFA6; }
+.fi-log-live i { width:6px; height:6px; border-radius:50%; background:#7FCFA6; display:block; }
+.fi-log-list { list-style:none; margin:0; padding:0; }
+.fi-log-list li { display:grid; grid-template-columns:46px 1fr; gap:12px; padding:13px 18px; border-bottom:1px solid var(--line); }
+.fi-log-list li:last-child { border-bottom:0; }
+.fi-log-t { font:600 12px/1.5 var(--mono); color:var(--petrol); }
+.fi-log-tag { display:inline-block; font:600 9.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted); background:var(--bg); border:1px solid var(--line); padding:4px 6px; border-radius:2px; margin-bottom:6px; }
+.fi-log-list p { font-size:14px; line-height:1.5; color:var(--ink-2); margin:0; }
+.fi-log-more { width:100%; text-align:left; background:var(--bg); border:0; border-top:1px solid var(--line); padding:14px 18px; font-size:13.5px; font-weight:600; color:var(--petrol); min-height:48px; }
+.fi-log-more:hover { background:var(--green-soft); }
 .fi-skel-l { height:11px; width:52%; background:var(--line); border-radius:2px; margin-bottom:16px; }
 .fi-skel-b { height:26px; width:74%; background:var(--line); border-radius:2px; opacity:.62; }
 
@@ -452,11 +475,18 @@ const CSS = `
 
 /* --- responsive --- */
 @media (max-width:1000px) {
+  .fi-topgrid { grid-template-columns:1fr; gap:26px; padding:20px 0 30px; }
+  .fi-topgrid-side { position:static; }
+  .fi-topgrid .fi-lead { grid-template-columns:1fr; }
+  .fi-topgrid .fi-lead-main { padding:0 0 26px; border-bottom:1px solid var(--line); }
+  .fi-topgrid .fi-lead-side { padding:26px 0 0; border-left:0; }
   .fi-lead { grid-template-columns:1fr; }
   .fi-lead-main { padding:28px 0 30px; border-right:0; border-bottom:1px solid var(--line); }
   .fi-lead-side { padding:28px 0 30px; }
   .fi-side { border-left:0; padding-left:0; border-top:1px solid var(--line); padding-top:22px; }
   .fi-art, .fi-2col { grid-template-columns:1fr; gap:34px; }
+  .fi-topgrid { grid-template-columns:1fr; }
+  .fi-topgrid-side { position:static; }
   .fi-sticky { position:static; }
   .fi-g4 { grid-template-columns:repeat(2,1fr); }
   .fi-mkt-grid { grid-template-columns:repeat(2,1fr); }
@@ -612,6 +642,73 @@ function useMarket() {
   }, [load]);
 
   return state;
+}
+
+/* ------------------------------------------------- PİYASA GÜNLÜĞÜ MOTORU --- */
+
+/**
+ * Canlı piyasa verisinden zaman damgalı güncelleme satırları üretir.
+ *
+ * Neden bu yaklaşım: Capital gibi yayınların "son haberler" akışındaki
+ * "Döviz ve altın güne nasıl başladı?" tipi içerikler, resmî veriden
+ * üretilir. Başka yayından içerik çekmek yerine kendi veri akışımızdan
+ * özgün cümle kuruyoruz. Telif riski yok, kaynak birincil.
+ *
+ * Kural: veri yoksa satır üretilmez. Tahmin veya yuvarlama yapılmaz.
+ */
+function buildMarketLog(market) {
+  if (market.status !== "ready" || !market.items.length) return [];
+
+  const find = (k) => market.items.find((x) => x.k === k);
+  const rows = [];
+  const t = market.updatedAt ? new Date(market.updatedAt) : new Date();
+  const hhmm = new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit" }).format(t);
+
+  const yon = (d) => (d > 0 ? "yükseldi" : "geriledi");
+  const fmt = (v) => num(v, v >= 1000 ? 0 : 2);
+
+  const usd = find("Dolar"), eur = find("Euro"), ga = find("Gram Altın"), gm = find("Gümüş");
+
+  if (usd) {
+    rows.push({
+      time: hhmm,
+      text: usd.d != null
+        ? `Dolar/TL, TCMB resmî kurunda ${fmt(usd.v)} seviyesinde. Bir önceki iş gününe göre %${num(Math.abs(usd.d), 2)} ${yon(usd.d)}.`
+        : `Dolar/TL, TCMB resmî kurunda ${fmt(usd.v)} seviyesinde.`,
+      tag: "Döviz",
+    });
+  }
+  if (eur) {
+    rows.push({
+      time: hhmm,
+      text: eur.d != null
+        ? `Euro/TL ${fmt(eur.v)} olarak açıklandı, günlük değişim %${num(Math.abs(eur.d), 2)} ${yon(eur.d)}.`
+        : `Euro/TL, TCMB resmî kurunda ${fmt(eur.v)} seviyesinde.`,
+      tag: "Döviz",
+    });
+  }
+  if (ga) {
+    const makas = ga.alis && ga.satis ? ((ga.satis - ga.alis) / ga.satis) * 100 : null;
+    rows.push({
+      time: hhmm,
+      text: makas != null
+        ? `Gram altın serbest piyasada ${fmt(ga.satis)} TL'den satılıyor. Alış-satış farkı %${num(makas, 2)}.`
+        : `Gram altın serbest piyasada ${fmt(ga.v)} TL seviyesinde.`,
+      tag: "Altın",
+    });
+  }
+  if (gm) {
+    rows.push({ time: hhmm, text: `Gümüş ${fmt(gm.v)} TL seviyesinde işlem görüyor.`, tag: "Gümüş" });
+  }
+  if (usd && eur) {
+    const parite = eur.v / usd.v;
+    rows.push({
+      time: hhmm,
+      text: `TCMB kurlarına göre EUR/USD paritesi ${num(parite, 4)} seviyesinde.`,
+      tag: "Parite",
+    });
+  }
+  return rows;
 }
 
 /* ------------------------------------------------------- 5. REKLAM ENVANTERİ */
@@ -2043,6 +2140,39 @@ function MarketTicker({ market }) {
 /* Ana sayfadaki büyük, okunabilir piyasa paneli.
    Şeritten farkı: her gösterge ayrı kart, rakamlar büyük,
    değişim yönü hem renk hem ok hem işaretle veriliyor (renk körlüğü için). */
+/**
+ * "Son güncellemeler" paneli.
+ * Capital'daki zaman damgalı akışın karşılığı, ancak içerik başka yayından
+ * çekilmiyor: kendi piyasa verimizden üretiliyor.
+ */
+function MarketLog({ market, go }) {
+  const rows = useMemo(() => buildMarketLog(market), [market]);
+  if (!rows.length) return null;
+
+  return (
+    <div className="fi-log-panel">
+      <div className="fi-log-hd">
+        <h2>Son güncellemeler</h2>
+        <span className="fi-log-live"><i />Canlı</span>
+      </div>
+      <ul className="fi-log-list">
+        {rows.map((r, i) => (
+          <li key={i}>
+            <span className="fi-log-t">{r.time}</span>
+            <div>
+              <span className="fi-log-tag">{r.tag}</span>
+              <p>{r.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <button className="fi-log-more" onClick={() => go({ n: "tools", tool: "enflasyon" })}>
+        Bu rakamlar bütçeni nasıl etkiliyor? →
+      </button>
+    </div>
+  );
+}
+
 function MarketPanel({ market }) {
   const { status, items, updatedAt, tcmbDate } = market;
 
@@ -2435,54 +2565,63 @@ function Home({ go, market }) {
       <div className="fi-wrap">
         <AdSlot placementId="home_top_banner" pageType="home" className="fi-sec" />
 
-        {/* Manşet — dekoratif görsel yok. Editoryal hiyerarşi tipografiyle kurulur. */}
-        <section className="fi-lead" aria-label="Manşet">
-          <div className="fi-lead-main">
-            <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
-              <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
-              <div className="fi-meta">
-                <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
-                <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
-                <span>{dateTR(hero.published_at)}</span><span className="fi-dot" /><span>{hero.read} dk</span>
-              </div>
-              <h1 className="fi-lead-t fi-ttl">{hero.title}</h1>
-              <p className="fi-lead-s">{hero.summary}</p>
-            </button>
-
-            {hero.keyStat && (
-              <div className="fi-lead-stat">
-                <div className="fi-lead-stat-v">{hero.keyStat.v}<span>{hero.keyStat.unit}</span></div>
-                <div className="fi-lead-stat-b">
-                  <p>{hero.keyStat.k}</p>
-                  {hero.keyStat.sub && <span>{hero.keyStat.sub}</span>}
-                </div>
-              </div>
-            )}
-
-            <div className="fi-lead-acts">
-              <button className="fi-btn fi-btn-p" onClick={() => go({ n: "article", slug: hero.slug })}>Yazıyı oku</button>
-              {hero.related_tool && (
-                <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools", tool: hero.related_tool })}>
-                  {toolById(hero.related_tool)?.short} hesapla →
+        {/* ÜST IZGARA: manşet + son güncellemeler yan yana */}
+        <div className="fi-topgrid">
+          <div className="fi-topgrid-main">
+            {/* Manşet — dekoratif görsel yok. Editoryal hiyerarşi tipografiyle kurulur. */}
+            <section className="fi-lead" aria-label="Manşet">
+              <div className="fi-lead-main">
+                <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
+                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
+                  <div className="fi-meta">
+                    <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
+                    <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
+                    <span>{dateTR(hero.published_at)}</span><span className="fi-dot" /><span>{hero.read} dk</span>
+                  </div>
+                  <h1 className="fi-lead-t fi-ttl">{hero.title}</h1>
+                  <p className="fi-lead-s">{hero.summary}</p>
                 </button>
-              )}
-            </div>
-          </div>
 
-          <div className="fi-lead-side">
-            <h2 className="fi-side-h">Öne çıkanlar</h2>
-            {side.map((a) => (
-              <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
-                <div className="fi-side-txt">
-                  <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
-                  <h3 className="fi-side-t fi-ttl">{a.title}</h3>
-                  {a.hook && <p className="fi-side-hook">{a.hook}</p>}
+                {hero.keyStat && (
+                  <div className="fi-lead-stat">
+                    <div className="fi-lead-stat-v">{hero.keyStat.v}<span>{hero.keyStat.unit}</span></div>
+                    <div className="fi-lead-stat-b">
+                      <p>{hero.keyStat.k}</p>
+                      {hero.keyStat.sub && <span>{hero.keyStat.sub}</span>}
+                    </div>
+                  </div>
+                )}
+
+                <div className="fi-lead-acts">
+                  <button className="fi-btn fi-btn-p" onClick={() => go({ n: "article", slug: hero.slug })}>Yazıyı oku</button>
+                  {hero.related_tool && (
+                    <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools", tool: hero.related_tool })}>
+                      {toolById(hero.related_tool)?.short} hesapla →
+                    </button>
+                  )}
                 </div>
-                {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
-              </button>
-            ))}
+              </div>
+
+              <div className="fi-lead-side">
+                <h2 className="fi-side-h">Öne çıkanlar</h2>
+                {side.map((a) => (
+                  <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
+                    <div className="fi-side-txt">
+                      <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
+                      <h3 className="fi-side-t fi-ttl">{a.title}</h3>
+                      {a.hook && <p className="fi-side-hook">{a.hook}</p>}
+                    </div>
+                    {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
+                  </button>
+                ))}
+              </div>
+            </section>
           </div>
-        </section>
+          <aside className="fi-topgrid-side">
+            <MarketLog market={market} go={go} />
+            <AdSlot placementId="desktop_sidebar_sticky" pageType="home" />
+          </aside>
+        </div>
       </div>
 
       {/* İMZA BÖLÜM: Cep Etkisi Defteri */}
@@ -2612,61 +2751,6 @@ function Home({ go, market }) {
                 </div>
               </div>
             </aside>
-          </div>
-        </section>
-
-        {/* Rehberler şeridi */}
-        <section className="fi-sec" aria-labelledby="guide-h">
-          <div className="fi-sh">
-            <div>
-              <div className="fi-eyebrow">Kalıcı içerikler</div>
-              <h2 className="fi-h2" id="guide-h">Temel finans rehberleri</h2>
-              <p className="fi-sub">Güncelliğini uzun süre koruyan, adım adım ilerleyen başvuru içerikleri.</p>
-            </div>
-          </div>
-          <div className="fi-grid fi-g4">
-            {GUIDES.map((g) => {
-              const a = byId(g.id);
-              return (
-                <button className="fi-guide fi-a" key={g.id} onClick={() => go({ n: "article", slug: a.slug })}>
-                  <span>{g.label}</span>
-                  <h3 className="fi-ttl" style={{ font: "600 17px/1.3 var(--serif)", margin: "8px 0 6px" }}>{a.title}</h3>
-                  <p>{a.read} dk okuma · {catName(a.category)}</p>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Dosya */}
-        <section className="fi-sec" aria-labelledby="dossier-h">
-          <div className="fi-dossier">
-            <div className="fi-dossier-b">
-              <div className="fi-eyebrow">FinansIndex Dosya · {DOSSIER.eyebrow}</div>
-              <h3 id="dossier-h">{DOSSIER.title}</h3>
-              <p>{DOSSIER.desc}</p>
-              <ul className="fi-dossier-parts">
-                {DOSSIER.parts.map((p) => <li key={p.n}><b>{p.n}</b><span>{p.t}</span></li>)}
-              </ul>
-              <button className="fi-btn fi-btn-g" onClick={() => go({ n: "category", slug: "finansindex-dosya" })}>Dosyayı incele</button>
-              <AdSlot placementId="dossier_sponsor" pageType="home" />
-            </div>
-          </div>
-        </section>
-
-        {/* Sponsorlu içerikler */}
-        <section className="fi-sec" aria-labelledby="spon-h">
-          <div className="fi-sh">
-            <div>
-              <div className="fi-eyebrow" style={{ color: "var(--gold)" }}>Ticari iş birliği</div>
-              <h2 className="fi-h2" id="spon-h">Sponsorlu içerikler</h2>
-              <p className="fi-sub">Bu alandaki içerikler marka iş birliğiyle hazırlanır ve editoryal içeriklerden ayrı etiketlenir.</p>
-            </div>
-            <button className="fi-more" onClick={() => go({ n: "mediakit" })}>Reklam ve iş birlikleri →</button>
-          </div>
-          <div className="fi-grid fi-g3">
-            {ARTICLES.filter((a) => a.sponsored).map((a) => <ArticleCard key={a.id} a={a} go={go} source="sponsored_row" />)}
-            <AdSlot placementId="home_native_01" pageType="home" />
           </div>
         </section>
 
