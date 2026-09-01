@@ -322,6 +322,11 @@ const CSS = `
 .fi-adres-f .fi-btn-o:hover { background:rgba(255,255,255,.08); }
 .fi-adres-s { font:500 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
 .fi-le-ad { border-top:1px solid var(--line); padding:22px 30px; }
+.fi-adimg { display:block; }
+.fi-adimg .fi-ad-lbl { display:block; margin-bottom:7px; }
+.fi-adimg-a { display:block; border-radius:var(--r); overflow:hidden; background:var(--line); }
+.fi-adimg-w { display:block; width:100%; }
+.fi-adimg-w img { width:100%; height:100%; object-fit:cover; display:block; color:transparent; font-size:0; }
 .fi-ad { border:1px dashed var(--line-2); border-radius:var(--r); background:var(--surface); padding:16px; }
 .fi-ad-lbl { font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
 .fi-ad-banner { display:flex; align-items:center; gap:18px; }
@@ -335,6 +340,8 @@ const CSS = `
   .fi-rail-ad-b { display:block; width:160px; min-height:600px; text-align:left; padding:18px 16px;
     background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
   .fi-rail-ad-b:hover { border-color:var(--line-2); }
+  .fi-rail-ad-img { display:block; width:160px; border-radius:var(--r); overflow:hidden; }
+  .fi-rail-ad-img img { width:100%; height:auto; display:block; }
   .fi-rail-ad-lbl { display:block; font:500 9.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
   .fi-rail-ad-t { display:block; font:600 16px/1.35 var(--serif); color:var(--ink); margin:14px 0 0; }
   .fi-rail-ad-s { display:block; font:500 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-top:14px; }
@@ -351,6 +358,8 @@ const CSS = `
   .fi-sticky-ad-b p { font-size:13.5px; line-height:1.35; color:var(--ink); margin:4px 0 0;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .fi-sticky-ad-c { flex:0 0 auto; min-height:40px; padding:0 14px; font-size:13px; }
+  .fi-sticky-ad-img { flex:1 1 auto; display:block; overflow:hidden; }
+  .fi-sticky-ad-img img { width:100%; height:auto; max-height:56px; object-fit:contain; display:block; }
   .fi-sticky-ad-x { flex:0 0 auto; width:32px; height:32px; display:grid; place-items:center;
     background:none; border:0; color:var(--muted); }
   /* Bandın son içerik satırını örtmemesi için */
@@ -717,6 +726,34 @@ function buildMarketLog(market) {
  * placementId → kreatif. Değer null ise AdSlot hiçbir şey render etmez,
  * sayfada yer kaplamaz. Kreatifler ileride ad server / doğrudan satış
  * yönetim panelinden beslenir.
+ */
+/**
+ * Reklam envanteri.
+ *
+ * İKİ KREATİF TİPİ:
+ *
+ * 1) Görsel banner — reklamverenin verdiği hazır görsel:
+ *      home_top_banner: {
+ *        sponsor: "Örnek Banka",
+ *        image: "/img/reklam/ornek-banka-970x250.jpg",
+ *        alt: "Örnek Banka konut kredisi kampanyası",
+ *        href: "https://ornekbanka.com.tr/kampanya",
+ *        ratio: "970 / 250",
+ *      }
+ *
+ * 2) Metin kreatif — görsel yoksa, sitenin tipografisiyle uyumlu:
+ *      { type: "display" | "native" | "tool" | "result", sponsor, title, excerpt, cta }
+ *
+ * `image` alanı varsa görsel öncelikli gösterilir.
+ * Değer null ise bileşen hiçbir şey render etmez, sayfada yer kaplamaz.
+ *
+ * ÖNERİLEN GÖRSEL ÖLÇÜLERİ
+ *   home_top_banner / home_mid_banner ....... 970 × 250
+ *   desktop_sidebar_sticky .................. 300 × 250 veya 300 × 600
+ *   article_inline_01 / _02 / article_end ... 728 × 90 veya 300 × 250
+ *   rail_left / rail_right .................. 160 × 600
+ *   mobile_sticky_footer .................... 320 × 50 (yalnızca metin önerilir)
+ *   home_native_01 / ledger_native .......... metin kreatif önerilir
  */
 const AD_INVENTORY = {
   home_top_banner: null,
@@ -1582,6 +1619,35 @@ function AdSlot({ placementId, pageType, className = "" }) {
     );
   }
 
+  /* Görsel kreatif: reklamverenin verdiği banner. type alanına bakılmaz,
+     image varsa görsel öncelikli render edilir. Boyut oranı creative.ratio
+     ile sabitlenir, böylece yüklenirken sayfa zıplamaz. Görsel yüklenemezse
+     alan tamamen gizlenir — kırık resim gösterilmez. */
+  if (creative.image) {
+    return (
+      <div ref={ref} className={`fi-adimg ${className}`}>
+        <span className="fi-ad-lbl">Reklam{creative.sponsor ? ` · ${creative.sponsor}` : ""}</span>
+        <a
+          href={creative.href || "#"}
+          onClick={click}
+          target={creative.href ? "_blank" : undefined}
+          rel={creative.href ? "noopener sponsored" : undefined}
+          className="fi-adimg-a"
+        >
+          <span className="fi-adimg-w" style={{ aspectRatio: creative.ratio || "970 / 250" }}>
+            <img
+              src={creative.image}
+              alt={creative.alt || `${creative.sponsor || "Reklam"} görseli`}
+              loading="lazy"
+              decoding="async"
+              onError={(e) => { e.currentTarget.closest(".fi-adimg").style.display = "none"; }}
+            />
+          </span>
+        </a>
+      </div>
+    );
+  }
+
   if (creative.type === "result") {
     return (
       <div ref={ref} className={`fi-adres ${className}`}>
@@ -1652,16 +1718,27 @@ function RailAds({ pageType }) {
 
   if (!left && !right) return null;
 
-  const rail = (id, c, side) => c ? (
-    <aside className={`fi-rail-ad fi-rail-ad-${side}`} aria-label="Reklam">
-      <button className="fi-rail-ad-b"
-        onClick={() => track("ad_click", { placement_id: id, sponsor_name: c.sponsor, page_type: pageType })}>
-        <span className="fi-rail-ad-lbl">Reklam</span>
-        <span className="fi-rail-ad-t">{c.title}</span>
-        <span className="fi-rail-ad-s">{c.sponsor}</span>
-      </button>
-    </aside>
-  ) : null;
+  const rail = (id, c, side) => {
+    if (!c) return null;
+    const onClick = () => track("ad_click", { placement_id: id, sponsor_name: c.sponsor, page_type: pageType });
+    return (
+      <aside className={`fi-rail-ad fi-rail-ad-${side}`} aria-label="Reklam">
+        {c.image ? (
+          <a href={c.href || "#"} onClick={onClick} className="fi-rail-ad-img"
+            target={c.href ? "_blank" : undefined} rel={c.href ? "noopener sponsored" : undefined}>
+            <img src={c.image} alt={c.alt || `${c.sponsor} reklamı`} loading="lazy" decoding="async"
+              onError={(e) => { e.currentTarget.closest(".fi-rail-ad").style.display = "none"; }} />
+          </a>
+        ) : (
+          <button className="fi-rail-ad-b" onClick={onClick}>
+            <span className="fi-rail-ad-lbl">Reklam</span>
+            <span className="fi-rail-ad-t">{c.title}</span>
+            <span className="fi-rail-ad-s">{c.sponsor}</span>
+          </button>
+        )}
+      </aside>
+    );
+  };
 
   return <>{rail("rail_left", left, "l")}{rail("rail_right", right, "r")}</>;
 }
@@ -1682,14 +1759,22 @@ function StickyFooterAd({ pageType }) {
   return (
     <div className="fi-sticky-ad" role="complementary" aria-label="Reklam">
       <div className="fi-sticky-ad-in">
+        {creative.image ? (
+          <a href={creative.href || "#"} className="fi-sticky-ad-img"
+            target={creative.href ? "_blank" : undefined} rel={creative.href ? "noopener sponsored" : undefined}
+            onClick={() => track("ad_click", { placement_id: "mobile_sticky_footer", sponsor_name: creative.sponsor, page_type: pageType })}>
+            <img src={creative.image} alt={creative.alt || `${creative.sponsor} reklamı`} loading="lazy" decoding="async" />
+          </a>
+        ) : (
         <div className="fi-sticky-ad-b">
           <span className="fi-sticky-ad-l">Reklam · {creative.sponsor}</span>
           <p>{creative.title}</p>
         </div>
-        <button className="fi-btn fi-btn-p fi-sticky-ad-c"
+        )}
+        {!creative.image && <button className="fi-btn fi-btn-p fi-sticky-ad-c"
           onClick={() => track("ad_click", { placement_id: "mobile_sticky_footer", sponsor_name: creative.sponsor, page_type: pageType })}>
           {creative.cta || "İncele"}
-        </button>
+        </button>}
         <button className="fi-sticky-ad-x" onClick={() => setClosed(true)} aria-label="Reklamı kapat">
           <svg width="16" height="16" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.9" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" /></svg>
         </button>
