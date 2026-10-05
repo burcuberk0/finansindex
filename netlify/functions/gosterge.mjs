@@ -36,7 +36,14 @@ const POLITIKA_FAIZI = {
 };
 
 /* ------------------------------------------------------------ EVDS AYARI */
-const EVDS_BASE = "https://evds2.tcmb.gov.tr/service/evds";
+/* EVDS'nin iki ayrı sürümü yayında. Kayıt evds3 üzerinden yapılıyor ancak
+   servis ucu sürüme göre değişebiliyor. Sırayla denenir; ilki JSON
+   döndürdüğünde durulur. HTML dönen uç (giriş sayfası, hata sayfası)
+   başarısız sayılır. */
+const EVDS_BASES = [
+  "https://evds3.tcmb.gov.tr/service/evds",
+  "https://evds2.tcmb.gov.tr/service/evds",
+];
 
 /* TÜFE genel endeksi. 2025=100 bazına geçişte kod değişebilir;
    debug modundan dönen resmî etiketle teyit edin. */
@@ -53,29 +60,60 @@ const ddmmyyyy = (d) => {
   return `${p(d.getDate())}-${p(d.getMonth() + 1)}-${d.getFullYear()}`;
 };
 
-async function fetchTufe(key) {
+/* EVDS bazen anahtarı header'da, bazen sorgu parametresinde bekler.
+   Her iki yöntem de denenir. */
+function buildUrls(key) {
   const end = new Date();
   const start = new Date(end.getFullYear() - 3, end.getMonth(), 1);
-  const params = new URLSearchParams({
-    series: TUFE_SERI,
-    startDate: ddmmyyyy(start),
-    endDate: ddmmyyyy(end),
-    type: "json",
-    frequency: "5",            // aylık
-  });
-  const res = await fetch(`${EVDS_BASE}/${params.toString()}`, {
-    headers: { key, Accept: "application/json" },
-  });
-  if (!res.ok) throw new Error(`EVDS ${res.status}`);
-  const data = await res.json();
-  const items = Array.isArray(data.items) ? data.items : [];
-  const field = TUFE_SERI.replace(/\./g, "_");
+  const q = [
+    `series=${TUFE_SERI}`,
+    `startDate=${ddmmyyyy(start)}`,
+    `endDate=${ddmmyyyy(end)}`,
+    "type=json",
+    "frequency=5",
+  ].join("&");
 
-  const seri = items
-    .map((it) => ({ tarih: it.Tarih, v: num(it[field]) }))
-    .filter((x) => x.v != null);
+  const out = [];
+  for (const base of EVDS_BASES) {
+    out.push({ url: `${base}/${q}`, mode: "header", base });
+    out.push({ url: `${base}/${q}&key=${encodeURIComponent(key)}`, mode: "query", base });
+  }
+  return out;
+}
 
-  return { seri, raw: data };
+async function fetchTufe(key) {
+  const attempts = [];
+  for (const { url, mode, base } of buildUrls(key)) {
+    try {
+      const headers = { Accept: "application/json", "User-Agent": "FinansIndexBot/1.0" };
+      if (mode === "header") headers.key = key;
+      const res = await fetch(url, { headers });
+      const text = await res.text();
+      const looksHtml = /^\s*<(!doctype|html)/i.test(text);
+
+      attempts.push({ base, mode, status: res.status, html: looksHtml, ilk120: text.slice(0, 120) });
+
+      if (!res.ok || looksHtml) continue;
+
+      const data = JSON.parse(text);
+      const items = Array.isArray(data.items) ? data.items : [];
+      const field = TUFE_SERI.replace(/\./g, "_");
+      const seri = items
+        .map((it) => ({ tarih: it.Tarih, v: num(it[field]) }))
+        .filter((x) => x.v != null);
+
+      if (!seri.length) {
+        attempts[attempts.length - 1].not = "JSON geldi ama seri boş — seri kodu yanlış olabilir";
+        continue;
+      }
+      return { seri, raw: data, attempts, kullanilan: { base, mode } };
+    } catch (e) {
+      attempts.push({ base, mode, hata: String(e.message || e) });
+    }
+  }
+  const err = new Error("EVDS'den geçerli JSON alınamadı");
+  err.attempts = attempts;
+  throw err;
 }
 
 /**
@@ -133,15 +171,25 @@ export default async (req) => {
 
   if (!key) {
     out.errors.evds = "EVDS_API_KEY tanımlı değil";
+    if (debug) {
+      return new Response(JSON.stringify({
+        anahtarVar: false,
+        ipucu: "Netlify → Project configuration → Environment variables → EVDS_API_KEY ekleyin, sonra yeniden derleyin. Değişken eklemek tek başına yeni derleme tetiklemez.",
+      }, null, 2), { headers: { ...headers, "Cache-Control": "no-store" } });
+    }
     return new Response(JSON.stringify(out), { headers });
   }
 
   try {
-    const { seri, raw } = await fetchTufe(key);
+    const { seri, raw, attempts, kullanilan } = await fetchTufe(key);
     if (debug) {
       return new Response(JSON.stringify({
+        anahtarVar: true,
+        anahtarUzunluk: key.length,
+        kullanilan,
+        denemeler: attempts,
         seriKodu: TUFE_SERI,
-        resmiEtiket: raw.items && raw.items.length ? Object.keys(raw.items[0]) : null,
+        donenAlanlar: raw.items && raw.items.length ? Object.keys(raw.items[0]) : null,
         gozlemSayisi: seri.length,
         ilkUcGozlem: seri.slice(0, 3),
         sonUcGozlem: seri.slice(-3),
@@ -153,6 +201,15 @@ export default async (req) => {
     out.kiraArtisi = kiraArtisOrani(seri);
   } catch (e) {
     out.errors.evds = String(e.message || e);
+    if (debug) {
+      return new Response(JSON.stringify({
+        anahtarVar: true,
+        anahtarUzunluk: key.length,
+        hata: String(e.message || e),
+        denemeler: e.attempts || null,
+        ipucu: "HTML dönen uçlar giriş/hata sayfasıdır. Tüm uçlar HTML dönüyorsa anahtar geçersiz veya hesap onaysız olabilir.",
+      }, null, 2), { headers: { ...headers, "Cache-Control": "no-store" } });
+    }
   }
 
   return new Response(JSON.stringify(out), { headers });
