@@ -495,6 +495,8 @@ const CSS = `
 .fi-av { width:42px; height:42px; border-radius:50%; background:var(--green-soft); color:var(--green); display:grid; place-items:center; font:600 14px var(--sans); flex:0 0 auto; }
 .fi-byline-n { font-weight:600; font-size:14.5px; color:var(--navy); }
 .fi-byline-r { font-size:12.5px; color:var(--muted); }
+.fi-byline-l { background:none; border:0; padding:4px 0 0; font:600 12px/1.4 var(--mono); color:var(--petrol); text-align:left; }
+.fi-byline-l:hover { text-decoration:underline; }
 .fi-share { margin-left:auto; display:flex; gap:7px; }
 .fi-share button { width:38px; height:38px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); display:grid; place-items:center; color:var(--ink-2); }
 .fi-share button:hover { border-color:var(--navy); color:var(--navy); }
@@ -1002,13 +1004,13 @@ function buildDailyMarketArticle(market) {
       `gümüş fiyatları. Rakamların gündelik bütçeye etkisiyle birlikte.`,
     category: "gundem",
     contentType: "Veri",
-    author: "burcu-berk-arslan",
+    author: "finansindex",
     published_at: now.toISOString(),
     updated_at: now.toISOString(),
     read: 3,
     risk_level: "dusuk",
     review_status: "yayimlandi",
-    reviewed_by: "burcu-berk-arslan",
+    reviewed_by: "finansindex",
     sponsored: false,
     disclaimer: "general",
     related_tool: "enflasyon",
@@ -1378,11 +1380,15 @@ const CATEGORIES = [
 ];
 const catName = (s) => CATEGORIES.find((c) => c.slug === s)?.name || s;
 
+/* İmza kurumsal. Yazarın adı makale sayfasında değil, künye sayfasında
+   yer alır. Bu, Reuters ve AP gibi yayınların kullandığı yapıdır; ancak
+   finans içeriğinde arama motorları yazar kimliğini önemsediği için
+   künyede sorumlu kişinin bulunması gerekir. */
 const AUTHORS = {
-  "burcu-berk-arslan": {
-    name: "Burcu Berk Arslan",
-    role: "Kurucu ve editör",
-    bio: "FinansIndex'in kurucusu. İçerikleri resmî kaynaklarla karşılaştırarak doğruluyor ve yayına alıyor. Finansal danışmanlık yetkisi bulunmuyor.",
+  "finansindex": {
+    name: "FinansIndex Editöryal",
+    role: "Yayın kurulu",
+    bio: "İçerikler resmî kaynaklarla karşılaştırılarak doğrulanır ve editör onayıyla yayına alınır. FinansIndex finansal danışmanlık yetkisine sahip değildir.",
   },
 };
 
@@ -1404,9 +1410,9 @@ const ARTICLES = [
     id: "a1", slug: "politika-faizi-mevduat-getirisi-iliskisi",
     title: "Politika faizi değiştiğinde mevduat getiriniz neden hemen değişmez?",
     summary: "Merkez Bankası'nın faiz kararı ile hesabınıza yansıyan mevduat faizi arasında birkaç aşamalı bir aktarım mekanizması var. Bu yazıda o mekanizmayı ve vade planlamanıza etkisini adım adım anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Analiz", author: "burcu-berk-arslan",
+    category: "ekonomiyi-anla", contentType: "Analiz", author: "finansindex",
     published_at: "2026-08-06T09:15:00+03:00", updated_at: "2026-08-06T14:40:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "invest", related_tool: "mevduat",
     featured_image: { src: "/img/faiz-mevduat.jpg", alt: "Bir bankanın vadeli mevduat ekranında görünen faiz oranı tablosu", credit: "Görsel: Unsplash" },
     tags: ["faiz", "mevduat", "para politikası"],
@@ -1447,9 +1453,9 @@ const ARTICLES = [
     id: "a2", slug: "kredi-karti-asgari-odeme-nasil-hesaplanir",
     title: "Kredi kartı asgari ödeme tutarı nasıl hesaplanır ve neden bir çözüm değildir?",
     summary: "Asgari ödeme, borcu kapatmanın değil ertelemenin yoludur. Hesaplama mantığını, kalan borca işleyen faizin nasıl büyüdüğünü ve çıkış planını örnek bir hesaplama üzerinden gösteriyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-05T08:00:00+03:00", updated_at: "2026-08-05T08:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "general", related_tool: "asgari",
     featured_image: { src: "/img/kredi-karti.jpg", alt: "Masada duran kredi kartı ve hesap ekstresi", credit: "Görsel: Unsplash" },
     tags: ["kredi kartı", "borç", "bütçe"],
@@ -1497,9 +1503,9 @@ const ARTICLES = [
     id: "a3", slug: "borc-kapatma-hangi-krediden-baslanmali",
     title: "Birden fazla borcunuz varsa hangisinden başlamalısınız?",
     summary: "Çığ yöntemi mi, kartopu yöntemi mi? İkisinin matematiğini ve davranışsal farkını karşılaştırıyor, kendi durumunuza uygun olanı seçmeniz için basit bir karar çerçevesi sunuyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-04T10:30:00+03:00", updated_at: "2026-08-04T10:30:00+03:00",
-    read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
     featured_image: { src: "/img/borc-kapatma.jpg", alt: "Üzerinde ödeme planı yazılı not defteri ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["borç", "kredi", "bütçe"],
@@ -1536,9 +1542,9 @@ const ARTICLES = [
     id: "a4", slug: "enflasyon-birikim-satin-alma-gucu",
     title: "Enflasyon birikimlerinizin satın alma gücünü nasıl aşındırır?",
     summary: "Nominal getiri ile reel getiri arasındaki fark, birikim kararlarının en çok gözden kaçan kısmı. Bu farkı hesaplamanın yolunu ve bütçeye yansımasını anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "ekonomiyi-anla", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-03T11:00:00+03:00", updated_at: "2026-08-03T11:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     featured_image: { src: "/img/enflasyon-birikim.jpg", alt: "Türk lirası banknotlar ve bozuk paralar", credit: "Görsel: Unsplash" },
     tags: ["enflasyon", "birikim", "reel getiri"],
@@ -1583,9 +1589,9 @@ const ARTICLES = [
     id: "a5", slug: "kira-artis-orani-nasil-hesaplanir",
     title: "Kira artış oranı nasıl hesaplanır? Kiracı ve ev sahibi için sade rehber",
     summary: "Yasal üst sınır, hangi endeksin kullanıldığı, hesaplamanın hangi tarihe göre yapıldığı ve anlaşmazlık durumunda izlenecek yol.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-02T09:00:00+03:00", updated_at: "2026-08-02T09:00:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "legal", related_tool: "kira",
     featured_image: { src: "/img/kira-artis.jpg", alt: "Bir apartman dairesinin salonu ve kira sözleşmesi", credit: "Görsel: Unsplash" },
     tags: ["kira", "enflasyon", "konut"],
@@ -1622,9 +1628,9 @@ const ARTICLES = [
     id: "a6", slug: "yatirim-fonu-baslangic-rehberi",
     title: "Yeni başlayanlar için yatırım fonu: ne olduğu, nasıl fiyatlandığı ve nelere bakılacağı",
     summary: "Fon nedir, pay fiyatı nasıl oluşur, toplam gider oranı neden önemlidir? Ürün önerisi yapmadan, karar vermeden önce bakılması gereken başlıkları listeliyoruz.",
-    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "yatirim", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-01T12:00:00+03:00", updated_at: "2026-08-01T12:00:00+03:00",
-    read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     featured_image: { src: "/img/yatirim-fonu.jpg", alt: "Bilgisayar ekranında görünen yatırım fonu performans grafiği", credit: "Görsel: Unsplash" },
     tags: ["fon", "yatırım", "portföy"],
@@ -1661,9 +1667,9 @@ const ARTICLES = [
     id: "a7", slug: "bes-devlet-katkisi-nasil-calisir",
     title: "BES devlet katkısı nasıl çalışır? Hak kazanma süreleri ve çıkış senaryoları",
     summary: "Katkı payı, devlet katkısı oranı, kademeli hak kazanma takvimi ve sistemden erken ayrılmanın maliyeti. Emeklilik planı kurmadan önce bilinmesi gerekenler.",
-    category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "finansindex",
     published_at: "2026-07-31T09:45:00+03:00", updated_at: "2026-07-31T09:45:00+03:00",
-    read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "general", related_tool: "mevduat",
     featured_image: { src: "/img/bes-emeklilik.jpg", alt: "Emeklilik planı üzerine çalışan bir kişinin elleri ve belgeler", credit: "Görsel: Unsplash" },
     tags: ["BES", "emeklilik", "devlet katkısı"],
@@ -1698,9 +1704,9 @@ const ARTICLES = [
     id: "a8", slug: "altin-alirken-makas-araligi",
     title: "Altın alırken makas aralığı neden getirinizden önce gelir?",
     summary: "Alış ve satış fiyatı arasındaki fark, kısa vadeli altın işlemlerinde en görünmez maliyet kalemi. Makasın nasıl oluştuğunu ve ürün türüne göre nasıl değiştiğini anlatıyoruz.",
-    category: "yatirim", contentType: "Analiz", author: "burcu-berk-arslan",
+    category: "yatirim", contentType: "Analiz", author: "finansindex",
     published_at: "2026-07-30T13:20:00+03:00", updated_at: "2026-07-30T13:20:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     featured_image: { src: "/img/altin-makas.jpg", alt: "Üst üste dizilmiş külçe altınlar", credit: "Görsel: Unsplash" },
     tags: ["altın", "maliyet", "yatırım"],
@@ -1735,9 +1741,9 @@ const ARTICLES = [
     id: "a9", slug: "kobi-nakit-akisi-yonetimi",
     title: "KOBİ'ler için nakit akışı yönetimi: kârlı görünüp neden nakit sıkışıklığı yaşanır?",
     summary: "Kâr tablosu ile banka hesabı arasındaki fark, tahsilat ve ödeme vadelerinin uyumsuzluğundan doğar. Nakit döngüsünü ölçmenin ve kısaltmanın yolları.",
-    category: "is-ve-girisim", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "is-ve-girisim", contentType: "Rehber", author: "finansindex",
     published_at: "2026-07-29T08:30:00+03:00", updated_at: "2026-07-29T08:30:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
     featured_image: { src: "/img/kobi-nakit.jpg", alt: "Küçük bir işletmenin tezgâhında duran defter ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["KOBİ", "nakit akışı", "finansman"],
@@ -1773,9 +1779,9 @@ const ARTICLES = [
     id: "a11", slug: "tasarruf-finansmani-nasil-calisir",
     title: "Tasarruf finansmanı nasıl çalışır? Sözleşme imzalamadan önce bilmeniz gerekenler",
     summary: "Faizsiz konut ve taşıt finansmanı modeli BDDK denetiminde. Sistemin işleyişini, organizasyon ücretinin toplam maliyete etkisini ve sözleşme öncesi sorulması gereken soruları anlatıyoruz.",
-    category: "kredi-ve-mevduat", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "kredi-ve-mevduat", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-16T10:00:00+03:00", updated_at: "2026-08-16T10:00:00+03:00",
-    read: 9, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 9, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "legal", related_tool: "karsilastir",
     featured_image: { src: "/img/tasarruf-finansmani.jpg", alt: "İmzalanmak üzere masada duran finansman sözleşmesi", credit: "Görsel: Unsplash" },
     tags: ["tasarruf finansmanı", "konut", "taşıt", "BDDK"],
@@ -1847,9 +1853,9 @@ const ARTICLES = [
     id: "a12", slug: "kredi-faizi-nasil-okunur-toplam-maliyet",
     title: "Kredi teklifini doğru okumak: aylık faiz oranı size toplam maliyeti söylemez",
     summary: "İki bankanın aynı faiz oranı, farklı toplam geri ödeme anlamına gelebilir. Vade, vergiler ve masrafların hesabı nasıl değiştirdiğini rakamlarla gösteriyoruz.",
-    category: "kredi-ve-mevduat", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "kredi-ve-mevduat", contentType: "Rehber", author: "finansindex",
     published_at: "2026-08-15T09:30:00+03:00", updated_at: "2026-08-15T09:30:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "general", related_tool: "kredi",
     featured_image: { src: "/img/kredi-faizi.jpg", alt: "Kredi ödeme planı çıktısı ve hesap makinesi", credit: "Görsel: Unsplash" },
     tags: ["kredi", "faiz", "maliyet"],
@@ -1911,9 +1917,9 @@ const ARTICLES = [
     id: "a13", slug: "fon-tasfiyesi-yatirimci-ne-yapmali",
     title: "Fon tasfiyesi sürecinde yatırımcı ne yapmalı? Adım adım kontrol listesi",
     summary: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecine girdi. Tasfiye, işleme kapatma ve temerrüt üç ayrı durum; hangisinde olduğunuzu bilmek hakkınızı belirliyor. Süreci ve kontrol etmeniz gerekenleri anlatıyoruz.",
-    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "yatirim", contentType: "Rehber", author: "finansindex",
     published_at: "2026-10-05T09:00:00+03:00", updated_at: "2026-10-05T09:00:00+03:00",
-    read: 11, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 11, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "legal", related_tool: "enflasyon",
     tags: ["fon", "SPK", "tasfiye", "yatırım", "TEFAS"],
     source_name: "SPK / KAP",
@@ -2016,9 +2022,9 @@ const ARTICLES = [
     id: "a14", slug: "borsa-manipulasyonu-nasil-korunulur",
     title: "Borsada manipülasyon nasıl işler ve yatırımcı kendini nasıl korur?",
     summary: "Fiili dolaşım oranı düşük hisselerde fiyat nasıl şişer, çıkış neden tıkanır? Mekanizmayı ve kendi portföyünüzde kontrol edebileceğiniz somut başlıkları anlatıyoruz. Ürün önerisi içermez.",
-    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
+    category: "yatirim", contentType: "Rehber", author: "finansindex",
     published_at: "2026-10-05T11:00:00+03:00", updated_at: "2026-10-05T11:00:00+03:00",
-    read: 10, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 10, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
     tags: ["borsa", "manipülasyon", "risk", "portföy", "likidite"],
     source_name: "SPK / Borsa İstanbul",
@@ -2106,9 +2112,9 @@ const ARTICLES = [
     id: "a10", slug: "sponsorlu-dijital-bankacilik-alaskanliklari",
     title: "Dijital bankacılık alışkanlıkları: işlemlerin çevrim içine taşınması bütçeyi nasıl değiştiriyor?",
     summary: "Şube işlemlerinin dijitale kayması, masraf yapısından bildirim alışkanlıklarına kadar birçok kalemi etkiliyor. Bu içerik Örnek Banka iş birliğiyle hazırlanmıştır.",
-    category: "kredi-ve-mevduat", contentType: "Sponsorlu", author: "burcu-berk-arslan",
+    category: "kredi-ve-mevduat", contentType: "Sponsorlu", author: "finansindex",
     published_at: "2026-07-28T10:00:00+03:00", updated_at: "2026-07-28T10:00:00+03:00",
-    read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
     sponsored: true, sponsor_name: "Örnek Banka", disclaimer: "general", related_tool: "asgari",
     featured_image: { src: "/img/dijital-bankacilik.jpg", alt: "Mobil bankacılık uygulaması açık bir telefon", credit: "Görsel: Unsplash" },
     tags: ["dijital bankacılık", "masraf"],
@@ -3448,8 +3454,11 @@ const STATIC_PAGES = {
     title: "Künye",
     lead: "Yayın sorumlulukları ve iletişim bilgileri.",
     body: [
-      ["Yayın kurulu", "Genel yayın yönetmeni, sorumlu yazı işleri müdürü ve editör kadrosu bu alanda tam adlarıyla listelenir. Ticari unvan, adres, ticaret sicil numarası ve KEP adresi yayına geçiş öncesi eklenecektir."],
-      ["İletişim", "Editoryal konular, düzeltme talepleri ve iş birliği başvuruları için ayrı e-posta adresleri kullanılır."],
+      ["Neden kurumsal imza kullanıyoruz?", "FinansIndex içerikleri tek bir editörün imzasıyla değil, yayın adıyla yayımlanır. Bunun nedeni içeriklerin bireysel görüş değil, kurumsal editoryal süreçten geçmiş metinler olmasıdır. Sorumluluk ise kişiseldir: aşağıda adı geçen sorumlu kişi, yayımlanan her içeriğin doğruluk kontrolünden ve yayın kararından sorumludur."],
+      ["Sorumlu kişi", "Yayın sahibi ve sorumlu editörün adı, ticari unvan, adres, ticaret sicil numarası ve KEP adresi bu alanda yer alır. [Bu bölümü kendi bilgilerinizle doldurun — yasal olarak gereklidir.]"],
+      ["Editoryal sorumluluk", "Yayımlanan her içeriğin kaynak doğrulaması, oran ve tarih kontrolü sorumlu editör tarafından yapılır. Yapay zekâ desteğiyle hazırlanan taslaklar da aynı kontrolden geçer; editör onayı olmadan hiçbir içerik yayına alınmaz."],
+      ["Uzmanlık sınırı", "FinansIndex bir yayın platformudur; yatırım danışmanlığı, hukuki danışmanlık veya mali müşavirlik yetkisine sahip değildir."],
+      ["İletişim", "Editoryal konular, düzeltme talepleri ve iş birliği başvuruları için ayrı e-posta adresleri kullanılır. Düzeltme talepleri en geç iki iş günü içinde değerlendirilir."],
     ],
   },
   "editoryal-ilkeler": {
@@ -3459,6 +3468,7 @@ const STATIC_PAGES = {
       ["Kaynak kullanımı", "Sayısal veriler yalnızca birincil kaynaklardan alınır: TCMB, TÜİK, KAP, BDDK, SPK, Resmî Gazete, Hazine ve Maliye Bakanlığı, bankaların resmî sayfaları ve lisanslı veri sağlayıcıları. İkincil kaynaklardan alınan bilgi, birincil kaynakla teyit edilmeden yayımlanmaz."],
       ["Doğrulama", "Her içerikte kullanılan oran, tarih ve tutarlar kaynak belgeyle karşılaştırılır. Editör onayı olmayan içerik yayımlanmaz."],
       ["Yapay zekâ kullanımı", "FinansIndex içeriklerinin taslakları yapay zekâ desteğiyle hazırlanır ve bu durum her içeriğin altında açıkça belirtilir. Yapay zekâya girdi olarak yalnızca resmî kurumların yayımladığı ham belgeler verilir; başka yayınların içerikleri girdi olarak kullanılmaz, yeniden yazılarak yayımlanmaz. Taslaktaki her oran, tarih ve tutar kaynak belgeyle karşılaştırılarak doğrulanır. Hiçbir içerik bu doğrulama ve editör onayı tamamlanmadan yayına alınmaz."],
+      ["İmza politikası", "İçerikler tek bir editörün adıyla değil, yayın adıyla imzalanır. Bunun nedeni metinlerin bireysel görüş değil, kurumsal editoryal süreçten geçmiş içerikler olmasıdır. Sorumluluk kişiseldir ve sorumlu editörün bilgileri künye sayfasında yer alır."],
       ["Uzmanlık sınırımız", "FinansIndex bir yayın platformudur; yatırım danışmanlığı, hukuki danışmanlık veya mali müşavirlik hizmeti vermez ve bu alanlarda yetkilendirilmiş değildir. Editoryal işlevimiz, resmî kaynaklardaki bilgiyi doğrulayarak ve sadeleştirerek aktarmaktır. Kişisel finansal kararlarınız için yetkili kurum ve danışmanlara başvurmanızı öneririz."],
       ["Tavsiye sınırı", "Kişiye özel yatırım, hukuk veya vergi tavsiyesi vermeyiz. Gerekli içeriklerde uyarı metni gösterilir."],
     ],
@@ -3890,7 +3900,9 @@ function Article({ slug, go, daily }) {
       "@context": "https://schema.org", "@type": "Article",
       headline: a.title, description: a.summary,
       datePublished: a.published_at, dateModified: a.updated_at,
-      author: { "@type": "Person", name: AUTHORS[a.author].name, jobTitle: AUTHORS[a.author].role },
+      /* Kurumsal imza kullanıldığı için yazar Organization olarak işaretlenir.
+         Person yazıp kurum adı vermek, yapılandırılmış veride tutarsızlık olur. */
+      author: { "@type": "Organization", name: SITE.name, url: SITE.url },
       publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
       articleSection: catName(a.category), keywords: a.tags.join(", "),
       isAccessibleForFree: true,
@@ -3956,11 +3968,14 @@ function Article({ slug, go, daily }) {
             <p className="fi-spot">{a.summary}</p>
 
             <div className="fi-byline">
-              <div className="fi-av" aria-hidden="true">{initials(author.name)}</div>
+              <div className="fi-av" aria-hidden="true">FI</div>
               <div>
                 <div className="fi-byline-n">{author.name}</div>
                 <div className="fi-byline-r">{author.role}</div>
-                {author.bio && <div className="fi-byline-r" style={{ maxWidth: "40ch", marginTop: 2 }}>{author.bio}</div>}
+                {author.bio && <div className="fi-byline-r" style={{ maxWidth: "44ch", marginTop: 3 }}>{author.bio}</div>}
+                <button className="fi-byline-l" onClick={() => go({ n: "static", slug: "kunye" })}>
+                  Yayın sorumlusu ve künye →
+                </button>
               </div>
               <div style={{ borderLeft: "1px solid var(--line)", paddingLeft: 14, marginLeft: 4 }}>
                 <div className="fi-byline-r">Yayın: {dateTR(a.published_at)}</div>
