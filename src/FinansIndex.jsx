@@ -183,6 +183,7 @@ const CSS = `
    Capital'ın yoğun üst bölümüyle aynı mantık, ancak sağ sütun
    başka yayından çekilmiş haberle değil, kendi verimizle dolar. */
 .fi-topgrid { display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:32px; padding:26px 0 40px; align-items:start; }
+.fi-topgrid-side > * { flex:0 0 auto; }
 .fi-topgrid-side { display:flex; flex-direction:column; gap:20px; position:sticky; top:150px; }
 .fi-topgrid .fi-lead { padding-bottom:0; border-bottom:0; grid-template-columns:1.5fr 1fr; }
 .fi-topgrid .fi-lead-main { padding:0 28px 0 0; }
@@ -263,6 +264,20 @@ const CSS = `
 .fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
 
 /* --- son güncellemeler paneli --- */
+.fi-qt { background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); border-radius:2px; overflow:hidden; }
+.fi-qt-hd { display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line); }
+.fi-qt-hd h2 { font:600 12px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--ink); margin:0; }
+.fi-qt-hd .fi-count { margin-left:auto; }
+.fi-qt-list { list-style:none; margin:0; padding:0; }
+.fi-qt-list li { border-bottom:1px solid var(--line); }
+.fi-qt-list li:last-child { border-bottom:0; }
+.fi-qt-list button { display:flex; align-items:center; gap:10px; width:100%; background:none; border:0;
+  padding:13px 18px; text-align:left; min-height:48px; color:var(--ink-2); }
+.fi-qt-list button:hover { background:var(--bg); color:var(--petrol); }
+.fi-qt-list button svg { margin-left:auto; opacity:.45; flex:0 0 auto; }
+.fi-qt-list button:hover svg { opacity:1; }
+.fi-qt-n { font-size:14.5px; font-weight:500; }
+.fi-qt-f { font:400 11.5px/1.5 var(--mono); color:var(--muted); margin:0; padding:12px 18px; background:var(--bg); border-top:1px solid var(--line); }
 .fi-log-panel { background:var(--surface); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-log-hd { display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line); background:var(--ink); }
 .fi-log-hd h2 { font:600 13px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#fff; margin:0; }
@@ -3153,6 +3168,34 @@ function MarketTicker({ market }) {
  * Capital'daki zaman damgalı akışın karşılığı, ancak içerik başka yayından
  * çekilmiyor: kendi piyasa verimizden üretiliyor.
  */
+/**
+ * Sağ sütun için kompakt araç kısayolu.
+ * Üst ızgarada sağ sütun sol sütundan kısa kaldığında oluşan boşluğu
+ * doldurur ve okuru en yüksek niyetli yere — hesaplayıcıya — götürür.
+ */
+function QuickTools({ go }) {
+  const list = TOOLS.filter((t) => t.ready).slice(0, 5);
+  return (
+    <div className="fi-qt">
+      <div className="fi-qt-hd">
+        <h2>Hızlı hesapla</h2>
+        <span className="fi-count">{list.length}</span>
+      </div>
+      <ul className="fi-qt-list">
+        {list.map((t) => (
+          <li key={t.id}>
+            <button onClick={() => { track("calculator_start", { calculator_type: t.id, page_type: "home", traffic_source: "quick_tools" }); go({ n: "tools", tool: t.id }); }}>
+              <span className="fi-qt-n">{t.short}</span>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className="fi-qt-f">Girdiğiniz veriler sunucularımıza gönderilmez.</p>
+    </div>
+  );
+}
+
 function MarketLog({ market, go }) {
   const rows = useMemo(() => buildMarketLog(market), [market]);
   if (!rows.length) return null;
@@ -3677,6 +3720,7 @@ function Home({ go, market, daily }) {
           </div>
           <aside className="fi-topgrid-side">
             <MarketLog market={market} go={go} />
+            <QuickTools go={go} />
             <AdSlot placementId="desktop_sidebar_sticky" pageType="home" />
           </aside>
         </div>
