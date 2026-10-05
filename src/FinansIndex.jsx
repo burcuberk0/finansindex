@@ -252,6 +252,14 @@ const CSS = `
 .fi-mkt-d.up { color:var(--up); } .fi-mkt-d.down { color:var(--down); }
 .fi-mkt-d span[aria-hidden] { font-size:9px; }
 .fi-mkt-s { font:400 11.5px/1.4 var(--mono); color:var(--muted); margin-top:auto; padding-top:10px; }
+.fi-gos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-top:2px solid var(--ink); border-radius:2px; overflow:hidden; }
+.fi-gos { background:var(--surface); padding:22px 20px; display:flex; flex-direction:column; }
+.fi-gos-k { font:600 11px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+.fi-gos-v { font:600 38px/1 var(--mono); letter-spacing:-.035em; color:var(--petrol); font-variant-numeric:tabular-nums; }
+.fi-gos-s { font-size:13.5px; line-height:1.45; color:var(--ink-2); margin-top:11px; }
+.fi-gos-n { font:500 11.5px/1.4 var(--mono); color:var(--muted); margin-top:7px; }
+.fi-gos-b { margin-top:auto; padding-top:16px; background:none; border:0; text-align:left; font-size:13.5px; font-weight:600; color:var(--petrol); min-height:40px; }
+.fi-gos-b:hover { text-decoration:underline; }
 .fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
 
 /* --- son güncellemeler paneli --- */
@@ -767,6 +775,105 @@ function useMarket() {
   }, [load]);
 
   return state;
+}
+
+/* ------------------------------------------------- RESMÎ GÖSTERGELER --- */
+
+/**
+ * TÜFE, kira artış oranı ve politika faizi.
+ *
+ * Kira artış oranı EVDS'deki TÜFE endeksinden hesaplanır; hazır oran
+ * serisine güvenilmez. Politika faizi elle güncellenir, çünkü EVDS'de
+ * yaygın paylaşılan kod aslında fonlama maliyetini verir.
+ */
+const GOSTERGE_SOURCE = {
+  endpoint: "/api/gosterge",
+  async fetch() {
+    const res = await window.fetch(this.endpoint, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error("Gösterge verisi alınamadı");
+    return res.json();
+  },
+};
+
+function useGostergeler() {
+  const [state, setState] = useState({ status: "loading", data: null });
+  useEffect(() => {
+    let alive = true;
+    GOSTERGE_SOURCE.fetch()
+      .then((d) => alive && setState({ status: "ready", data: d }))
+      .catch(() => alive && setState({ status: "error", data: null }));
+    return () => { alive = false; };
+  }, []);
+  return state;
+}
+
+/**
+ * Resmî gösterge paneli.
+ * Her gösterge kendi dönemini ve kaynağını taşır; veri yoksa o kart
+ * gösterilmez. Eksik gösterge için tahmin üretilmez.
+ */
+function GostergePanel({ go }) {
+  const { status, data } = useGostergeler();
+  if (status !== "ready" || !data) return null;
+
+  const cards = [];
+  if (data.enflasyon) {
+    cards.push({
+      k: "Yıllık enflasyon",
+      v: `%${num(data.enflasyon.oran, 2)}`,
+      sub: `TÜFE · ${data.enflasyon.donem}`,
+      note: "TÜİK verisinden hesaplandı",
+    });
+  }
+  if (data.kiraArtisi) {
+    cards.push({
+      k: "Kira artış oranı",
+      v: `%${num(data.kiraArtisi.oran, 2)}`,
+      sub: `12 aylık ortalama TÜFE · ${data.kiraArtisi.donem}`,
+      note: "Konut kiralarında yasal üst sınır",
+      tool: "kira",
+    });
+  }
+  if (data.politikaFaizi && data.politikaFaizi.deger != null) {
+    cards.push({
+      k: "Politika faizi",
+      v: `%${num(data.politikaFaizi.deger, 2)}`,
+      sub: data.politikaFaizi.aciklama,
+      note: `TCMB · ${data.politikaFaizi.tarih}`,
+    });
+  }
+  if (!cards.length) return null;
+
+  return (
+    <section className="fi-sec" aria-labelledby="gosterge-h">
+      <div className="fi-sh">
+        <div>
+          <div className="fi-eyebrow">Resmî göstergeler</div>
+          <h2 className="fi-h2" id="gosterge-h">Enflasyon, kira ve faiz<span className="fi-count">{cards.length}</span></h2>
+        </div>
+      </div>
+      <div className="fi-gos-grid">
+        {cards.map((c) => (
+          <div className="fi-gos" key={c.k}>
+            <div className="fi-gos-k">{c.k}</div>
+            <div className="fi-gos-v">{c.v}</div>
+            <div className="fi-gos-s">{c.sub}</div>
+            <div className="fi-gos-n">{c.note}</div>
+            {c.tool && (
+              <button className="fi-gos-b" onClick={() => go({ n: "tools", tool: c.tool })}>
+                Kendi kiranı hesapla →
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="fi-mkt-note">
+        Enflasyon ve kira artış oranı, TCMB EVDS üzerinden alınan TÜİK tüketici fiyat endeksinden
+        hesaplanmaktadır. Kira artışında konut kiraları için on iki aylık ortalama TÜFE değişimi esas alınır.
+        Politika faizi TCMB Para Politikası Kurulu kararlarına dayanır.
+      </p>
+    </section>
+  );
 }
 
 /* --------------------------------------- OTOMATİK GÜNLÜK İÇERİK ÜRETİCİ --- */
@@ -3618,6 +3725,8 @@ function Home({ go, market, daily }) {
           </div>
           <MarketPanel market={market} />
         </section>
+
+        <GostergePanel go={go} />
 
         {/* HESAPLAYICILAR — sayfanın üst sırasında, çalışır hâlde */}
         <section className="fi-sec" aria-labelledby="calc-h">
