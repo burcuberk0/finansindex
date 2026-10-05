@@ -15,7 +15,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from "react"
 /* ---------------------------------------------------------------- 1. TOKENS */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 .fi *, .fi *::before, .fi *::after { box-sizing: border-box; }
 .fi {
@@ -30,10 +30,13 @@ const CSS = `
   --bg:#FAF8F4; --surface:#FFFFFF; --line:#E6E1D8; --line-2:#CFC8BC;
   --ink:#14100E; --ink-2:#3A3634; --muted:#6E6A66;
   --up:#1E6B47; --down:#B0301F;
-  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  /* --serif değişken adı korundu (çok yerde kullanılıyor) ama artık
+     geometrik grotesk taşıyor. Serif tipografi "klasik gazete" hissi
+     veriyordu; modern finans yayını için display sans daha doğru. */
+  --serif:'Space Grotesk', 'Inter', system-ui, sans-serif;
   --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --wrap:1180px; --r:3px;
+  --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --wrap:1180px; --r:2px;
   font-family: var(--sans);
   background: var(--bg); color: var(--ink);
   font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
@@ -47,13 +50,63 @@ const CSS = `
 .fi ::selection { background:var(--gold-soft); }
 
 .fi-wrap { max-width:var(--wrap); margin:0 auto; padding:0 20px; }
+
+/* --- karakter katmanı ---
+   Font tek başına karakter vermez. Modern/teknolojik duruş üç yapısal
+   kararla kuruluyor:
+     1. Mono etiketler yapısal eleman olarak kullanılır (bölüm numaraları,
+        kategori etiketleri, veri başlıkları) — "ölçülmüş" hissi verir.
+     2. Köşeler keskin, gölge yok — yazılım arayüzü estetiği.
+     3. Rakamlar her yerde tabular; sütunlar hizalı kalır. */
+.fi { font-variant-numeric:tabular-nums; }
+.fi-eyebrow { position:relative; padding-left:16px; }
+.fi-eyebrow::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:9px; height:1px; background:var(--petrol); }
+.fi-sh { position:relative; }
+.fi-h2 { position:relative; }
+
+/* Bölüm başlıklarının yanında ince mono sayaç */
+.fi-count { font:500 11px/1 var(--mono); letter-spacing:.1em; color:var(--muted);
+  border:1px solid var(--line); padding:5px 7px; border-radius:2px; margin-left:10px; vertical-align:middle; }
+
+/* Veri yüzeyleri: ızgara çizgileri belirgin, gölge yok */
+.fi-panel, .fi-card, .fi-calc, .fi-log-panel, .fi-chart, .fi-ledger { box-shadow:none; }
+.fi-card { transition:border-color .12s ease; }
+.fi-card:hover { border-color:var(--ink); }
+.fi-tool { transition:border-color .12s ease; }
+.fi-tool:hover { box-shadow:none; border-color:var(--ink); }
+
+/* Bağlantı altı çizgisi: kalın değil, ofsetli — yazılım dokümantasyonu hissi */
+.fi-a:hover .fi-ttl, .fi-a:hover .fi-side-t, .fi-a:hover .fi-lead-t {
+  text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px;
+  text-decoration-color:var(--petrol); }
+
 .fi-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 
 /* --- link/button reset --- */
 .fi-a { background:none; border:0; padding:0; text-align:left; color:inherit; text-decoration:none; display:block; width:100%; }
 .fi-a:hover .fi-ttl { text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:2px; }
 
-/* --- ticker --- */
+/* --- büyük piyasa bandı (header altında) --- */
+.fi-band { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
+.fi-band-in { display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
+.fi-band-in::-webkit-scrollbar { display:none; }
+.fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
+.fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
+  border-right:1px solid rgba(255,255,255,.1); flex:0 0 auto; min-width:240px; }
+.fi-band-c:last-child { border-right:0; margin-right:0; }
+.fi-band-txt { flex:1 1 auto; }
+.fi-band-k { display:flex; align-items:center; gap:6px; font:600 11px/1 var(--mono);
+  letter-spacing:.11em; text-transform:uppercase; color:#fff; margin-bottom:9px; }
+.fi-band-ar { font-size:9px; }
+.fi-band-ar.up, .fi-band-d.up { color:#4ECB8D; }
+.fi-band-ar.down, .fi-band-d.down { color:#F08977; }
+.fi-band-row { display:flex; align-items:baseline; gap:9px; }
+.fi-band-v { font:600 24px/1 var(--mono); letter-spacing:-.02em; color:#fff; font-variant-numeric:tabular-nums; }
+.fi-band-d { font:600 13px/1 var(--mono); font-variant-numeric:tabular-nums; }
+.fi-spark { width:110px; height:40px; flex:0 0 auto; }
+
+/* --- eski ince şerit (makale/kategori sayfalarında kullanılmıyor) --- */
 .fi-ticker { background:var(--ink); color:#fff; border-bottom:0; }
 .fi-ticker-in { display:flex; align-items:center; gap:0; overflow-x:auto; scrollbar-width:none; }
 .fi-ticker-in::-webkit-scrollbar { display:none; }
@@ -65,25 +118,40 @@ const CSS = `
 .fi-demo { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:#D9A441; padding:4px 7px; border-radius:2px; flex:0 0 auto; margin-left:auto; }
 
 /* --- header --- */
-.fi-hd { background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:60; }
-.fi-hd-top { display:flex; align-items:center; gap:16px; padding:14px 0; }
+.fi-hd { background:var(--surface); border-bottom:0; position:relative; z-index:60; }
+.fi-hd-top { display:flex; align-items:center; gap:16px; padding:16px 0; }
 .fi-logo { display:flex; align-items:center; gap:9px; background:none; border:0; padding:0; }
 .fi-logo-m { width:30px; height:30px; flex:0 0 auto; }
-.fi-logo-t { font:700 22px/1 var(--serif); letter-spacing:-.02em; color:var(--navy); }
-.fi-logo-t em { font-style:normal; color:var(--green); }
-.fi-tag { font:500 10px/1.3 var(--mono); letter-spacing:.06em; color:var(--muted); border-left:1px solid var(--line-2); padding-left:12px; margin-left:2px; max-width:120px; }
+.fi-logo-t { font:700 23px/1 var(--serif); letter-spacing:-.045em; color:var(--ink); }
+.fi-logo-t em { font-style:normal; color:var(--petrol); }
+.fi-tag { font:500 10.5px/1.35 var(--mono); letter-spacing:.02em; color:var(--muted); border-left:1px solid var(--line-2); padding-left:14px; }
 .fi-hd-acts { margin-left:auto; display:flex; align-items:center; gap:8px; }
-.fi-ico { width:40px; height:40px; display:grid; place-items:center; background:none; border:1px solid var(--line); border-radius:var(--r); color:var(--ink-2); }
+.fi-ico { width:42px; height:42px; display:grid; place-items:center; background:none; border:1px solid var(--line); border-radius:var(--r); color:var(--ink-2); }
 .fi-ico:hover { background:var(--bg); border-color:var(--line-2); }
 .fi-btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:0 18px; border-radius:var(--r); border:1px solid transparent; font-weight:600; font-size:14px; letter-spacing:.01em; }
-.fi-btn-p { background:var(--navy); color:#fff; } .fi-btn-p:hover { background:var(--navy-2); }
-.fi-btn-g { background:var(--navy); color:#fff; } .fi-btn-g:hover { background:var(--navy-2); }
-.fi-btn-o { background:transparent; color:var(--navy); border-color:var(--line-2); } .fi-btn-o:hover { background:var(--bg); }
-.fi-nav { display:flex; gap:2px; border-top:1px solid var(--line); overflow-x:auto; scrollbar-width:none; }
-.fi-nav::-webkit-scrollbar { display:none; }
-.fi-nav button { background:none; border:0; padding:13px 12px; font-size:14px; font-weight:500; color:var(--ink-2); white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; }
-.fi-nav button:hover { color:var(--navy); }
-.fi-nav button[aria-current="page"] { color:var(--navy); font-weight:600; border-bottom-color:var(--green); }
+.fi-btn-p { background:var(--ink); color:#fff; } .fi-btn-p:hover { background:var(--navy-2); }
+.fi-btn-g { background:var(--ink); color:#fff; } .fi-btn-g:hover { background:var(--navy-2); }
+.fi-btn-o { background:transparent; color:var(--ink); border-color:var(--line-2); } .fi-btn-o:hover { background:var(--bg); }
+
+/* --- ana menü + açılır --- */
+.fi-nav { display:flex; gap:0; border-top:1px solid var(--line); overflow:visible; }
+.fi-nav-i { position:relative; }
+.fi-nav-i > button { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
+  white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; min-height:52px; }
+.fi-nav-i > button:hover { color:var(--ink); }
+.fi-nav-i > button[aria-current="page"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); }
+.fi-nav-ch { opacity:.55; transition:transform .15s ease; }
+.fi-nav-i > button[aria-expanded="true"] .fi-nav-ch { transform:rotate(180deg); }
+.fi-nav-i > button[aria-expanded="true"] { color:var(--petrol); }
+.fi-drop { position:absolute; top:100%; left:0; min-width:262px; background:var(--surface);
+  border:1px solid var(--line); border-top:2px solid var(--petrol); border-radius:0 0 var(--r) var(--r);
+  box-shadow:0 10px 28px rgba(0,0,0,.12); padding:16px 18px 12px; z-index:80; }
+.fi-drop-d { font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 12px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+.fi-drop ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.fi-drop ul button { background:none; border:0; padding:9px 8px; font-size:14px; color:var(--ink-2); text-align:left; width:100%; border-radius:3px; min-height:40px; }
+.fi-drop ul button:hover { background:var(--green-soft); color:var(--petrol); }
+.fi-drop-all { width:100%; text-align:left; background:none; border:0; border-top:1px solid var(--line);
+  margin-top:10px; padding:12px 8px 4px; font-size:13px; font-weight:600; color:var(--petrol); min-height:40px; }
 .fi-burger { display:none; }
 
 /* --- mobile drawer --- */
@@ -103,7 +171,7 @@ const CSS = `
 .fi-sec:first-child { border-top:0; }
 .fi-sh { display:flex; align-items:flex-end; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
 .fi-eyebrow { font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--petrol); margin-bottom:9px; }
-.fi-h2 { font:600 27px/1.2 var(--serif); letter-spacing:-.015em; margin:0; color:var(--navy); }
+.fi-h2 { font:600 26px/1.18 var(--serif); letter-spacing:-.03em; margin:0; color:var(--ink); }
 .fi-sub { color:var(--muted); font-size:14.5px; margin:6px 0 0; max-width:60ch; }
 .fi-more { margin-left:auto; font-size:14px; font-weight:600; color:var(--navy); background:none; border:0; padding:8px 0; }
 .fi-more:hover { text-decoration:underline; }
@@ -124,8 +192,8 @@ const CSS = `
 .fi-side-i { display:grid; grid-template-columns:1fr 92px; gap:14px; align-items:start; }
 .fi-side-fig { width:92px; overflow:hidden; }
 .fi-side-fig .fi-fig-w { border-radius:3px; }
-.fi-lead-t { font:700 44px/1.1 var(--serif); letter-spacing:-.03em; margin:14px 0 16px; color:var(--ink); max-width:26ch; }
-.fi-lead-s { font:400 19px/1.55 var(--serif); color:var(--ink-2); margin:0; max-width:52ch; }
+.fi-lead-t { font:700 46px/1.04 var(--serif); letter-spacing:-.042em; margin:16px 0 18px; color:var(--ink); max-width:24ch; }
+.fi-lead-s { font:400 18px/1.6 var(--sans); color:var(--ink-2); margin:0; max-width:54ch; }
 
 /* Öne çıkan rakam: manşetin görsel ağırlık merkezi */
 .fi-lead-stat { display:flex; align-items:flex-start; gap:20px; margin:28px 0 0; padding:22px 24px; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--petrol); }
@@ -139,14 +207,14 @@ const CSS = `
 .fi-side-h { font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--petrol); margin:0 0 20px; padding-bottom:14px; border-bottom:1px solid var(--line-2); }
 .fi-side-i { padding:0 0 20px; margin-bottom:20px; border-bottom:1px solid var(--line); }
 .fi-side-i:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0; }
-.fi-side-t { font:600 19px/1.3 var(--serif); color:var(--ink); margin:7px 0 0; letter-spacing:-.012em; }
+.fi-side-t { font:600 18px/1.28 var(--serif); color:var(--ink); margin:7px 0 0; letter-spacing:-.022em; }
 .fi-side-hook { font:500 13px/1.45 var(--mono); color:var(--petrol); margin:9px 0 0; }
 
 /* --- meta chips --- */
 .fi-meta { display:flex; align-items:center; gap:9px; flex-wrap:wrap; font:500 11.5px/1 var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
-.fi-cat { color:var(--ink-2); font-weight:600; }
+.fi-cat { color:var(--petrol); font-weight:600; letter-spacing:.11em; }
 .fi-dot { width:3px; height:3px; border-radius:50%; background:var(--line-2); flex:0 0 auto; }
-.fi-badge { font:600 10px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; padding:5px 7px; border-radius:2px; }
+.fi-badge { font:600 9.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; padding:5px 7px; border-radius:1px; }
 .fi-b-spon { background:var(--gold-soft); color:#7A5A05; border:1px solid #E8D49B; }
 .fi-b-type { background:var(--bg); color:var(--ink-2); border:1px solid var(--line); }
 
@@ -155,7 +223,7 @@ const CSS = `
    Sayfada tek bir büyük koyu alan olmaması, okuma yorgunluğunu azaltır. */
 .fi-ledger { background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); }
 .fi-ledger-hd { padding:26px 30px 22px; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
-.fi-ledger-hd h2 { font:600 28px/1.15 var(--serif); margin:0; color:var(--ink); letter-spacing:-.018em; }
+.fi-ledger-hd h2 { font:600 27px/1.14 var(--serif); margin:0; color:var(--ink); letter-spacing:-.032em; }
 .fi-ledger-hd p { margin:7px 0 0; font-size:14.5px; color:var(--muted); max-width:52ch; }
 .fi-ledger-date { margin-left:auto; font:500 11.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding-bottom:4px; }
 .fi-le { display:grid; grid-template-columns:46px 1fr; border-top:1px solid var(--line); }
@@ -166,7 +234,7 @@ const CSS = `
 .fi-le-tag { font:600 10px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; padding:5px 8px; border-radius:2px; background:var(--green-soft); color:var(--petrol); border:1px solid #EFD9DE; }
 .fi-le-tag.warn { background:var(--gold-soft); color:#6B4E08; border-color:#EADFC0; }
 .fi-le-q { font:600 10.5px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin:0 0 6px; }
-.fi-le-what { font:600 21px/1.32 var(--serif); color:var(--ink); margin:0 0 18px; letter-spacing:-.012em; }
+.fi-le-what { font:600 20px/1.34 var(--serif); color:var(--ink); margin:0 0 18px; letter-spacing:-.024em; }
 .fi-le-how { font-size:15.5px; line-height:1.6; color:var(--ink-2); margin:0 0 18px; max-width:64ch; }
 .fi-le-acts { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
 .fi-le-lnk { background:none; border:1px solid var(--line-2); color:var(--ink); padding:9px 14px; border-radius:var(--r); font-size:13.5px; font-weight:600; min-height:40px; }
@@ -175,7 +243,7 @@ const CSS = `
 .fi-le-lnk.calc:hover { background:var(--green-soft); }
 
 /* --- piyasa paneli --- */
-.fi-mkt-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-mkt-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-mkt-card { background:var(--surface); padding:18px 18px 16px; min-height:118px; display:flex; flex-direction:column; }
 .fi-mkt-k { font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
 .fi-mkt-v { font:600 27px/1.05 var(--mono); letter-spacing:-.025em; color:var(--ink); font-variant-numeric:tabular-nums; }
@@ -187,7 +255,7 @@ const CSS = `
 .fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
 
 /* --- son güncellemeler paneli --- */
-.fi-log-panel { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.fi-log-panel { background:var(--surface); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-log-hd { display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line); background:var(--ink); }
 .fi-log-hd h2 { font:600 13px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#fff; margin:0; }
 .fi-log-live { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:500 10.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#7FCFA6; }
@@ -204,9 +272,9 @@ const CSS = `
 .fi-skel-b { height:26px; width:74%; background:var(--line); border-radius:2px; opacity:.62; }
 
 /* --- öne çıkan hesaplayıcı bölümü --- */
-.fi-calcband { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.fi-calcband { background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); border-radius:2px; overflow:hidden; }
 .fi-calcband-hd { padding:26px 28px 22px; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; }
-.fi-calcband-hd h2 { font:600 27px/1.18 var(--serif); margin:0; color:var(--ink); letter-spacing:-.018em; }
+.fi-calcband-hd h2 { font:600 26px/1.16 var(--serif); margin:0; color:var(--ink); letter-spacing:-.032em; }
 .fi-calcband-hd p { margin:7px 0 0; font-size:14.5px; color:var(--muted); max-width:56ch; }
 .fi-calcband-tabs { display:flex; gap:0; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none; }
 .fi-calcband-tabs::-webkit-scrollbar { display:none; }
@@ -218,7 +286,7 @@ const CSS = `
 .fi-calcband .fi-calc-out { border-radius:0; }
 
 /* --- okunabilir grafik: rakam her zaman görünür --- */
-.fi-chart { margin:24px 0 28px; padding:20px 22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
+.fi-chart { margin:26px 0 30px; padding:22px 24px; background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); border-radius:2px; }
 .fi-chart-t { font:600 16px/1.35 var(--sans); color:var(--ink); margin:0 0 16px; padding-bottom:14px; border-bottom:1px solid var(--line); }
 .fi-chart-body { display:flex; flex-direction:column; gap:4px; }
 .fi-chart-cap { font-size:12.5px; line-height:1.55; color:var(--muted); margin:14px 0 0; padding-top:12px; border-top:1px solid var(--line); }
@@ -248,11 +316,11 @@ const CSS = `
 .fi-fig-w { width:100%; background:var(--line); border-radius:var(--r); overflow:hidden; }
 .fi-fig-w img { width:100%; height:100%; object-fit:cover; display:block; color:transparent; font-size:0; }
 .fi-fig-c { font-size:11.5px; line-height:1.4; color:var(--muted); margin:7px 0 0; }
-.fi-card { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.fi-card { background:var(--surface); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-card .fi-a { padding:0; }
 .fi-card-body { padding:15px 16px 17px; }
 .fi-card .fi-fig-w { border-radius:0; }
-.fi-ttl { font:600 19px/1.3 var(--serif); color:var(--ink); margin:10px 0 8px; letter-spacing:-.014em; }
+.fi-ttl { font:600 18.5px/1.28 var(--serif); color:var(--ink); margin:10px 0 8px; letter-spacing:-.024em; }
 .fi-exc { font-size:14.5px; line-height:1.55; color:var(--muted); margin:0; }
 .fi-card-hook { font:500 13px/1.5 var(--mono); color:var(--petrol); margin:0; }
 
@@ -272,7 +340,7 @@ const CSS = `
 /* --- calculator --- */
 .fi-calc { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
 .fi-calc-hd { padding:22px 24px; border-bottom:1px solid var(--line); }
-.fi-calc-hd h3 { font:600 21px/1.25 var(--serif); color:var(--navy); margin:0 0 6px; }
+.fi-calc-hd h3 { font:600 20px/1.24 var(--serif); color:var(--ink); margin:0 0 6px; letter-spacing:-.026em; }
 .fi-calc-hd p { margin:0; font-size:14px; color:var(--muted); }
 .fi-calc-b { display:grid; grid-template-columns:1fr 1fr; }
 .fi-calc-in { padding:24px; display:flex; flex-direction:column; gap:16px; }
@@ -298,7 +366,7 @@ const CSS = `
 .fi-dossier { display:block; background:var(--petrol); color:#fff; border-radius:var(--r); overflow:hidden; }
 .fi-dossier-i { min-height:280px; background:var(--navy); }
 .fi-dossier-b { padding:34px; }
-.fi-dossier-b h3 { font:700 30px/1.16 var(--serif); margin:12px 0 12px; letter-spacing:-.02em; }
+.fi-dossier-b h3 { font:700 30px/1.1 var(--serif); margin:12px 0 12px; letter-spacing:-.04em; }
 .fi-dossier-b p { color:#D5C9BE; font-size:15.5px; margin:0 0 20px; }
 .fi-dossier-b .fi-eyebrow { color:#E5A3AE; }
 .fi-dossier-parts { list-style:none; padding:0; margin:0 0 22px; }
@@ -307,7 +375,7 @@ const CSS = `
 
 /* --- guides --- */
 .fi-guide { background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:var(--r); padding:18px 20px; }
-.fi-guide h3 { font:600 17px/1.3 var(--serif); color:var(--navy); margin:0 0 6px; }
+.fi-guide h3 { font:600 17px/1.28 var(--serif); color:var(--ink); margin:0 0 6px; letter-spacing:-.022em; }
 .fi-guide p { font-size:13.5px; color:var(--muted); margin:0 0 10px; }
 .fi-guide span { font:500 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--gold); }
 
@@ -322,9 +390,34 @@ const CSS = `
 .fi-adres-f .fi-btn-o:hover { background:rgba(255,255,255,.08); }
 .fi-adres-s { font:500 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
 .fi-le-ad { border-top:1px solid var(--line); padding:22px 30px; }
-.fi-adimg { display:block; }
-.fi-adimg .fi-ad-lbl { display:block; margin-bottom:7px; }
-.fi-adimg-a { display:block; border-radius:var(--r); overflow:hidden; background:var(--line); }
+.fi-catspon { margin-top:18px; padding:14px 16px; background:var(--green-soft); border:1px solid #EFD9DE; border-left:3px solid var(--petrol); border-radius:var(--r); }
+.fi-catspon .fi-ad-lbl { color:var(--petrol); }
+.fi-catspon p { font-size:15px; color:var(--ink); }
+/* --- çerez onay bandı --- */
+.fi-cmp { position:fixed; left:0; right:0; bottom:0; z-index:120; background:var(--surface);
+  border-top:2px solid var(--ink); box-shadow:0 -4px 20px rgba(0,0,0,.1); padding-bottom:env(safe-area-inset-bottom,0); }
+.fi-cmp-in { max-width:var(--wrap); margin:0 auto; padding:20px; display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; }
+.fi-cmp-b h2 { font:600 16px/1.3 var(--sans); color:var(--ink); margin:0 0 7px; }
+.fi-cmp-b p { font-size:13.5px; line-height:1.55; color:var(--ink-2); margin:0; max-width:70ch; }
+.fi-cmp-opts { margin-top:16px; border-top:1px solid var(--line); }
+.fi-cmp-opt { display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+.fi-cmp-opt strong { display:block; font-size:13.5px; color:var(--ink); font-weight:600; }
+.fi-cmp-opt span { display:block; font-size:12.5px; color:var(--muted); margin-top:2px; }
+.fi-cmp-opt input { width:22px; height:22px; margin-left:auto; flex:0 0 auto; }
+.fi-cmp-fixed { margin-left:auto; font:500 11px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); flex:0 0 auto; }
+.fi-cmp-acts { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.fi-cmp-link { background:none; border:0; color:var(--petrol); font-size:13.5px; font-weight:600; text-decoration:underline; min-height:44px; padding:0 8px; }
+@media (max-width:760px) {
+  .fi-cmp-in { grid-template-columns:1fr; gap:16px; padding:16px; }
+  .fi-cmp-acts { flex-direction:column; align-items:stretch; }
+  .fi-cmp-acts .fi-btn { width:100%; }
+}
+.fi-gam { display:block; }
+.fi-gam .fi-ad-lbl { display:block; margin-bottom:7px; }
+.fi-gam > div { display:flex; justify-content:center; }
+.fi-adimg { display:block; text-align:center; }
+.fi-adimg .fi-ad-lbl { display:block; margin-bottom:7px; text-align:left; max-width:970px; margin-left:auto; margin-right:auto; }
+.fi-adimg-a { display:block; border-radius:var(--r); overflow:hidden; background:var(--line); max-width:970px; margin:0 auto; }
 .fi-adimg-w { display:block; width:100%; }
 .fi-adimg-w img { width:100%; height:100%; object-fit:cover; display:block; color:transparent; font-size:0; }
 .fi-ad { border:1px dashed var(--line-2); border-radius:var(--r); background:var(--surface); padding:16px; }
@@ -370,7 +463,7 @@ const CSS = `
 
 /* --- newsletter --- */
 .fi-nl { background:var(--navy); color:#fff; border-radius:var(--r); padding:38px; display:grid; grid-template-columns:1fr 1fr; gap:38px; align-items:center; }
-.fi-nl h2 { font:600 29px/1.18 var(--serif); margin:10px 0 10px; letter-spacing:-.02em; }
+.fi-nl h2 { font:600 28px/1.14 var(--serif); margin:10px 0 10px; letter-spacing:-.036em; }
 .fi-nl p { color:#C4B7AC; font-size:15px; margin:0; }
 .fi-nl .fi-eyebrow { color:#E5A3AE; }
 .fi-nl-f { display:flex; flex-direction:column; gap:12px; }
@@ -388,8 +481,8 @@ const CSS = `
 .fi-bc { font:500 12px/1.5 var(--mono); color:var(--muted); margin-bottom:18px; display:flex; gap:8px; flex-wrap:wrap; }
 .fi-bc button { background:none; border:0; padding:0; color:var(--muted); }
 .fi-bc button:hover { color:var(--navy); text-decoration:underline; }
-.fi-art h1 { font:700 40px/1.14 var(--serif); letter-spacing:-.028em; color:var(--navy); margin:12px 0 16px; }
-.fi-spot { font:400 19px/1.55 var(--serif); color:var(--ink-2); margin:0 0 22px; max-width:62ch; }
+.fi-art h1 { font:700 42px/1.06 var(--serif); letter-spacing:-.042em; color:var(--ink); margin:14px 0 18px; }
+.fi-spot { font:400 18.5px/1.6 var(--sans); color:var(--ink-2); margin:0 0 24px; max-width:60ch; }
 .fi-byline { display:flex; align-items:center; gap:13px; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); flex-wrap:wrap; }
 .fi-av { width:42px; height:42px; border-radius:50%; background:var(--green-soft); color:var(--green); display:grid; place-items:center; font:600 14px var(--sans); flex:0 0 auto; }
 .fi-byline-n { font-weight:600; font-size:14.5px; color:var(--navy); }
@@ -405,12 +498,12 @@ const CSS = `
 .fi-toc button { background:none; border:0; padding:0; font-size:14.5px; color:var(--navy); font-weight:500; text-align:left; }
 .fi-toc button:hover { text-decoration:underline; }
 .fi-body { font-size:17.5px; line-height:1.72; color:var(--ink-2); max-width:68ch; }
-.fi-body h2 { font:600 25px/1.28 var(--serif); color:var(--navy); margin:38px 0 14px; letter-spacing:-.015em; scroll-margin-top:150px; }
+.fi-body h2 { font:600 23px/1.25 var(--serif); color:var(--ink); margin:40px 0 14px; letter-spacing:-.03em; scroll-margin-top:150px; }
 .fi-body p { margin:0 0 19px; }
 .fi-body ul { margin:0 0 19px; padding-left:22px; }
 .fi-body li { margin-bottom:9px; }
 .fi-body strong { color:var(--ink); font-weight:600; }
-.fi-quote { border-left:3px solid var(--green); padding:4px 0 4px 20px; margin:26px 0; font:400 20px/1.5 var(--serif); color:var(--navy); }
+.fi-quote { border-left:2px solid var(--petrol); padding:4px 0 4px 22px; margin:30px 0; font:500 20px/1.45 var(--serif); color:var(--ink); letter-spacing:-.02em; }
 .fi-tbl { width:100%; border-collapse:collapse; margin:8px 0 22px; font-size:15px; }
 .fi-tbl th { text-align:left; font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--line-2); }
 .fi-tbl td { padding:11px 12px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:14px; }
@@ -425,6 +518,10 @@ const CSS = `
 .fi-src ol { margin:0; padding-left:20px; font-size:14px; color:var(--ink-2); }
 .fi-src li { margin-bottom:7px; }
 .fi-disc { background:var(--bg); border:1px solid var(--line); border-radius:var(--r); padding:15px 17px; font-size:13px; color:var(--muted); margin:24px 0; }
+.fi-b-auto { background:var(--green-soft); color:var(--petrol); border:1px solid #EFD9DE; }
+.fi-autobox { background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--petrol); padding:18px 20px; margin:30px 0 0; }
+.fi-autobox h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--petrol); margin:0 0 10px; }
+.fi-autobox p { font-size:14px; line-height:1.6; color:var(--ink-2); margin:0; }
 .fi-aibox { background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--petrol); border-radius:0; padding:18px 20px; margin:30px 0 0; }
 .fi-aibox h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--petrol); margin:0 0 10px; display:flex; align-items:center; gap:8px; }
 .fi-aibox p { font-size:14px; line-height:1.6; color:var(--ink-2); margin:0 0 10px; }
@@ -436,7 +533,7 @@ const CSS = `
 .fi-rail-h { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; padding-bottom:11px; border-bottom:1px solid var(--line-2); }
 .fi-rail-i { display:block; width:100%; text-align:left; background:none; border:0; padding:13px 0; border-bottom:1px solid var(--line); }
 .fi-rail-i:last-child { border-bottom:0; }
-.fi-rail-t { font:600 15.5px/1.35 var(--serif); color:var(--navy); margin:5px 0 0; }
+.fi-rail-t { font:600 15.5px/1.32 var(--serif); color:var(--ink); margin:5px 0 0; letter-spacing:-.02em; }
 .fi-rail-i:hover .fi-rail-t { text-decoration:underline; }
 .fi-relcalc { background:var(--navy); color:#fff; border-radius:var(--r); padding:22px; }
 .fi-relcalc .fi-eyebrow { color:#E5A3AE; }
@@ -445,7 +542,7 @@ const CSS = `
 
 /* --- media kit --- */
 .fi-mk-hero { background:var(--navy); color:#fff; padding:56px 0; }
-.fi-mk-hero h1 { font:700 44px/1.1 var(--serif); letter-spacing:-.03em; margin:14px 0 16px; max-width:18ch; }
+.fi-mk-hero h1 { font:700 46px/1.04 var(--serif); letter-spacing:-.045em; margin:16px 0 18px; max-width:17ch; }
 .fi-mk-hero p { font-size:17.5px; color:#D5C9BE; max-width:58ch; margin:0; }
 .fi-mk-hero .fi-eyebrow { color:#E5A3AE; }
 .fi-prod { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:24px; }
@@ -465,21 +562,21 @@ const CSS = `
 .fi-ft ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:2px; }
 .fi-ft ul button { background:none; border:0; padding:7px 0; color:#D5C9BE; font-size:14px; text-align:left; min-height:38px; }
 .fi-ft ul button:hover { color:#fff; text-decoration:underline; }
-.fi-ft-about p { font-size:14px; color:#C4B7AC; margin:14px 0 0; max-width:38ch; }
+.fi-ft-about p { font-size:14px; color:#A8A29C; margin:14px 0 0; max-width:38ch; }
 .fi-ft-bot { padding-top:22px; display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:#A2948A; }
-.fi-ft-bot .fi-devlog { margin-left:auto; background:none; border:1px solid rgba(255,255,255,.2); color:#A2948A; padding:7px 12px; border-radius:var(--r); font:500 11px var(--mono); min-height:36px; }
+.fi-ft-bot .fi-devlog { margin-left:8px; background:none; border:1px solid rgba(255,255,255,.2); color:#A2948A; padding:7px 12px; border-radius:var(--r); font:500 11px var(--mono); min-height:36px; }
 .fi-log { margin-top:16px; background:rgba(0,0,0,.24); border:1px solid rgba(255,255,255,.13); border-radius:var(--r); padding:14px; font:400 11.5px/1.7 var(--mono); color:#B5A79C; max-height:220px; overflow:auto; }
 .fi-log b { color:#EFB9C2; font-weight:500; }
 
 /* --- misc pages --- */
 .fi-page-hd { padding:40px 0 30px; border-bottom:1px solid var(--line); }
-.fi-page-hd h1 { font:700 40px/1.12 var(--serif); letter-spacing:-.028em; color:var(--navy); margin:12px 0 12px; }
+.fi-page-hd h1 { font:700 42px/1.06 var(--serif); letter-spacing:-.042em; color:var(--ink); margin:14px 0 14px; }
 .fi-page-hd p { font-size:17px; color:var(--muted); max-width:62ch; margin:0; }
 .fi-prose { max-width:70ch; font-size:16.5px; line-height:1.72; color:var(--ink-2); padding:36px 0; }
-.fi-prose h2 { font:600 23px/1.3 var(--serif); color:var(--navy); margin:34px 0 12px; }
+.fi-prose h2 { font:600 22px/1.26 var(--serif); color:var(--ink); margin:36px 0 12px; letter-spacing:-.028em; }
 .fi-prose ul { padding-left:22px; } .fi-prose li { margin-bottom:8px; }
 .fi-empty { text-align:center; padding:70px 20px; }
-.fi-empty h2 { font:600 26px/1.25 var(--serif); color:var(--navy); margin:0 0 10px; }
+.fi-empty h2 { font:600 25px/1.2 var(--serif); color:var(--ink); margin:0 0 10px; letter-spacing:-.03em; }
 .fi-empty p { color:var(--muted); margin:0 0 22px; }
 
 /* --- responsive --- */
@@ -503,9 +600,13 @@ const CSS = `
   .fi-dossier-i { min-height:190px; }
   .fi-nl { grid-template-columns:1fr; gap:26px; padding:30px; }
   .fi-tag { display:none; }
+  .fi-spark { display:none; }
 }
 @media (max-width:760px) {
   .fi-nav { display:none; }
+  .fi-band-c { min-width:190px; padding-right:16px; margin-right:16px; }
+  .fi-band-v { font-size:20px; }
+  .fi-spark { width:74px; height:34px; }
   .fi-burger { display:grid; }
   .fi-g3, .fi-g4 { grid-template-columns:1fr; }
   .fi-mkt-grid { grid-template-columns:repeat(2,1fr); }
@@ -552,6 +653,8 @@ const CSS = `
 
 /* ------------------------------------------------------- 2. ÖLÇÜMLEME KATMANI */
 
+const CONSENT_KEY = "fi_consent_v1";
+
 const eventBus = { list: [], subs: [] };
 
 /**
@@ -562,8 +665,21 @@ const eventBus = { list: [], subs: [] };
 function track(event, params = {}) {
   const payload = { event, ...params, ts: new Date().toISOString() };
   if (typeof window !== "undefined") {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(payload);
+    /* Analitik çerez onayı yoksa olay dataLayer'a yazılmaz.
+       consent_update olayı istisnadır; rıza kaydının kendisidir.
+       Ölçümleme günlüğü (geliştirici paneli) her koşulda çalışır,
+       çünkü tarayıcıdan dışarı veri göndermez. */
+    let ok = true;
+    if (event !== "consent_update") {
+      try {
+        const c = JSON.parse(window.localStorage.getItem(CONSENT_KEY));
+        ok = !!(c && c.analytics);
+      } catch { ok = false; }
+    }
+    if (ok) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(payload);
+    }
   }
   eventBus.list = [payload, ...eventBus.list].slice(0, 60);
   eventBus.subs.forEach((fn) => fn(eventBus.list));
@@ -653,6 +769,166 @@ function useMarket() {
   return state;
 }
 
+/* --------------------------------------- OTOMATİK GÜNLÜK İÇERİK ÜRETİCİ --- */
+
+/**
+ * Günlük döviz ve altın içeriğini canlı veriden üretir.
+ *
+ * NEDEN BU YAKLAŞIM
+ * Başka yayınlardan haber çekmek telif ihlali ve Google'ın "scraped content"
+ * politikası ihlalidir. Bunun yerine TCMB'nin resmî kurlarından ve serbest
+ * piyasa maden verisinden kendi cümlelerimizi kuruyoruz. İçerik özgün,
+ * kaynak birincil, güncelleme otomatik.
+ *
+ * KURALLAR
+ *  - Veri yoksa içerik üretilmez. Eksik gösterge atlanır.
+ *  - Tahmin, yorum ve yön beklentisi yazılmaz. Yalnızca olan anlatılır.
+ *  - Her rakam kaynaktan gelir; yuvarlama dışında işlem yapılmaz.
+ *  - Yayın tarihi gerçek veri tarihidir, SEO için değiştirilmez.
+ */
+function buildDailyMarketArticle(market) {
+  if (market.status !== "ready" || !market.items.length) return null;
+
+  const get = (k) => market.items.find((x) => x.k === k);
+  const usd = get("Dolar"), eur = get("Euro"), gbp = get("Sterlin");
+  const ga = get("Gram Altın"), ceyrek = get("Çeyrek Altın"), gumus = get("Gümüş");
+  if (!usd && !ga) return null;
+
+  const now = market.updatedAt ? new Date(market.updatedAt) : new Date();
+  const dStr = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", year: "numeric" }).format(now);
+  const slugDate = now.toISOString().slice(0, 10);
+  const f = (v) => num(v, v >= 1000 ? 0 : 2);
+  const yon = (d) => (d > 0 ? "yükseldi" : "geriledi");
+  const pct = (d) => `%${num(Math.abs(d), 2)}`;
+
+  /* --- Gövde --- */
+  const body = [];
+
+  body.push(P(
+    `${dStr} tarihi itibarıyla Türkiye Cumhuriyet Merkez Bankası'nın açıkladığı resmî döviz kurları ve ` +
+    `serbest piyasadaki kıymetli maden fiyatları aşağıda yer alıyor. Rakamların yanında, bu seviyelerin ` +
+    `gündelik bütçeye ne anlama geldiğini de özetledik.`
+  ));
+
+  /* Öne çıkan rakamlar */
+  const stats = [];
+  if (usd) stats.push({ v: f(usd.v), k: "Dolar (TCMB satış)", sub: usd.d != null ? `Günlük ${pct(usd.d)} ${yon(usd.d)}` : "TCMB resmî kuru" });
+  if (eur) stats.push({ v: f(eur.v), k: "Euro (TCMB satış)", sub: eur.d != null ? `Günlük ${pct(eur.d)} ${yon(eur.d)}` : "TCMB resmî kuru" });
+  if (ga) stats.push({ v: f(ga.v), k: "Gram altın (TL)", sub: "Serbest piyasa satış" });
+  if (gumus) stats.push({ v: f(gumus.v), k: "Gümüş (TL)", sub: "Serbest piyasa satış" });
+  if (stats.length) body.push({ type: "stats", items: stats, caption: "Döviz kurları TCMB resmî kurlarıdır. Kıymetli maden fiyatları serbest piyasa verisidir." });
+
+  /* Döviz bölümü */
+  if (usd || eur || gbp) {
+    body.push(H("Döviz kurları"));
+    const parts = [];
+    if (usd) parts.push(usd.d != null
+      ? `Dolar/TL, TCMB'nin açıkladığı resmî kurda **${f(usd.v)}** seviyesinde. Bir önceki iş gününe göre ${pct(usd.d)} ${yon(usd.d)}.`
+      : `Dolar/TL, TCMB resmî kurunda **${f(usd.v)}** seviyesinde.`);
+    if (eur) parts.push(eur.d != null
+      ? `Euro/TL **${f(eur.v)}** olarak açıklandı; günlük değişim ${pct(eur.d)} ${yon(eur.d)}.`
+      : `Euro/TL **${f(eur.v)}** olarak açıklandı.`);
+    if (gbp) parts.push(`Sterlin/TL ise **${f(gbp.v)}** seviyesinde bulunuyor.`);
+    body.push(P(parts.join(" ")));
+
+    if (usd && eur) {
+      body.push(P(
+        `TCMB kurlarına göre EUR/USD paritesi **${num(eur.v / usd.v, 4)}** seviyesinde. ` +
+        `Parite, yurt dışından euro cinsinden alışveriş yapanlar ve euro cinsinden borcu olanlar için ` +
+        `doğrudan maliyet anlamına gelir.`
+      ));
+    }
+
+    const rows = [];
+    if (usd) rows.push(["Dolar", usd.alis != null ? f(usd.alis) : "—", usd.satis != null ? f(usd.satis) : "—", usd.d != null ? `${usd.d >= 0 ? "+" : "−"}${pct(usd.d)}` : "—"]);
+    if (eur) rows.push(["Euro", eur.alis != null ? f(eur.alis) : "—", eur.satis != null ? f(eur.satis) : "—", eur.d != null ? `${eur.d >= 0 ? "+" : "−"}${pct(eur.d)}` : "—"]);
+    if (gbp) rows.push(["Sterlin", gbp.alis != null ? f(gbp.alis) : "—", gbp.satis != null ? f(gbp.satis) : "—", gbp.d != null ? `${gbp.d >= 0 ? "+" : "−"}${pct(gbp.d)}` : "—"]);
+    if (rows.length) body.push({ type: "table", head: ["Döviz", "Alış", "Satış", "Günlük değişim"], rows });
+  }
+
+  /* Altın bölümü */
+  if (ga || ceyrek) {
+    body.push(H("Altın ve gümüş"));
+    const gp = [];
+    if (ga) gp.push(`Gram altın serbest piyasada **${f(ga.satis ?? ga.v)} TL**'den satılıyor.`);
+    if (ceyrek) gp.push(`Çeyrek altının satış fiyatı **${f(ceyrek.satis ?? ceyrek.v)} TL**.`);
+    if (gumus) gp.push(`Gümüş **${f(gumus.v)} TL** seviyesinde.`);
+    body.push(P(gp.join(" ")));
+
+    if (ga && ga.alis && ga.satis) {
+      const makas = ((ga.satis - ga.alis) / ga.satis) * 100;
+      body.push(P(
+        `Gram altında alış ve satış fiyatı arasındaki fark, yani **makas aralığı**, ` +
+        `şu an %${num(makas, 2)} seviyesinde. Bu fark, altını alıp aynı anda sattığınızda ` +
+        `fiyat hiç değişmese bile oluşan maliyettir. Kısa vadeli alım satım düşünüyorsanız ` +
+        `makas, fiyat beklentinizden daha belirleyici olabilir.`
+      ));
+    }
+    const grows = [];
+    if (ga) grows.push(["Gram altın", ga.alis != null ? f(ga.alis) : "—", ga.satis != null ? f(ga.satis) : "—"]);
+    if (ceyrek) grows.push(["Çeyrek altın", ceyrek.alis != null ? f(ceyrek.alis) : "—", ceyrek.satis != null ? f(ceyrek.satis) : "—"]);
+    if (gumus) grows.push(["Gümüş", gumus.alis != null ? f(gumus.alis) : "—", gumus.satis != null ? f(gumus.satis) : "—"]);
+    if (grows.length) body.push({ type: "table", head: ["Ürün", "Alış (TL)", "Satış (TL)"], rows: grows });
+  }
+
+  /* Okura dönük bölüm — yorum değil, uygulanabilir hatırlatma */
+  body.push(H("Bu rakamlar bütçenizde ne anlama geliyor?"));
+  body.push({ type: "ul", items: [
+    "**Döviz cinsinden borcu olanlar için:** Kur değişimi, taksit tutarınızın TL karşılığını doğrudan değiştirir. Ödeme gününüzdeki kuru esas alın.",
+    "**Yurt dışı alışverişlerinde:** Kart ile yapılan işlemlerde bankanız kendi kurunu ve varsa işlem komisyonunu uygular; TCMB kuru referanstır, uygulanan kur değildir.",
+    "**Altın alacaklar için:** Kuyumcu ve bankalar kendi fiyatlarını belirler. Serbest piyasa rakamı gösterge niteliğindedir.",
+    "**Birikim planlayanlar için:** Getiriyi değerlendirirken enflasyonu da hesaba katın; nominal artış tek başına alım gücündeki değişimi göstermez.",
+  ] });
+
+  body.push(P(
+    `Bu sayfa her iş günü, TCMB'nin resmî kur açıklaması ve serbest piyasa maden verisi ` +
+    `güncellendikçe otomatik olarak yenilenir. Rakamlar bilgilendirme amaçlıdır; bankalar, ` +
+    `kuyumcular ve aracı kurumlar kendi fiyatlarını uygular.`
+  ));
+
+  return {
+    id: "daily-market",
+    slug: `doviz-ve-altin-bugun-${slugDate}`,
+    title: `Dolar, euro ve altın bugün ne kadar? ${dStr} güncel kurlar`,
+    summary:
+      `${dStr} itibarıyla TCMB resmî döviz kurları ve serbest piyasada gram altın, çeyrek altın ve ` +
+      `gümüş fiyatları. Rakamların gündelik bütçeye etkisiyle birlikte.`,
+    category: "gundem",
+    contentType: "Veri",
+    author: "burcu-berk-arslan",
+    published_at: now.toISOString(),
+    updated_at: now.toISOString(),
+    read: 3,
+    risk_level: "dusuk",
+    review_status: "yayimlandi",
+    reviewed_by: "burcu-berk-arslan",
+    sponsored: false,
+    disclaimer: "general",
+    related_tool: "enflasyon",
+    tags: ["döviz", "altın", "kur", "gümüş"],
+    source_name: "TCMB / serbest piyasa",
+    source_urls: [
+      "TCMB — Günlük döviz kurları (resmî XML servisi)",
+      "Serbest piyasa kıymetli maden fiyat sağlayıcısı",
+    ],
+    seo_title: `Dolar, euro, altın bugün ne kadar? ${dStr} | FinansIndex`,
+    meta_description:
+      `${dStr} güncel dolar, euro ve sterlin kurları TCMB resmî verisiyle; gram altın, çeyrek altın ve gümüş fiyatları.`,
+    featured_image: null,
+    hook: usd ? `Dolar ${f(usd.v)} · Gram altın ${ga ? f(ga.satis ?? ga.v) : "—"} TL` : null,
+    auto: true,
+    body,
+    impact: {
+      lead: "Kur ve altın seviyeleri; döviz borcu, yurt dışı alışveriş ve birikim planlaması yapanları doğrudan ilgilendirir.",
+      points: [
+        "Döviz cinsinden ödemeniz varsa, ödeme günündeki kuru esas alın.",
+        "Altın alırken alış-satış farkını işlem maliyeti olarak hesaba katın.",
+        "Birikim getirisini enflasyonla birlikte değerlendirin.",
+      ],
+    },
+  };
+}
+
 /* ------------------------------------------------- PİYASA GÜNLÜĞÜ MOTORU --- */
 
 /**
@@ -720,6 +996,147 @@ function buildMarketLog(market) {
   return rows;
 }
 
+/* --------------------------------------------- GOOGLE AD MANAGER (GPT) --- */
+
+/**
+ * Ad Manager yapılandırması.
+ *
+ * NEDEN GAM: Ajanslar ve markalar kendi sayım (impression tracking)
+ * etiketlerini gönderir; ham JPG ile yayın vermezler. Fatura genelde
+ * ajansın sayımına göre kesilir. GAM, üçüncü taraf etiketlerin
+ * trafiklenmesini ve iki tarafın da kabul ettiği raporlamayı sağlar.
+ *
+ * KURULUM: admanager.google.com üzerinden hesap açıldığında bir ağ kodu
+ * (network code) verilir. Aşağıya yazılır. Reklam birimleri GAM panelinde
+ * placement ID'lerle aynı adla oluşturulur.
+ *
+ * ÇEREZ: GAM çerez kullanır. KVKK gereği açık rıza alınmadan yüklenmez.
+ * Aşağıdaki kod, onay verilmeden GPT betiğini sayfaya hiç eklemez.
+ */
+const GAM = {
+  enabled: false,              // GAM hesabı açıldığında true yapılır
+  networkCode: "NETWORK_CODE", // GAM panelinden alınır, örn. "21700000001"
+  parentPath: "finansindex",   // GAM'de oluşturulan üst reklam birimi
+
+  /* placement ID → kabul edilen boyutlar.
+     Ajansa bu ölçüler bildirilir; GAM birimi de bu boyutlarla tanımlanır. */
+  sizes: {
+    home_top_banner:        [[970, 250], [970, 90], [728, 90], [320, 100]],
+    home_mid_banner:        [[970, 250], [728, 90], [320, 100]],
+    desktop_sidebar_sticky: [[300, 600], [300, 250]],
+    article_inline_01:      [[728, 90], [300, 250], [336, 280]],
+    article_inline_02:      [[728, 90], [300, 250], [336, 280]],
+    article_end:            [[728, 90], [300, 250]],
+    rail_left:              [[160, 600], [120, 600]],
+    rail_right:             [[160, 600], [120, 600]],
+    mobile_sticky_footer:   [[320, 50], [320, 100]],
+    category_sponsor:       [[970, 90], [728, 90]],
+    tools_index_native:     [[300, 250], [336, 280]],
+    search_native_01:       [[300, 250], [336, 280]],
+    category_native_01:     [[300, 250], [336, 280]],
+    home_native_01:         [[300, 250], [336, 280]],
+  },
+};
+
+const gamPath = (pid) => `/${GAM.networkCode}/${GAM.parentPath}/${pid}`;
+
+/* Çerez onayı: reklam çerezleri yalnızca açık rıza sonrası çalışır. */
+const consentBus = { subs: [] };
+
+function readConsent() {
+  if (typeof window === "undefined") return null;
+  try { return JSON.parse(window.localStorage.getItem(CONSENT_KEY)); } catch { return null; }
+}
+function writeConsent(v) {
+  try { window.localStorage.setItem(CONSENT_KEY, JSON.stringify(v)); } catch { /* yoksay */ }
+  consentBus.subs.forEach((fn) => fn(v));
+}
+function useConsent() {
+  const [c, setC] = useState(() => readConsent());
+  useEffect(() => {
+    consentBus.subs.push(setC);
+    return () => { consentBus.subs = consentBus.subs.filter((f) => f !== setC); };
+  }, []);
+  return c;
+}
+
+/* GPT betiği yalnızca bir kez ve yalnızca reklam onayı varsa yüklenir. */
+let gptLoading = null;
+function loadGpt() {
+  if (gptLoading) return gptLoading;
+  gptLoading = new Promise((resolve, reject) => {
+    if (typeof document === "undefined") return reject(new Error("SSR"));
+    window.googletag = window.googletag || { cmd: [] };
+    const el = document.createElement("script");
+    el.async = true;
+    el.src = "https://securepubads.g.doubleclick.net/tag/js/gpt.js";
+    el.onload = () => resolve(window.googletag);
+    el.onerror = () => reject(new Error("GPT yüklenemedi"));
+    document.head.appendChild(el);
+  });
+  return gptLoading;
+}
+
+/**
+ * Tek bir GAM reklam birimini tanımlar ve gösterir.
+ * Rota değiştiğinde eski slot yok edilir; SPA'da aynı slot ID'sinin
+ * yeniden tanımlanması GPT hatası verir.
+ */
+function GamSlot({ placementId, pageType }) {
+  const consent = useConsent();
+  const ref = useRef(null);
+  const slotRef = useRef(null);
+  const domId = useRef(`gam-${placementId}-${Math.random().toString(36).slice(2, 7)}`).current;
+  const sizes = GAM.sizes[placementId];
+
+  useEffect(() => {
+    if (!GAM.enabled || !consent || !consent.ads || !sizes || !ref.current) return;
+    let alive = true;
+
+    loadGpt().then((googletag) => {
+      if (!alive) return;
+      googletag.cmd.push(() => {
+        const slot = googletag
+          .defineSlot(gamPath(placementId), sizes, domId)
+          .addService(googletag.pubads());
+        if (!slot) return;
+        slotRef.current = slot;
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs(true);   // dolmayan alan yer kaplamaz
+        googletag.pubads().enableLazyLoad({ fetchMarginPercent: 100, renderMarginPercent: 50 });
+        googletag.enableServices();
+        googletag.display(domId);
+
+        googletag.pubads().addEventListener("slotRenderEnded", (e) => {
+          if (e.slot !== slot) return;
+          track(e.isEmpty ? "ad_no_fill" : "ad_impression", {
+            placement_id: placementId, page_type: pageType,
+            creative_id: e.creativeId || undefined, line_item_id: e.lineItemId || undefined,
+          });
+        });
+      });
+    }).catch(() => { /* betik engellenmişse sessizce geç */ });
+
+    return () => {
+      alive = false;
+      if (slotRef.current && window.googletag && window.googletag.destroySlots) {
+        window.googletag.cmd.push(() => window.googletag.destroySlots([slotRef.current]));
+        slotRef.current = null;
+      }
+    };
+  }, [placementId, pageType, consent, sizes, domId]);
+
+  if (!GAM.enabled || !sizes) return null;
+  if (!consent || !consent.ads) return null;
+
+  return (
+    <div className="fi-gam">
+      <span className="fi-ad-lbl">Reklam</span>
+      <div id={domId} ref={ref} />
+    </div>
+  );
+}
+
 /* ------------------------------------------------------- 5. REKLAM ENVANTERİ */
 
 /**
@@ -756,38 +1173,39 @@ function buildMarketLog(market) {
  *   home_native_01 / ledger_native .......... metin kreatif önerilir
  */
 const AD_INVENTORY = {
-  home_top_banner: null,
-  home_native_01: {
-    type: "native",
+  /* ÖRNEK KREATİF — üst banner, görsel tipi.
+     Gerçek reklamveren geldiğinde image, alt, href ve sponsor güncellenir.
+     Görsel `public/img/reklam/` klasörüne yüklenir.
+     Kaldırmak için bu bloğu tekrar `null` yap. */
+  home_top_banner: {
     sponsor: "Örnek Banka",
-    title: "Maaş müşterisi olanlara özel ihtiyaç kredisi koşulları",
-    excerpt: "Başvuru öncesi toplam geri ödemeyi hesaplayın; koşullar başvuru anında bankaca belirlenir.",
-    cta: "Koşulları incele",
+    image: "/img/reklam/ornek-banner-970x250.png",
+    alt: "Örnek Banka konut kredisi kampanyası görseli",
+    href: null,
+    ratio: "970 / 250",
   },
-  desktop_sidebar_sticky: {
-    type: "display",
-    sponsor: "Örnek Sigorta",
-    title: "Trafik sigortası yenileme dönemi yaklaşanlar için hatırlatma",
-    cta: "Teklif al",
-  },
+  home_native_01: null,
+  desktop_sidebar_sticky: null,
   article_inline_01: null,
   article_end: null,
-  calculator_sponsor: {
-    type: "tool",
-    sponsor: "Örnek Yatırım",
-    title: "Bu hesaplama aracı Örnek Yatırım katkılarıyla sunulmaktadır.",
-  },
+  calculator_sponsor: null,
   /* En yüksek niyetli an: kullanıcı hesaplamayı tamamladı, rakamı gördü.
      Bu alan araç bazında ayrı satılabilir (kredi → banka, mevduat → banka,
      kira → emlak, asgari → borç yapılandırma). */
-  calculator_result: {
-    type: "result",
+  calculator_result: null,
+  /* ÖRNEK KREATİF — kategori sponsorluğu.
+     Kredi ve Mevduat kategorisi bankalara satılabilecek en doğal alandır.
+     Görsel banner yerine metin kreatif kullanılıyor: kategori başlığının
+     hemen altında durduğu için sitenin tipografisiyle uyumlu olması,
+     yabancı bir banner blokundan daha iyi çalışır.
+     Gerçek reklamveren geldiğinde sponsor, title ve href güncellenir. */
+  category_sponsor: {
+    type: "display",
     sponsor: "Örnek Banka",
-    title: "Hesapladığınız tutara uygun teklifleri karşılaştırın",
-    excerpt: "Koşullar başvuru anında kurumca belirlenir. FinansIndex ürün tavsiyesi vermez.",
-    cta: "Teklifleri gör",
+    title: "Kredi ve Mevduat kategorisi Örnek Banka katkılarıyla sunuluyor",
+    cta: "Kampanyayı gör",
+    href: null,
   },
-  category_sponsor: null,
   newsletter_sponsor: null,
   /* Cep Etkisi Defteri içinde tek native blok. Sınırlı envanter olduğu için
      yüksek fiyatlanabilir; okuma akışını bozmadığından performansı iyi olur. */
@@ -828,6 +1246,18 @@ const AD_INVENTORY = {
 };
 
 /* ------------------------------------------------------------ 6. TAKSONOMİ */
+
+/* Açılır menü içerikleri.
+   Alt başlıklar ayrı sayfa değil; kategori sayfasına etiket filtresiyle
+   gider. Böylece var olmayan sayfaya bağlantı verilmez. */
+const SUBNAV = {
+  "parami-yonetiyorum": ["Bütçe", "Borç", "Kredi kartı", "Tasarruf"],
+  "kredi-ve-mevduat": ["Kredi", "Faiz", "Mevduat", "Tasarruf finansmanı"],
+  "yatirim": ["Altın", "Fon", "Döviz", "Portföy"],
+  "sigorta-ve-emeklilik": ["BES", "Emeklilik", "Sağlık", "Konut"],
+  "ekonomiyi-anla": ["Enflasyon", "Faiz", "Reel getiri", "Para politikası"],
+  "is-ve-girisim": ["KOBİ", "Nakit akışı", "Finansman"],
+};
 
 const CATEGORIES = [
   { slug: "gundem", name: "Gündem", desc: "Türkiye ve dünyadan, finansal hayatınızı etkileyebilecek gelişmeler." },
@@ -1371,6 +1801,201 @@ const ARTICLES = [
     },
   },
   {
+    id: "a13", slug: "fon-tasfiyesi-yatirimci-ne-yapmali",
+    title: "Fon tasfiyesi sürecinde yatırımcı ne yapmalı? Adım adım kontrol listesi",
+    summary: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecine girdi. Tasfiye, işleme kapatma ve temerrüt üç ayrı durum; hangisinde olduğunuzu bilmek hakkınızı belirliyor. Süreci ve kontrol etmeniz gerekenleri anlatıyoruz.",
+    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
+    published_at: "2026-10-05T09:00:00+03:00", updated_at: "2026-10-05T09:00:00+03:00",
+    read: 11, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    sponsored: false, disclaimer: "legal", related_tool: "enflasyon",
+    tags: ["fon", "SPK", "tasfiye", "yatırım", "TEFAS"],
+    source_name: "SPK / KAP",
+    source_urls: [
+      "SPK — 17.09.2026 tarihli 2026/60 ve 2026/61 sayılı Bültenler (tasfiye kararı ve usul esasları)",
+      "SPK — 20.09.2026 tarih ve 59/1710 sayılı karar (tasfiye süresinin 6 aya çıkarılması)",
+      "SPK — 30.09.2026 tarihli 2026/67 sayılı Bülten ve 01.10.2026 tarihli ara ödeme duyurusu",
+      "SPK — 28.08.2026 tarih ve 52/1589 sayılı karar (Yatırım Fonlarına İlişkin Rehber m.4.2.3 değişikliği)",
+      "KAP — İlgili portföy yönetim şirketlerinin katılma payı iade temerrüdü açıklamaları",
+      "SPK — 23.09.2026 tarihli basın duyurusu (etkilenen yatırımcı sayısı)",
+    ],
+    seo_title: "Fon tasfiyesinde yatırımcı ne yapmalı? Kontrol listesi | FinansIndex",
+    meta_description:
+      "SPK'nın tasfiye kararı sonrası yatırımcı hakları, ara ödeme mekanizması, tasfiye süresi ve kendi fonunuzda kontrol etmeniz gerekenler. Yatırım tavsiyesi içermez.",
+    featured_image: null,
+    hook: "131 fon tasfiyede, 455.758 yatırımcı etkilendi",
+    body: [
+      P("Sermaye Piyasası Kurulu, 17 Eylül 2026 tarihli kararlarıyla yedi portföy yönetim şirketinin TEFAS'ta işlem gören fonlarında alım satımı durdurdu ve bu fonlardan 131'i için tasfiye süreci başlattı. Kurulun 23 Eylül'deki açıklamasına göre süreçten **455.758 tekil yatırımcı** etkileniyor."),
+      P("Bu yazı bir haber özeti değil. Amacı iki soruya cevap vermek: tasfiye kapsamındaysanız süreç nasıl işliyor, ve kapsamda olmasanız bile kendi fonunuzda neye bakmanız gerekiyor."),
+
+      { type: "stats", items: [
+        { v: "131", k: "Tasfiye sürecindeki fon sayısı", sub: "17 Eylül 2026 kararı" },
+        { v: "455.758", k: "Etkilenen tekil yatırımcı", sub: "SPK, 23 Eylül açıklaması" },
+        { v: "6 ay", k: "Azami tasfiye süresi", sub: "Başlangıçta 3 aydı, 20 Eylül'de uzatıldı" },
+      ], caption: "Rakamlar SPK'nın resmî bülten ve duyurularına dayanır." },
+
+      H("Üç farklı durum var, karıştırmayın"),
+      P("Haberlerde sıklıkla birbirinin yerine kullanılıyor ama bunlar ayrı hukuki durumlar ve her birinde hakkınız farklı işliyor. Önce hangisinde olduğunuzu belirleyin."),
+      { type: "table", head: ["Durum", "Ne demek", "Yatırımcıya etkisi"],
+        rows: [
+          ["Tasfiye", "Fon malvarlığı nakde çevrilip dağıtılıyor", "Tasfiye bakiyesinden pay oranında ödeme alırsınız"],
+          ["İşleme kapatma", "Alım satım durduruldu ama tasfiye kararı yok", "Pay alıp satamazsınız; süreç sonunda yeniden açılabilir"],
+          ["İade temerrüdü", "Fon ödeme yapamıyor", "Ödeme gecikir, alacak hakkınız doğar"],
+        ] },
+      P("Bir fon aynı anda birden fazla durumda olabilir. Kendi fonunuzun hangi kategoride olduğunu SPK'nın ilgili bülten listesinden ve kurucu şirketin KAP açıklamalarından teyit edin."),
+
+      H("Süreç nasıl başladı?"),
+      P("SPK'nın tespitlerine göre, fiili dolaşım oranı düşük bazı hisselerde şirketlerin temel finansal büyüklükleriyle açıklanamayacak fiyat hareketleri gözlendi. Bu hareketlerde bazı serbest yatırım fonları ve para piyasası fonlarının rol oynadığı değerlendirildi."),
+      P("Kurul, **28 Ağustos 2026** tarihinde Yatırım Fonlarına İlişkin Rehber'de değişiklik yaparak borsa dışı repo ve ters repo işlemlerine taraf bazlı sınırlamalar getirdi. Yeni kuralların devreye girmesinin ardından bazı fonlarda likidite sorunu ortaya çıktı; eylül ortasında katılma payı iade ödemelerinde temerrüt açıklamaları KAP üzerinden yapıldı."),
+      P("17 Eylül, sürecin dönüm noktası oldu. SPK aynı gün hem işleme kapatma hem tasfiye kararlarını açıkladı; tasfiye işlemlerini yürütmek üzere Türkiye İş Bankası ve Ziraat Bankası yetkilendirildi."),
+
+      H("Ara ödeme mekanizması nasıl işliyor?"),
+      P("SPK, 30 Eylül tarihli kararı ve 1 Ekim tarihli duyurusuyla, nihai tasfiye beklenmeden ara ödeme yapılmasının önünü açtı. İşleyiş şöyle:"),
+      { type: "ul", items: [
+        "Ödeme, **mutabakatı tamamlanmış** katılma payı sahiplerine yapılır.",
+        "Tutar, Merkezi Kayıt Kuruluşu tarafından hesaplanan **net yatırım tutarı** esas alınarak belirlenir.",
+        "Her yatırımcıya, **her bir fon için ayrı ayrı**, en fazla **1 milyon TL** ödenir. İki ayrı fonda payınız varsa sınır her biri için ayrı uygulanır.",
+        "Net yatırım tutarınız 1 milyon TL'nin altındaysa tamamı ödenir.",
+        "Uygulama **para piyasası fonlarından** başlar; diğer fon türleri için takvim ayrıca açıklanacaktır.",
+        "Ara ödeme karşılığında katılma payı iadesi yapılmaz. Paylar nihai tasfiye ödemesi sırasında iade edilir.",
+        "Ödenen tutar, tasfiye sonunda hak kazanacağınız nihai tutardan mahsup edilir.",
+      ] },
+      { type: "note", t: "Ara ödeme, zararınızın karşılandığı anlamına gelmez. Nihai tutar, fon varlıklarının tasfiye sonucunda ulaştığı değere göre belirlenir ve yatırdığınız tutarın altında kalabilir." },
+
+      H("Tasfiye kapsamındaysanız: kontrol listesi"),
+      { type: "ul", items: [
+        "**Hangi fonda olduğunuzu kesinleştirin.** Fon kodunu SPK'nın 17 Eylül tarihli bültenindeki listeyle karşılaştırın. Benzer adlı fonlar farklı kurucu şirketlere ait olabilir.",
+        "**Mutabakat sürecini takip edin.** Ara ödeme, mutabakatı tamamlanmış yatırımcılara yapılıyor. Aracı kurumunuzdan veya kurucu şirketten mutabakat durumunuzu öğrenin.",
+        "**İşlem kayıtlarınızı saklayın.** 17 Eylül öncesinde verdiğiniz satış emirlerinin tarih ve saatleri, iptal edildiyse gerekçesi önem taşıyor. Ekran görüntüsü ve emir dekontlarını arşivleyin.",
+        "**Net yatırım tutarınızı not edin.** Hesaplama MKK verisine dayanıyor; kendi kaydınızla karşılaştırabilmek için yatırdığınız ve çektiğiniz tutarları çıkarın.",
+        "**SPK bültenlerini düzenli izleyin.** Süreç haftalık kararlarla ilerliyor; takvim ve kapsam değişebiliyor.",
+        "**Hukuki yol düşünüyorsanız süre işliyor.** Zamanaşımı ve başvuru süreleri konusunda avukata danışın. Bu yazı hukuki danışmanlık yerine geçmez.",
+      ] },
+
+      H("Kapsamda değilseniz: kendi fonunuzda neye bakmalısınız?"),
+      P("Asıl kalıcı ders burada. Bu kriz, fon seçerken genelde bakılmayan birkaç başlığın ne kadar belirleyici olduğunu gösterdi."),
+      { type: "ul", items: [
+        "**Kurucu portföy yönetim şirketi kim?** Fonun adı değil, arkasındaki şirket önemli. Aynı şirketin diğer fonlarında sorun varsa bu bir sinyaldir.",
+        "**Portföyde ne var?** Fon bilgilendirme dokümanında varlık dağılımı yazar. Fiili dolaşım oranı düşük hisselerde yoğunlaşma, likidite riskini artırır.",
+        "**Borsa dışı işlem var mı?** Repo ve ters repo gibi borsa dışı işlemler, portföyün görünenden farklı bir risk taşıdığına işaret edebilir.",
+        "**Fon büyüklüğü ve yatırımcı sayısı.** Çok küçük bir fonda tek bir büyük çıkış, kalan yatırımcıları etkileyebilir.",
+        "**Geçmiş getiri sıralaması ölçüt değildir.** Olağanüstü yüksek getiri, olağanüstü risk veya olağan dışı fiyatlama anlamına gelebilir.",
+        "**Likidite:** Paranızı ne kadar sürede çekebildiğinizi ve valör süresini önceden bilin. Kriz anında bu süre uzayabilir.",
+      ] },
+      { type: "quote", t: "Fonun geçmiş getirisi, gelecekteki performansının göstergesi değildir; portföyünün yapısı ise bugünkü riskinin göstergesidir." },
+
+      H("Borsa tarafında ne oldu?"),
+      P("Fonlardaki satış baskısı Borsa İstanbul'da sert fiyat hareketlerine yol açtı. SPK, 17 Eylül'de kredili sermaye piyasası işlemlerinde özkaynak oranının esnetilmesine ilişkin bir tedbir aldı ve bu tedbirin süresini 3 Ekim'de uzattı."),
+      P("Kredili işlem kullanıyorsanız, özkaynak oranı kurallarındaki değişiklikler teminat tamamlama çağrısı alıp almayacağınızı doğrudan etkiler. Aracı kurumunuzun güncel oranlarını kontrol edin."),
+
+      H("Nereden takip etmeli?"),
+      { type: "ul", items: [
+        "**SPK Bültenleri** — kararların resmî metni burada yayımlanır. Haber özeti yerine bülten numarasıyla takip edin.",
+        "**KAP** — kurucu portföy yönetim şirketlerinin açıklamaları, temerrüt ve süreç bildirimleri.",
+        "**TEFAS** — fonun işlem durumu ve geçmiş verileri.",
+        "**Aracı kurumunuz** — mutabakat ve ödeme süreciyle ilgili size özel bilgi yalnızca buradan gelir.",
+      ] },
+      P("Süreç devam ediyor ve kararlar haftalık olarak güncelleniyor. Bu yazıdaki tarihli bilgiler yayın tarihi itibarıyla geçerlidir; güncel durumu her zaman SPK'nın kendi duyurularından teyit edin."),
+    ],
+    impact: {
+      lead: "Tasfiye kapsamındaysanız ara ödeme hakkınız doğdu; kapsamda değilseniz kendi fonunuzun kurucu şirketini ve portföy yapısını kontrol etme zamanı.",
+      points: [
+        "Fon kodunuzu SPK'nın tasfiye listesiyle karşılaştırın; benzer adlar yanıltabilir.",
+        "17 Eylül öncesi verdiğiniz emirlerin kayıtlarını ve ekran görüntülerini saklayın.",
+        "Kendi fonlarınızın bilgilendirme dokümanındaki varlık dağılımını ve kurucu şirketini bugün gözden geçirin.",
+      ],
+    },
+  },
+  {
+    id: "a14", slug: "borsa-manipulasyonu-nasil-korunulur",
+    title: "Borsada manipülasyon nasıl işler ve yatırımcı kendini nasıl korur?",
+    summary: "Fiili dolaşım oranı düşük hisselerde fiyat nasıl şişer, çıkış neden tıkanır? Mekanizmayı ve kendi portföyünüzde kontrol edebileceğiniz somut başlıkları anlatıyoruz. Ürün önerisi içermez.",
+    category: "yatirim", contentType: "Rehber", author: "burcu-berk-arslan",
+    published_at: "2026-10-05T11:00:00+03:00", updated_at: "2026-10-05T11:00:00+03:00",
+    read: 10, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "burcu-berk-arslan",
+    sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
+    tags: ["borsa", "manipülasyon", "risk", "portföy", "likidite"],
+    source_name: "SPK / Borsa İstanbul",
+    source_urls: [
+      "6362 sayılı Sermaye Piyasası Kanunu — piyasa dolandırıcılığı ve bilgi suistimaline ilişkin hükümler",
+      "SPK — Yatırım Fonlarına İlişkin Rehber",
+      "Borsa İstanbul — Fiili dolaşımdaki pay oranı ve Volatilite Bazlı Tedbir Sistemi duyuruları",
+      "KAP — Şirket bildirimleri ve fon bilgilendirme dokümanları",
+    ],
+    seo_title: "Borsa manipülasyonu nasıl işler, nasıl korunulur? | FinansIndex",
+    meta_description:
+      "Fiili dolaşım oranı düşük hisselerde manipülasyon mekanizması, uyarı sinyalleri ve portföyünüzde kontrol edebileceğiniz başlıklar. Yatırım tavsiyesi niteliğinde değildir.",
+    featured_image: null,
+    hook: "Risksiz seçenek yok; size uyan riski seçmek var",
+    body: [
+      P("Manipülasyon haberleri çıktığında ilk refleks genellikle şu oluyor: “Borsadan çıkıp güvenli bir yere geçeyim.” Bu refleks anlaşılır ama iki sorun taşıyor. Birincisi, **risksiz varlık diye bir şey yok**; her seçenek farklı bir riski taşır. İkincisi, paniğe dayalı kararlar genellikle en kötü anda verilir."),
+      P("Bu yazı size nereye yatırım yapacağınızı söylemez. Manipülasyonun nasıl işlediğini ve kendi portföyünüzde hangi başlıkları kontrol edebileceğinizi anlatır."),
+
+      H("Manipülasyon neden küçük hisselerde olur?"),
+      P("Belirleyici kavram **fiili dolaşım oranı**. Bir şirketin toplam paylarının ne kadarının borsada serbestçe alınıp satılabildiğini gösterir. Kalan kısım kurucu ortaklarda, bağlı şirketlerde veya uzun vadeli yatırımcılarda kilitli durur."),
+      P("Fiili dolaşımdaki pay miktarı küçükse, görece düşük bir alım bile fiyatı belirgin şekilde yukarı taşır. Aynı mekanizma ters yönde de çalışır: satışa geçildiğinde alıcı bulunamaz ve fiyat hızla düşer."),
+      { type: "chart", title: "Aynı büyüklükte alım, farklı dolaşım oranlarında fiyata etkisi",
+        unit: "%", dec: 0, highlight: 0,
+        rows: [
+          { k: "Dolaşım %5", sub: "Çok dar pazar", v: 60 },
+          { k: "Dolaşım %20", sub: "Dar pazar", v: 18 },
+          { k: "Dolaşım %50", sub: "Derin pazar", v: 6 },
+          { k: "Dolaşım %80", sub: "Çok derin pazar", v: 3 },
+        ],
+        note: "Dar pazarda fiyatı hareket ettirmek kolaydır; zor olan, pozisyondan çıkmaktır.",
+        caption: "Mekanizmayı göstermek için hazırlanmış örnek. Gerçek etki hisseye, işlem hacmine ve piyasa koşullarına göre değişir." },
+
+      H("Asıl risk yükselişte değil, çıkışta"),
+      P("Fiyatın yükselmesi yatırımcıyı rahatlatır, oysa risk tam o sırada birikir. Dar bir pazarda pozisyonunuz büyüdükçe, o pozisyondan çıkabilmek için gereken alıcı sayısı da büyür."),
+      P("Kâğıt üzerindeki kazanç ile gerçekleşen kazanç farklı şeylerdir. Ekranda görünen değer, **o fiyattan satabildiğiniz** sürece gerçektir. Satış emriniz karşılanmıyorsa o değer bir temenni olur."),
+      { type: "quote", t: "Dar pazarda fiyat sizi içeri davet eder; sorun dışarı çıkarken başlar." },
+
+      H("Kendi kontrol edebileceğiniz sinyaller"),
+      P("Aşağıdakiler kesin işaret değil, ama birkaçı bir arada görülüyorsa ek inceleme gerektirir. Hepsi kamuya açık kaynaklardan kontrol edilebilir."),
+      { type: "ul", items: [
+        "**Fiyat hareketi şirketin finansallarıyla açıklanamıyor.** Bilançoda, satışlarda veya kârlılıkta karşılığı olmayan sert yükselişler.",
+        "**Fiili dolaşım oranı düşük.** Borsa İstanbul bu oranı yayımlar; düşük oran, fiyatın az işlemle oynayabileceği anlamına gelir.",
+        "**İşlem hacmi dar ama fiyat çok hareketli.** Az alıcı-satıcıyla büyük fiyat değişimi, derinliğin zayıf olduğunu gösterir.",
+        "**Hikâye var, veri yok.** Sosyal medyada yoğun ilgi ama KAP'ta bunu destekleyen bir bildirim bulunmuyor.",
+        "**Tedbir listesine giriyor.** Borsanın volatilite bazlı tedbir uygulamasına alınan paylar, olağan dışı hareket sinyali taşır.",
+        "**Fonlarda yoğunlaşma.** Bir fonun portföyünde tek bir küçük hissenin ağırlığı yüksekse, o fonun likiditesi de o hisseye bağlanmıştır.",
+      ] },
+
+      H("“Güvenli liman” neden yanıltıcı bir çerçeve?"),
+      P("Risk ortadan kalkmaz, yalnızca biçim değiştirir. Soru “risksiz olan hangisi” değil, **“hangi riski taşıyabilirim”** olmalı."),
+      { type: "table", head: ["Varlık", "Azalan risk", "Devam eden risk"],
+        rows: [
+          ["Mevduat", "Fiyat dalgalanması yok", "Reel getiri enflasyonun altında kalabilir"],
+          ["Altın", "Tek şirkete bağlı değil", "Fiyat dalgalanması ve alış-satış makası"],
+          ["Döviz", "TL'ye bağlı değil", "Kur hareketi iki yönlü; reel getiri garanti değil"],
+          ["Geniş endeks fonu", "Tek hisse riski dağılır", "Piyasanın tamamı düşerse düşer"],
+          ["Tek hisse", "—", "Şirket riski, likidite riski, manipülasyon riski"],
+        ] },
+      P("Bu tablo bir sıralama değildir; hangisinin size uygun olduğu vade, nakit ihtiyacı ve dalgalanmaya tahammülünüzle belirlenir. Paraya altı ay sonra ihtiyacınız varsa, uzun vadede mantıklı olan bir araç sizin için uygun olmayabilir."),
+
+      H("Yapısal korunma: dört başlık"),
+      P("Hangi aracı seçerseniz seçin, zararı sınırlayan şey genellikle seçimin kendisi değil, portföyün kurulumudur."),
+      { type: "ul", items: [
+        "**Pozisyon büyüklüğü.** Tek bir varlık portföyünüzün büyük bölümünü oluşturuyorsa, o varlıkla ilgili her haber sizi doğrudan etkiler.",
+        "**Likidite planı.** Yakın vadede ihtiyacınız olacak parayı, satışı zaman alabilecek araçlarda tutmayın.",
+        "**Vade uyumu.** Yatırımın vadesi ile paraya ihtiyaç duyacağınız tarih örtüşmeli. Örtüşmediğinde en kötü anda satmak zorunda kalırsınız.",
+        "**Acil durum fonu.** Ayrı tutulan ve getiri hedefi gözetilmeyen bir nakit tamponu, diğer varlıkları zamansız satmanızı engeller.",
+      ] },
+
+      H("Düzenleme neyi korur, neyi korumaz?"),
+      P("Sermaye piyasası mevzuatı piyasa dolandırıcılığını suç olarak tanımlar ve SPK inceleme, işlem yasağı, faaliyet durdurma gibi yetkiler kullanır. Ancak düzenleme **zararı geri getirmeyi garanti etmez.**"),
+      P("Denetim çoğunlukla olaydan sonra devreye girer; soruşturma ve tasfiye süreçleri aylarca sürebilir. Yani mevzuatın varlığı, kendi kontrolünüzü yapmanızın yerine geçmez."),
+      P("Bu içerik genel bilgilendirme amaçlıdır. Hangi yatırım aracının sizin için uygun olduğu, kişisel durumunuza bağlıdır ve bu yazı yatırım tavsiyesi niteliği taşımaz."),
+    ],
+    impact: {
+      lead: "Manipülasyon riski en çok dar pazarlarda birikir; korunmanın yolu araç değiştirmek değil, pozisyon ve likidite planını kontrol etmektir.",
+      points: [
+        "İlgilendiğiniz hissenin fiili dolaşım oranını ve işlem hacmini kontrol edin.",
+        "Tek bir varlığın portföyünüzdeki ağırlığını kendiniz sınırlayın.",
+        "Yakın vadede ihtiyaç duyacağınız parayı satışı zaman alabilecek araçlarda tutmayın.",
+      ],
+    },
+  },
+  {
     id: "a10", slug: "sponsorlu-dijital-bankacilik-alaskanliklari",
     title: "Dijital bankacılık alışkanlıkları: işlemlerin çevrim içine taşınması bütçeyi nasıl değiştiriyor?",
     summary: "Şube işlemlerinin dijitale kayması, masraf yapısından bildirim alışkanlıklarına kadar birçok kalemi etkiliyor. Bu içerik Örnek Banka iş birliğiyle hazırlanmıştır.",
@@ -1413,6 +2038,18 @@ const bySlug = (s) => ARTICLES.find((a) => a.slug === s);
 /* Cep Etkisi Defteri — ana sayfanın imza bölümü */
 const LEDGER = [
   {
+    what: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecinde; süreçten 455.758 tekil yatırımcı etkileniyor.",
+    how: "Tasfiye kapsamındaysanız ara ödeme hakkınız doğdu: mutabakatı tamamlanan yatırımcılara, her fon için ayrı olmak üzere en fazla 1 milyon TL ödeniyor. Kapsamda değilseniz kendi fonunuzun kurucu şirketini ve portföy yapısını kontrol edin.",
+    tags: ["Fon", "SPK"], warn: true,
+    article: "a13", tool: "enflasyon",
+  },
+  {
+    what: "Manipülasyon riski en çok fiili dolaşım oranı düşük hisselerde birikiyor.",
+    how: "Dar pazarda küçük bir alım fiyatı belirgin şekilde yukarı taşır; sorun satışa geçildiğinde alıcı bulunamamasıdır. Korunmanın yolu araç değiştirmek değil, tek varlığın portföydeki ağırlığını ve likidite planını kontrol etmektir.",
+    tags: ["Borsa", "Risk"],
+    article: "a14", tool: "enflasyon",
+  },
+  {
     what: "Kredi kartı borcunu yalnızca asgari tutarla çevirenler, borcu kapatmıyor; ödeme takvimini uzatıyor.",
     how: "Asgari ödeme sonrası kalan bakiyeye akdi faiz işler. 25.000 TL borçta, aylık %4 faizle sadece asgariyi ödemek borcu kapatmayı 47 aya çıkarır. Aylık 2.000 TL ek ödeme bu süreyi 8 aya indirir.",
     tags: ["Kredi kartı", "Borç"], warn: true,
@@ -1439,6 +2076,7 @@ const LEDGER = [
 ];
 
 const GUIDES = [
+  { id: "a13", label: "Güncel rehber" },
   { id: "a12", label: "Kredi rehberi" },
   { id: "a11", label: "Sözleşme rehberi" },
   { id: "a2", label: "Borç rehberi" },
@@ -1588,6 +2226,15 @@ function StatRow({ items, caption }) {
  */
 function AdSlot({ placementId, pageType, className = "" }) {
   const creative = AD_INVENTORY[placementId];
+
+  /* Öncelik sırası:
+     1) GAM açık ve bu placement için boyut tanımlıysa → GAM sunar.
+        Ajans etiketleri, üçüncü taraf sayımı ve raporlama oradan yönetilir.
+     2) GAM kapalıysa → koddaki doğrudan satış kreatifi gösterilir.
+     3) İkisi de yoksa → hiçbir şey render edilmez. */
+  if (GAM.enabled && GAM.sizes[placementId]) {
+    return <div className={className}><GamSlot placementId={placementId} pageType={pageType} /></div>;
+  }
   const ref = useRef(null);
   const seen = useRef(false);
 
@@ -1743,6 +2390,87 @@ function RailAds({ pageType }) {
   return <>{rail("rail_left", left, "l")}{rail("rail_right", right, "r")}</>;
 }
 
+/**
+ * Çerez onay bandı (CMP).
+ *
+ * KVKK açısından zorunlu: reklam ve analitik çerezleri açık rıza olmadan
+ * çalıştırılamaz. Zorunlu çerezler onay gerektirmez ve kapatılamaz.
+ *
+ * Tasarım kararı: "Tümünü kabul et" ile "Reddet" aynı görsel ağırlıkta.
+ * Reddetme seçeneğini gizlemek veya zorlaştırmak, rızanın geçerliliğini
+ * tartışmalı hâle getirir.
+ */
+function ConsentBanner() {
+  const consent = useConsent();
+  const [open, setOpen] = useState(false);
+  const [detail, setDetail] = useState(false);
+  const [analytics, setAnalytics] = useState(true);
+  const [ads, setAds] = useState(true);
+
+  useEffect(() => { if (consent === null) setOpen(true); }, [consent]);
+
+  const save = (v) => {
+    writeConsent({ ...v, at: new Date().toISOString(), version: 1 });
+    track("consent_update", { analytics_consent: v.analytics, ads_consent: v.ads });
+    setOpen(false);
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fi-cmp" role="dialog" aria-modal="false" aria-label="Çerez tercihleri">
+      <div className="fi-cmp-in">
+        <div className="fi-cmp-b">
+          <h2>Çerez tercihleriniz</h2>
+          <p>
+            Sitenin çalışması için zorunlu çerezleri kullanıyoruz. Ziyaret ölçümü ve reklam
+            çerezleri ise yalnızca onayınızla çalışır. Tercihinizi istediğiniz zaman
+            değiştirebilirsiniz.
+          </p>
+
+          {detail && (
+            <div className="fi-cmp-opts">
+              <div className="fi-cmp-opt">
+                <div>
+                  <strong>Zorunlu çerezler</strong>
+                  <span>Sayfanın çalışması için gereklidir, kapatılamaz.</span>
+                </div>
+                <span className="fi-cmp-fixed">Her zaman açık</span>
+              </div>
+              <label className="fi-cmp-opt">
+                <div>
+                  <strong>Analitik çerezler</strong>
+                  <span>Hangi içeriklerin okunduğunu ölçmemizi sağlar.</span>
+                </div>
+                <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} />
+              </label>
+              <label className="fi-cmp-opt">
+                <div>
+                  <strong>Reklam çerezleri</strong>
+                  <span>Reklam gösterim ve tıklama ölçümü için kullanılır.</span>
+                </div>
+                <input type="checkbox" checked={ads} onChange={(e) => setAds(e.target.checked)} />
+              </label>
+            </div>
+          )}
+        </div>
+
+        <div className="fi-cmp-acts">
+          {detail ? (
+            <button className="fi-btn fi-btn-p" onClick={() => save({ analytics, ads })}>Seçimimi kaydet</button>
+          ) : (
+            <>
+              <button className="fi-btn fi-btn-p" onClick={() => save({ analytics: true, ads: true })}>Tümünü kabul et</button>
+              <button className="fi-btn fi-btn-o" onClick={() => save({ analytics: false, ads: false })}>Reddet</button>
+              <button className="fi-cmp-link" onClick={() => setDetail(true)}>Ayarla</button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StickyFooterAd({ pageType }) {
   const creative = AD_INVENTORY.mobile_sticky_footer;
   const [closed, setClosed] = useState(false);
@@ -1797,6 +2525,7 @@ function ArticleCard({ a, go, source }) {
             <span className="fi-cat">{catName(a.category)}</span>
             <span className="fi-dot" />
             <span>{a.read} dk</span>
+            {a.auto && <span className="fi-badge fi-b-auto">Otomatik · Canlı veri</span>}
             {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
           </div>
           <h3 className="fi-ttl">{a.title}</h3>
@@ -2183,6 +2912,87 @@ const toolById = (id) => TOOLS.find((t) => t.id === id);
 
 /* --------------------------------------------------------- 12. ORTAK PARÇALAR */
 
+/**
+ * Sparkline — gerçek TCMB serisinden çizilir.
+ * Veri 3 noktadan azsa hiçbir şey çizilmez; dekoratif çizgi üretilmez.
+ */
+function Sparkline({ data, up }) {
+  if (!data || data.length < 3) return null;
+  const w = 150, h = 40;
+  const min = Math.min(...data), max = Math.max(...data);
+  const span = max - min || 1;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((v - min) / span) * (h - 6) - 3;
+    return [x, y];
+  });
+  const line = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `${line} L${w},${h} L0,${h} Z`;
+  const col = up ? "#4ECB8D" : "#F08977";
+  const gid = `sp${Math.random().toString(36).slice(2, 8)}`;
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="fi-spark" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={col} stopOpacity=".32" />
+          <stop offset="100%" stopColor={col} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${gid})`} />
+      <path d={line} fill="none" stroke={col} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Büyük piyasa bandı — header'ın altında, koyu zeminde.
+ * Şeritten farkı: rakamlar büyük, değişim renkli, yanında gerçek seri grafiği.
+ */
+function MarketBand({ market }) {
+  const { status, items } = market;
+  if (status === "loading") {
+    return <div className="fi-band"><div className="fi-wrap"><div className="fi-band-in">
+      <span className="fi-band-msg">Piyasa verileri yükleniyor…</span></div></div></div>;
+  }
+  if (status === "error" || !items.length) {
+    return <div className="fi-band"><div className="fi-wrap"><div className="fi-band-in">
+      <span className="fi-band-msg">Piyasa verisi şu an alınamıyor</span></div></div></div>;
+  }
+
+  return (
+    <div className="fi-band">
+      <div className="fi-wrap">
+        <div className="fi-band-in" role="region" aria-label="Piyasa göstergeleri">
+          {items.slice(0, 6).map((d) => {
+            const has = d.d != null && Math.abs(d.d) >= 0.005;
+            const up = has && d.d >= 0;
+            return (
+              <div className="fi-band-c" key={d.k}>
+                <div className="fi-band-txt">
+                  <div className="fi-band-k">
+                    {d.k}
+                    {has && <span className={`fi-band-ar ${up ? "up" : "down"}`} aria-hidden="true">{up ? "▲" : "▼"}</span>}
+                  </div>
+                  <div className="fi-band-row">
+                    <span className="fi-band-v">{num(d.v, d.v >= 1000 ? 0 : 2)}</span>
+                    {has && (
+                      <span className={`fi-band-d ${up ? "up" : "down"}`}>
+                        {up ? "+" : "−"}%{num(Math.abs(d.d), 2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <Sparkline data={d.series} up={up} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MarketTicker({ market }) {
   const { status, items } = market;
 
@@ -2333,38 +3143,80 @@ function Logo({ go }) {
 
 function Header({ route, go, onSearch, market }) {
   const [open, setOpen] = useState(false);
+  const [drop, setDrop] = useState(null);
+  const closeTimer = useRef(null);
   const close = () => setOpen(false);
-  const nav = (r, label) => { track("category_click", { article_category: label, traffic_source: "header" }); go(r); close(); };
+
+  const nav = (r, label) => {
+    track("category_click", { article_category: label, traffic_source: "header" });
+    go(r); close(); setDrop(null);
+  };
+
+  /* Açılır menü: fare ayrıldığında küçük gecikmeyle kapanır, böylece
+     menüden alt başlığa giderken kapanmaz. Klavye için focus/blur da bağlı. */
+  const enter = (slug) => { clearTimeout(closeTimer.current); setDrop(slug); };
+  const leave = () => { closeTimer.current = setTimeout(() => setDrop(null), 180); };
 
   return (
     <>
-      <MarketTicker market={market} />
       <header className="fi-hd">
         <div className="fi-wrap">
           <div className="fi-hd-top">
+            <button className="fi-ico fi-burger" onClick={() => setOpen(true)} aria-label="Menüyü aç" aria-expanded={open}>
+              <svg width="20" height="20" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" strokeLinecap="round" /></svg>
+            </button>
             <Logo go={go} />
-            <span className="fi-tag">Finansı anlamanın en kolay yolu</span>
+            <span className="fi-tag">Finansı anlamanın<br />en kolay yolu</span>
             <div className="fi-hd-acts">
               <button className="fi-ico" onClick={onSearch} aria-label="Sitede ara">
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6" /><path d="m13.5 13.5 4 4" strokeLinecap="round" /></svg>
               </button>
-              <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools" })} style={{ display: "inline-flex" }}>Araçlar</button>
+              <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools" })}>Araçlar</button>
               <button className="fi-btn fi-btn-g" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
-              <button className="fi-ico fi-burger" onClick={() => setOpen(true)} aria-label="Menüyü aç" aria-expanded={open}>
-                <svg width="20" height="20" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" strokeLinecap="round" /></svg>
-              </button>
             </div>
           </div>
+
           <nav className="fi-nav" aria-label="Kategoriler">
-            {CATEGORIES.map((c) => (
-              <button key={c.slug}
-                aria-current={route.n === "category" && route.slug === c.slug ? "page" : undefined}
-                onClick={() => nav({ n: "category", slug: c.slug }, c.name)}>{c.name}</button>
-            ))}
-            <button aria-current={route.n === "tools" ? "page" : undefined} onClick={() => nav({ n: "tools" }, "Finansal Araçlar")}>Finansal Araçlar</button>
+            {CATEGORIES.map((c) => {
+              const subs = SUBNAV[c.slug];
+              const isOpen = drop === c.slug;
+              return (
+                <div className="fi-nav-i" key={c.slug}
+                  onMouseEnter={() => subs && enter(c.slug)} onMouseLeave={leave}>
+                  <button
+                    aria-current={route.n === "category" && route.slug === c.slug ? "page" : undefined}
+                    aria-expanded={subs ? isOpen : undefined}
+                    onClick={() => nav({ n: "category", slug: c.slug }, c.name)}
+                    onFocus={() => subs && enter(c.slug)}>
+                    {c.name}
+                    {subs && <svg className="fi-nav-ch" width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  </button>
+                  {subs && isOpen && (
+                    <div className="fi-drop" onMouseEnter={() => enter(c.slug)} onMouseLeave={leave}>
+                      <p className="fi-drop-d">{c.desc}</p>
+                      <ul>
+                        {subs.map((t) => (
+                          <li key={t}>
+                            <button onClick={() => nav({ n: "search", q: t }, c.name)}>{t}</button>
+                          </li>
+                        ))}
+                      </ul>
+                      <button className="fi-drop-all" onClick={() => nav({ n: "category", slug: c.slug }, c.name)}>
+                        Tüm {c.name} içerikleri →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <div className="fi-nav-i">
+              <button aria-current={route.n === "tools" ? "page" : undefined} onClick={() => nav({ n: "tools" }, "Finansal Araçlar")}>Finansal Araçlar</button>
+            </div>
           </nav>
         </div>
       </header>
+
+      <MarketBand market={market} />
 
       <div className={`fi-drawer ${open ? "on" : ""}`} role="dialog" aria-modal="true" aria-label="Menü" hidden={!open}>
         <div className="fi-drawer-bg" onClick={close} />
@@ -2608,6 +3460,9 @@ function Footer({ go }) {
           <span>© {new Date().getFullYear()} FinansIndex</span>
           <span>·</span>
           <span>İçerikler genel bilgilendirme amaçlıdır, yatırım tavsiyesi değildir.</span>
+          <button className="fi-devlog" onClick={() => { writeConsent(null); window.location.reload(); }}>
+            Çerez tercihlerini değiştir
+          </button>
           <button className="fi-devlog" onClick={() => setShowLog((s) => !s)} aria-expanded={showLog}>
             Ölçümleme günlüğü ({log.length})
           </button>
@@ -2627,7 +3482,7 @@ function Footer({ go }) {
 
 /* ------------------------------------------------------------- 13. ANA SAYFA */
 
-function Home({ go, market }) {
+function Home({ go, market, daily }) {
   useSeo({
     title: "FinansIndex — Finansı anlamanın en kolay yolu",
     description: "Ekonomi ve finans gelişmelerinin bütçenize etkisini sade bir dille anlatıyoruz. Kredi, mevduat, yatırım ve sigorta rehberleri, çalışan hesaplama araçları.",
@@ -2638,12 +3493,13 @@ function Home({ go, market }) {
   const [filter, setFilter] = useState("hepsi");
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
-  const hero = byId("a1");
-  const side = ["a12", "a2", "a11"].map(byId);
+  const hero = byId("a13");
+  const side = ["a14", "a12", "a11"].map(byId);
   const feed = useMemo(() => {
     const list = ARTICLES.filter((a) => a.id !== hero.id);
-    return filter === "hepsi" ? list : list.filter((a) => a.category === filter);
-  }, [filter, hero.id]);
+    const all = daily ? [daily, ...list] : list;
+    return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
+  }, [filter, hero.id, daily]);
 
   return (
     <main id="icerik">
@@ -2716,7 +3572,7 @@ function Home({ go, market }) {
             <div className="fi-ledger-hd">
               <div>
                 <div className="fi-eyebrow">Cep Etkisi Defteri</div>
-                <h2 id="ledger-h">Bugün cebini etkileyenler</h2>
+                <h2 id="ledger-h">Bugün cebini etkileyenler<span className="fi-count">{LEDGER.length}</span></h2>
                 <p>Günün gelişmeleri, bütçenize dokunduğu yerden anlatılıyor. Her madde bir hesaplama aracına bağlanır.</p>
               </div>
               <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
@@ -2757,7 +3613,7 @@ function Home({ go, market }) {
           <div className="fi-sh">
             <div>
               <div className="fi-eyebrow">Canlı piyasa</div>
-              <h2 className="fi-h2" id="mkt-h">Döviz ve kıymetli maden</h2>
+              <h2 className="fi-h2" id="mkt-h">Döviz ve kıymetli maden<span className="fi-count">{market.items.length || "—"}</span></h2>
             </div>
           </div>
           <MarketPanel market={market} />
@@ -2769,7 +3625,7 @@ function Home({ go, market }) {
             <div className="fi-calcband-hd">
               <div>
                 <div className="fi-eyebrow">Hesapla</div>
-                <h2 id="calc-h">Karar vermeden önce rakamı görün</h2>
+                <h2 id="calc-h">Karar vermeden önce rakamı görün<span className="fi-count">{TOOLS.filter((t) => t.ready).length} araç</span></h2>
                 <p>Oranları siz girersiniz. Girdiğiniz hiçbir veri sunucularımıza gönderilmez, hesaplama tarayıcınızda yapılır.</p>
               </div>
               <button className="fi-more" onClick={() => go({ n: "tools" })}>Tüm araçlar →</button>
@@ -2793,7 +3649,7 @@ function Home({ go, market }) {
           <div className="fi-sh">
             <div>
               <div className="fi-eyebrow">Güncel</div>
-              <h2 className="fi-h2" id="feed-h">Son içerikler</h2>
+              <h2 className="fi-h2" id="feed-h">Son içerikler<span className="fi-count">{feed.length}</span></h2>
             </div>
           </div>
           <div className="fi-filters" role="group" aria-label="Kategori filtresi">
@@ -2848,9 +3704,17 @@ function Home({ go, market }) {
 
 /* ---------------------------------------------------------- 14. KATEGORİ SAYFASI */
 
-function Category({ slug, go }) {
+/* Kategori sponsorluğu, satıldığı kategoriyle eşleşmelidir.
+   Tek bir placement ID kullanıp her kategoride göstermek, sponsora
+   satmadığı yerlerde görünürlük vermek olur. Bu eşleme onu engeller. */
+const CATEGORY_SPONSOR_SLUG = "kredi-ve-mevduat";
+
+function Category({ slug, go, daily }) {
   const cat = CATEGORIES.find((c) => c.slug === slug);
-  const list = ARTICLES.filter((a) => a.category === slug);
+  const list = useMemo(() => {
+    const base = ARTICLES.filter((a) => a.category === slug);
+    return daily && daily.category === slug ? [daily, ...base] : base;
+  }, [slug, daily]);
   useSeo({
     title: `${cat?.name || "Kategori"} haberleri ve rehberleri | FinansIndex`,
     description: cat?.desc || "",
@@ -2875,7 +3739,7 @@ function Category({ slug, go }) {
           <div className="fi-eyebrow">Kategori</div>
           <h1>{cat.name}</h1>
           <p>{cat.desc}</p>
-          <AdSlot placementId="category_sponsor" pageType="category" className="" />
+          {slug === CATEGORY_SPONSOR_SLUG && <AdSlot placementId="category_sponsor" pageType="category" className="fi-catspon" />}
         </div>
         <section className="fi-sec" style={{ borderTop: 0 }}>
           <div className="fi-2col">
@@ -2904,8 +3768,8 @@ function Category({ slug, go }) {
 
 /* ------------------------------------------------------------ 15. MAKALE SAYFASI */
 
-function Article({ slug, go }) {
-  const a = bySlug(slug);
+function Article({ slug, go, daily }) {
+  const a = (daily && daily.slug === slug) ? daily : bySlug(slug);
   const bodyRef = useRef(null);
   const marks = useRef({ 50: false, 90: false });
 
@@ -2991,7 +3855,9 @@ function Article({ slug, go }) {
               </div>
               <div style={{ borderLeft: "1px solid var(--line)", paddingLeft: 14, marginLeft: 4 }}>
                 <div className="fi-byline-r">Yayın: {dateTR(a.published_at)}</div>
-                {a.updated_at !== a.published_at && <div className="fi-byline-r">Güncelleme: {dateTR(a.updated_at)}</div>}
+                {a.auto
+                  ? <div className="fi-byline-r">Güncelleme: {new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(a.updated_at))}</div>
+                  : a.updated_at !== a.published_at && <div className="fi-byline-r">Güncelleme: {dateTR(a.updated_at)}</div>}
                 <div className="fi-byline-r">{a.read} dakika okuma</div>
                 <div className="fi-byline-r" style={{ color: "var(--petrol)", fontWeight: 600 }}>{AI_NOTE.short}</div>
               </div>
@@ -3062,7 +3928,19 @@ function Article({ slug, go }) {
                 <ol>{a.source_urls.map((s, i) => <li key={i}>{s}</li>)}</ol>
               </div>
 
-              <div className="fi-aibox">
+              {a.auto && (
+                <div className="fi-autobox">
+                  <h3>Bu içerik nasıl hazırlandı?</h3>
+                  <p>
+                    Bu sayfa, TCMB'nin resmî döviz kuru servisinden ve serbest piyasa kıymetli maden
+                    verisinden <strong>otomatik olarak</strong> üretilmektedir. Metindeki tüm rakamlar
+                    doğrudan kaynaktan alınır; tahmin, yorum veya yön beklentisi içermez. Veri
+                    güncellendikçe sayfa kendiliğinden yenilenir.
+                  </p>
+                </div>
+              )}
+
+              {!a.auto && <div className="fi-aibox">
                 <h3>
                   <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M10 2.5 12 8l5.5 2-5.5 2-2 5.5-2-5.5L2.5 10 8 8z" strokeLinejoin="round" /></svg>
                   Nasıl hazırlandı?
@@ -3071,7 +3949,7 @@ function Article({ slug, go }) {
                 <p>
                   <b>Doğrulayan:</b> {AUTHORS[a.reviewed_by]?.name || AUTHORS[a.author].name} · <b>Doğrulama tarihi:</b> {dateTR(a.updated_at)} · <b>Risk düzeyi:</b> {a.risk_level}
                 </p>
-              </div>
+              </div>}
 
               {a.disclaimer && <p className="fi-disc">{DISCLAIMERS[a.disclaimer]}</p>}
               {a.correction_history?.length > 0 && (
@@ -3360,9 +4238,10 @@ function MediaKit({ go }) {
 
 /* ------------------------------------------------------- 18. ARAMA / STATİK / 404 */
 
-function SearchPage({ q, go }) {
+function SearchPage({ q, go, daily }) {
   useSeo({ title: `"${q}" için arama sonuçları | FinansIndex`, description: `FinansIndex içinde ${q} araması sonuçları.`, path: `/arama?q=${encodeURIComponent(q)}` });
-  const results = ARTICLES.filter((a) =>
+  const pool = daily ? [daily, ...ARTICLES] : ARTICLES;
+  const results = pool.filter((a) =>
     (a.title + " " + a.summary + " " + a.tags.join(" ") + " " + catName(a.category)).toLowerCase().includes(q.toLowerCase())
   );
   return (
@@ -3441,6 +4320,9 @@ export default function FinansIndex() {
   const [route, setRoute] = useState({ n: "home" });
   const [search, setSearch] = useState(false);
   const market = useMarket();
+  /* Otomatik günlük içerik canlı veriden üretilir ve statik içeriklerle
+     aynı şekilde dolaşır: akışta, kategoride, aramada ve kendi sayfasında. */
+  const daily = useMemo(() => buildDailyMarketArticle(market), [market]);
 
   const go = useCallback((r) => {
     setRoute(r);
@@ -3452,12 +4334,12 @@ export default function FinansIndex() {
 
   const page = (() => {
     switch (route.n) {
-      case "home": return <Home go={go} market={market} />;
-      case "category": return <Category slug={route.slug} go={go} />;
-      case "article": return <Article slug={route.slug} go={go} />;
+      case "home": return <Home go={go} market={market} daily={daily} />;
+      case "category": return <Category slug={route.slug} go={go} daily={daily} />;
+      case "article": return <Article slug={route.slug} go={go} daily={daily} />;
       case "tools": return <Tools activeTool={route.tool} go={go} />;
       case "mediakit": return <MediaKit go={go} />;
-      case "search": return <SearchPage q={route.q} go={go} />;
+      case "search": return <SearchPage q={route.q} go={go} daily={daily} />;
       case "static": return <StaticPage slug={route.slug} go={go} />;
       default: return <NotFound go={go} />;
     }
@@ -3471,6 +4353,7 @@ export default function FinansIndex() {
       {page}
       {search && <SearchOverlay onClose={() => setSearch(false)} go={go} />}
       <Footer go={go} />
+      <ConsentBanner />
       <RailAds pageType={route.n} />
       <StickyFooterAd pageType={route.n} />
     </div>
