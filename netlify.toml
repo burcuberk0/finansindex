@@ -8,12 +8,18 @@
 [functions]
   directory = "netlify/functions"
 
-# ÖNEMLİ: /api/* yolu SPA yönlendirmesinden ÖNCE tanımlanmalı.
+# ÖNEMLİ: /api/* yolları SPA yönlendirmesinden ÖNCE tanımlanmalı.
 # Netlify kuralları sırayla değerlendirir; aksi hâlde aşağıdaki
 # yakala-tümü kuralı fonksiyon çağrılarını da index.html'e yönlendirir.
 [[redirects]]
   from = "/api/piyasa"
   to = "/.netlify/functions/piyasa"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/gosterge"
+  to = "/.netlify/functions/gosterge"
   status = 200
   force = true
 
