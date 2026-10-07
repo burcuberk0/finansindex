@@ -135,8 +135,14 @@ const CSS = `
 
 /* --- ana menü + açılır --- */
 .fi-nav { display:flex; gap:0; border-top:1px solid var(--line); overflow:visible; }
+.fi-nav > .fi-nav-i:first-child > button { padding-left:0; }
+.fi-nav { justify-content:space-between; }
+.fi-nav > .fi-nav-i:last-child > button { padding-right:0; }
+/* Menü tek satıra sığmadığında (1200px altı) hamburger menüye geçilir;
+   aksi hâlde son öğeler ekranın dışına taşıyordu. */
+@media (max-width:1200px) { .fi-nav { display:none; } .fi-burger { display:grid; } }
 .fi-nav-i { position:relative; }
-.fi-nav-i > button { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
+.fi-nav-i > button { background:none; border:0; padding:15px 7px; font-size:14px; font-weight:500; color:var(--ink-2);
   white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; min-height:52px; }
 .fi-nav-i > button:hover { color:var(--ink); }
 .fi-nav-i > button[aria-current="page"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); }
@@ -710,6 +716,11 @@ const CSS = `
 .fi-side-i { grid-template-columns:1fr 104px; }
 .fi-side-fig { width:104px; }
 
+/* Manşet altı 4'lü blok: sağ sütunun yanındaki boşluğu doldurur */
+.fi-latest { margin-top:34px; padding-top:0; }
+.fi-latest-g { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
+@media (max-width:520px) { .fi-latest-g { grid-template-columns:1fr; } }
+
 /* Cep Etkisi Defteri: kart ızgarası, detay açılır */
 .fi-le-grid { display:grid; grid-template-columns:repeat(3,1fr); }
 .fi-le-grid .fi-le { display:flex; flex-direction:column; border-top:1px solid var(--line); border-left:1px solid var(--line); padding:22px 24px 22px; }
@@ -745,7 +756,21 @@ const CSS = `
 .fi-house-native { height:100%; }
 .fi-house-native .fi-house-in { flex-direction:column; align-items:flex-start; justify-content:flex-end; min-height:300px; padding:22px; }
 .fi-house-native .fi-house-t { font-size:20px; }
+.fi-house-halfpage { max-width:300px; }
+.fi-house-halfpage .fi-house-in { aspect-ratio:300 / 600; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:24px; }
+.fi-house-halfpage .fi-house-t { font-size:24px; }
+.fi-house-rect { max-width:336px; }
+.fi-house-rect .fi-house-in { aspect-ratio:336 / 280; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:22px; }
+.fi-house-rect .fi-house-t { font-size:20px; }
+.fi-hl-t, .fi-hl-m { display:none; }
 .fi-feed-ad { grid-column:1 / -1; }
+.fi-art-top-ad { margin:24px auto 4px; }
+.fi-calc-ad { padding:18px 22px 22px; border-top:1px solid var(--line); }
+@media (max-width:1000px) {
+  .fi-hl-d, .fi-hl-m { display:none; } .fi-hl-t { display:inline; }
+  .fi-house-billboard .fi-house-in { aspect-ratio:auto; min-height:110px; }
+  .fi-house-billboard, .fi-house-leader { max-width:728px; }
+}
 .fi-art .fi-house-box, .fi-body .fi-house { margin:28px auto; }
 
 @media (max-width:1000px) {
@@ -764,6 +789,10 @@ const CSS = `
   .fi-house-billboard .fi-house-in { aspect-ratio:auto; min-height:120px; }
   .fi-house-in { flex-direction:column; align-items:flex-start; padding:30px 18px 18px; gap:14px; }
   .fi-house-t, .fi-house-leader .fi-house-t { font-size:18px; }
+  .fi-hl-d, .fi-hl-t { display:none; } .fi-hl-m { display:inline; }
+  .fi-house-halfpage, .fi-house-rect { max-width:300px; }
+  .fi-house-halfpage .fi-house-in, .fi-house-rect .fi-house-in { aspect-ratio:300 / 250; padding:30px 18px 18px; }
+  .fi-house-billboard, .fi-house-leader { max-width:none; }
   /* Başlıktaki butonlar mobilde sayfayı yana taşırıyordu; ikisi de mobil menüde var. */
   .fi-hd-acts .fi-btn { display:none; }
 }
@@ -1242,12 +1271,14 @@ const GAM = {
   /* placement ID → kabul edilen boyutlar.
      Ajansa bu ölçüler bildirilir; GAM birimi de bu boyutlarla tanımlanır. */
   sizes: {
-    home_top_banner:        [[970, 250], [970, 90], [728, 90], [320, 100]],
-    home_mid_banner:        [[970, 250], [728, 90], [320, 100]],
+    home_top_banner:        [[970, 250], [970, 90], [728, 90], [320, 100], [320, 50]],
+    home_mid_banner:        [[970, 250], [728, 90], [320, 100], [320, 50]],
     desktop_sidebar_sticky: [[300, 600], [300, 250]],
-    article_inline_01:      [[728, 90], [300, 250], [336, 280]],
-    article_inline_02:      [[728, 90], [300, 250], [336, 280]],
-    article_end:            [[728, 90], [300, 250]],
+    article_inline_01:      [[336, 280], [300, 250], [728, 90]],
+    article_inline_02:      [[336, 280], [300, 250], [728, 90]],
+    article_end:            [[728, 90], [300, 250], [320, 100]],
+    article_top_banner:     [[970, 250], [970, 90], [728, 90], [320, 100], [300, 250]],
+    calculator_result_banner: [[728, 90], [300, 250], [320, 100]],
     rail_left:              [[160, 600], [120, 600]],
     rail_right:             [[160, 600], [120, 600]],
     mobile_sticky_footer:   [[320, 50], [320, 100]],
@@ -1256,8 +1287,20 @@ const GAM = {
     search_native_01:       [[300, 250], [336, 280]],
     category_native_01:     [[300, 250], [336, 280]],
     home_native_01:         [[300, 250], [336, 280]],
-    home_feed_banner:       [[970, 90], [728, 90], [320, 100]],
+    home_feed_banner:       [[970, 90], [728, 90], [320, 100], [320, 50]],
   },
+
+  /* Ekran genişliğine göre hangi ölçülerin istenebileceği.
+     Geniş banner'lar dar ekranda küçültülmez; o ekrana uygun ayrı kreatif istenir.
+       masaüstü (1000px+) : tanımlı tüm ölçüler
+       tablet  (760–999px): genişliği en fazla 728 olanlar
+       mobil   (<760px)   : genişliği en fazla 336, yüksekliği en fazla 280 olanlar
+                            (300×600 mobilde 300×250'ye düşer) */
+  breakpoints: [
+    { minWidth: 1000, maxW: Infinity, maxH: Infinity },
+    { minWidth: 760,  maxW: 728,      maxH: Infinity },
+    { minWidth: 0,    maxW: 336,      maxH: 280 },
+  ],
 };
 
 const gamPath = (pid) => `/${GAM.networkCode}/${GAM.parentPath}/${pid}`;
@@ -1322,6 +1365,11 @@ function GamSlot({ placementId, pageType }) {
           .defineSlot(gamPath(placementId), sizes, domId)
           .addService(googletag.pubads());
         if (!slot) return;
+        const mapping = GAM.breakpoints.reduce(
+          (m, bp) => m.addSize([bp.minWidth, 0], sizes.filter(([w, h]) => w <= bp.maxW && h <= bp.maxH)),
+          googletag.sizeMapping()
+        ).build();
+        slot.defineSizeMapping(mapping);
         slotRef.current = slot;
         googletag.pubads().enableSingleRequest();
         googletag.pubads().collapseEmptyDivs(true);   // dolmayan alan yer kaplamaz
@@ -1403,6 +1451,11 @@ const AD_INVENTORY = {
   home_native_01: null,
   /* Ana sayfa içerik akışında, 8. karttan sonra tam genişlik bant. */
   home_feed_banner: null,
+  /* Yazı sayfası: menü ve piyasa bandından sonra, yazı başlığından önce. */
+  article_top_banner: null,
+  /* Araçlar sayfası: hesaplama sonucunun hemen altında, tam genişlik banner.
+     calculator_result (metin sponsorluk) ile birlikte ya da ayrı satılabilir. */
+  calculator_result_banner: null,
   desktop_sidebar_sticky: null,
   article_inline_01: null,
   article_end: null,
@@ -1470,17 +1523,24 @@ const AD_INVENTORY = {
  */
 const HOUSE_ADS = {
   enabled: true,
+  /* size: ekranda yazan ölçü etiketi — d: masaüstü, t: tablet, m: mobil */
   slots: {
-    home_top_banner:        { variant: "billboard", size: "970 × 250" },
-    home_mid_banner:        { variant: "billboard", size: "970 × 250" },
-    home_feed_banner:       { variant: "leader",    size: "970 × 90" },
-    home_native_01:         { variant: "native",    size: "Sponsorlu içerik" },
-    desktop_sidebar_sticky: { variant: "box",       size: "300 × 250" },
-    category_native_01:     { variant: "native",    size: "Sponsorlu içerik" },
-    article_inline_01:      { variant: "box",       size: "300 × 250" },
-    article_end:            { variant: "leader",    size: "728 × 90" },
-    search_native_01:       { variant: "native",    size: "Sponsorlu içerik" },
-    tools_index_native:     { variant: "native",    size: "Sponsorlu içerik" },
+    home_top_banner:          { variant: "billboard", size: { d: "970 × 250", t: "728 × 90", m: "320 × 100" } },
+    home_mid_banner:          { variant: "billboard", size: { d: "970 × 250", t: "728 × 90", m: "320 × 100" } },
+    home_feed_banner:         { variant: "leader",    size: { d: "970 × 90",  t: "728 × 90", m: "320 × 50" } },
+    home_native_01:           { variant: "native",    size: { d: "Sponsorlu içerik" } },
+    desktop_sidebar_sticky:   { variant: "box",       size: { d: "300 × 250" },
+                                /* Yazı ve araç sayfalarında dikey Half Page */
+                                byPage: { article: { variant: "halfpage", size: { d: "300 × 600", t: "300 × 600", m: "300 × 250" } },
+                                          tools:   { variant: "halfpage", size: { d: "300 × 600", t: "300 × 600", m: "300 × 250" } } } },
+    category_native_01:       { variant: "native",    size: { d: "Sponsorlu içerik" } },
+    article_top_banner:       { variant: "leader",    size: { d: "970 × 90",  t: "728 × 90", m: "320 × 100" } },
+    article_inline_01:        { variant: "rect",      size: { d: "336 × 280", m: "300 × 250" } },
+    article_inline_02:        { variant: "rect",      size: { d: "336 × 280", m: "300 × 250" } },
+    article_end:              { variant: "leader",    size: { d: "728 × 90",  m: "320 × 100" } },
+    calculator_result_banner: { variant: "leader",    size: { d: "728 × 90",  m: "320 × 100" } },
+    search_native_01:         { variant: "native",    size: { d: "Sponsorlu içerik" } },
+    tools_index_native:       { variant: "native",    size: { d: "Sponsorlu içerik" } },
   },
 };
 
@@ -1488,8 +1548,10 @@ const HOUSE_ADS = {
 const NAV = { go: null };
 
 function HouseAd({ placementId, pageType, className = "" }) {
-  const cfg = HOUSE_ADS.slots[placementId];
-  if (!cfg) return null;
+  const base = HOUSE_ADS.slots[placementId];
+  if (!base) return null;
+  const cfg = (base.byPage && base.byPage[pageType]) || base;
+  const sz = cfg.size || {};
   const open = () => {
     track("house_ad_click", { placement_id: placementId, page_type: pageType });
     if (NAV.go) NAV.go({ n: "mediakit" });
@@ -1498,7 +1560,11 @@ function HouseAd({ placementId, pageType, className = "" }) {
   return (
     <div className={`fi-house fi-house-${cfg.variant} ${className}`}>
       <button className="fi-a fi-house-in" onClick={open} aria-label="Reklam alanı: reklam vermek için Medya Kiti'ni incele">
-        <span className="fi-house-lbl">Reklam alanı · {cfg.size}</span>
+        <span className="fi-house-lbl">
+          Reklam alanı · <span className="fi-hl-d">{sz.d}</span>
+          <span className="fi-hl-t">{sz.t || sz.d}</span>
+          <span className="fi-hl-m">{sz.m || sz.t || sz.d}</span>
+        </span>
         <div>
           <p className="fi-house-t">{wide ? "Markanızı finans kararı veren okurlarla buluşturun" : "Bu alan reklamınız için ayrıldı"}</p>
           <p className="fi-house-x">{wide ? "Kredi, mevduat ve yatırım içeriklerinde, karar anında görünür olun." : "Finans kararı veren okurlara ulaşın."}</p>
@@ -2923,6 +2989,7 @@ function CalcShell({ tool, children, out, note, compact }) {
           <AdSlot placementId="calculator_result" pageType="tool" />
         </div>
       </div>
+      {!compact && <AdSlot placementId="calculator_result_banner" pageType="tool" className="fi-calc-ad" />}
     </section>
   );
 }
@@ -3877,11 +3944,22 @@ function Home({ go, market, daily }) {
   const activeCalc = toolById(homeCalc);
   const hero = byId("a13");
   const side = ["a14", "a12", "a11"].map(byId);
+  /* Manşetin altındaki 4'lü blok: canlı piyasa özeti + manşet ve öne
+     çıkanlarda olmayan en yeni yazılar. Sponsorlu içerik buraya girmez.
+     Bu dört yazı "Son içerikler" akışında tekrar gösterilmez. */
+  const latest = useMemo(() => {
+    const used = new Set([hero.id, ...side.map((a) => a.id)]);
+    const pool = ARTICLES
+      .filter((a) => !used.has(a.id) && !a.sponsored)
+      .sort((x, y) => new Date(y.published_at) - new Date(x.published_at));
+    return (daily ? [daily, ...pool] : pool).slice(0, 4);
+  }, [hero.id, daily]);
   const feed = useMemo(() => {
+    const shown = new Set(latest.map((a) => a.id));
     const list = ARTICLES.filter((a) => a.id !== hero.id);
     const all = daily ? [daily, ...list] : list;
-    return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
-  }, [filter, hero.id, daily]);
+    return filter === "hepsi" ? all.filter((a) => !shown.has(a.id)) : all.filter((a) => a.category === filter);
+  }, [filter, hero.id, daily, latest]);
 
   return (
     <main id="icerik">
@@ -3938,6 +4016,15 @@ function Home({ go, market, daily }) {
                 ))}
               </div>
             </section>
+
+            {latest.length > 0 && (
+              <section className="fi-latest" aria-labelledby="latest-h">
+                <h2 className="fi-side-h" id="latest-h">Gündemden</h2>
+                <div className="fi-latest-g">
+                  {latest.map((a) => <ArticleCard key={a.id} a={a} go={go} source="home_latest" />)}
+                </div>
+              </section>
+            )}
           </div>
           <aside className="fi-topgrid-side">
             <MarketLog market={market} go={go} />
@@ -4215,6 +4302,7 @@ function Article({ slug, go, daily }) {
   return (
     <main id="icerik">
       <div className="fi-wrap">
+        <AdSlot placementId="article_top_banner" pageType="article" className="fi-art-top-ad" />
         <div className="fi-art">
           <article>
             <nav className="fi-bc" aria-label="Konum">
@@ -4510,7 +4598,7 @@ function MediaKit({ go }) {
     { t: "Yüksek niyetli sayfalar", d: "Araçlar ve arama sayfaları, kullanıcının aktif olarak araştırma yaptığı alanlardır. Sorgu ve araç seçimi, niyeti doğrudan gösterir.",
       items: [["Araçlar sayfası native kart", "tools_index_native"], ["Arama sonuçları native kart", "search_native_01"], ["Kategori akışı native kart", "category_native_01"]] },
     { t: "Display envanteri", d: "Okuma akışını bölmeyen, sabit boyutlu görsel alanlar. Pop-up, sayfa arası geçiş reklamı ve otomatik oynayan video kullanılmaz.",
-      items: [["Header altı geniş alan", "home_top_banner"], ["Ana sayfa orta bandı", "home_mid_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi birinci", "article_inline_01"], ["Makale içi ikinci", "article_inline_02"], ["Makale sonu", "article_end"]] },
+      items: [["Header altı geniş alan · 970×250", "home_top_banner"], ["Ana sayfa orta bandı · 970×250", "home_mid_banner"], ["Ana sayfa akış içi bant · 970×90", "home_feed_banner"], ["Sağ sütun · 300×250 / Half Page 300×600", "desktop_sidebar_sticky"], ["Yazı üstü banner · 970×90", "article_top_banner"], ["Makale içi birinci · 336×280", "article_inline_01"], ["Makale içi ikinci · 336×280", "article_inline_02"], ["Makale sonu · 728×90", "article_end"], ["Hesaplama sonucu altı · 728×90", "calculator_result_banner"]] },
     { t: "Masaüstü yan panolar", d: "Geniş ekranlarda içerik sütununun iki yanında sabit duran dikey alanlar. İçerik genişliğini daraltmaz, dar ekranda görünmez.",
       items: [["Sol pano", "rail_left"], ["Sağ pano", "rail_right"]] },
     { t: "Mobil sabit bant", d: "Mobilde sayfa altında sabit duran, kullanıcının kapatabildiği tek satırlık alan. Yüksekliği sınırlıdır ve içeriğin üzerini örtmez.",
