@@ -92,8 +92,13 @@ const CSS = `
 .fi-band-in { display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
 .fi-band-in::-webkit-scrollbar { display:none; }
 .fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
-.fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
-  border-right:1px solid rgba(255,255,255,.1); flex:0 0 auto; min-width:240px; }
+.fi-band-c { display:flex; align-items:center; gap:12px; padding:14px 18px 14px 0; margin-right:18px;
+  border-right:1px solid rgba(255,255,255,.1); flex:1 1 0; min-width:0; }
+.fi-band-k { white-space:nowrap; }
+.fi-band-ar.flat, .fi-band-d.flat { color:#8F8880; }
+.fi-band-ar.flat { font-size:7px; }
+/* Tüm göstergeler masaüstünde tek satıra sığar; dar ekranda yatay kaydırılır */
+@media (max-width:1200px) { .fi-band-c { flex:0 0 auto; min-width:200px; } }
 .fi-band-c:last-child { border-right:0; margin-right:0; }
 .fi-band-txt { flex:1 1 auto; }
 .fi-band-k { display:flex; align-items:center; gap:6px; font:600 11px/1 var(--mono);
@@ -104,7 +109,7 @@ const CSS = `
 .fi-band-row { display:flex; align-items:baseline; gap:9px; }
 .fi-band-v { font:600 24px/1 var(--mono); letter-spacing:-.02em; color:#fff; font-variant-numeric:tabular-nums; }
 .fi-band-d { font:600 13px/1 var(--mono); font-variant-numeric:tabular-nums; }
-.fi-spark { width:110px; height:40px; flex:0 0 auto; }
+.fi-spark { width:72px; height:36px; flex:0 1 auto; min-width:0; }
 
 /* --- eski ince şerit (makale/kategori sayfalarında kullanılmıyor) --- */
 .fi-ticker { background:var(--ink); color:#fff; border-bottom:0; }
@@ -3384,12 +3389,17 @@ function MarketBand({ market }) {
           {items.slice(0, 6).map((d) => {
             const has = d.d != null && Math.abs(d.d) >= 0.005;
             const up = has && d.d >= 0;
+            /* Kaynak değişimi açıkça %0,00 bildirdiyse yön oku yerine nötr
+               işaret gösterilir. Değişim hiç bildirilmediyse hiçbir şey
+               gösterilmez — tahmini yön üretilmez. */
+            const flat = d.d != null && !has;
             return (
               <div className="fi-band-c" key={d.k}>
                 <div className="fi-band-txt">
                   <div className="fi-band-k">
                     {d.k}
                     {has && <span className={`fi-band-ar ${up ? "up" : "down"}`} aria-hidden="true">{up ? "▲" : "▼"}</span>}
+                    {flat && <span className="fi-band-ar flat" aria-hidden="true">■</span>}
                   </div>
                   <div className="fi-band-row">
                     <span className="fi-band-v">{num(d.v, d.v >= 1000 ? 0 : 2)}</span>
@@ -3398,6 +3408,7 @@ function MarketBand({ market }) {
                         {up ? "+" : "−"}%{num(Math.abs(d.d), 2)}
                       </span>
                     )}
+                    {flat && <span className="fi-band-d flat" title="Kaynak günlük değişim bildirmedi">%0,00</span>}
                   </div>
                 </div>
                 <Sparkline data={d.series} up={up} />
@@ -4584,6 +4595,8 @@ function MediaKit({ go }) {
 
   /* Envanter, değer sırasına göre listelenir: niyet yoğunluğu yüksek
      alanlar üstte. Placement ID'ler koddaki AD_INVENTORY ile birebir aynıdır. */
+  /* Yalnızca iletişim formundaki "İlgilendiğiniz çözüm" listesi için kullanılır.
+     Alan ölçüleri ve placement ID'leri sitede gösterilmez; rate card'da yer alır. */
   const PRODUCTS = [
     { t: "Finansal araç sponsorluğu", d: "Kredi, mevduat veya kira hesaplaması yapan kullanıcıya, kararın verildiği anda ulaşırsınız. Envanterimizdeki en yüksek niyetli alan.",
       items: [["Araç başlığı altı", "calculator_sponsor"], ["Hesaplama sonucu alanı", "calculator_result"], ["Makale içi ilgili araç kutusu", "article_tool_sponsor"]] },
@@ -4633,19 +4646,6 @@ function MediaKit({ go }) {
           <p className="fi-disc" style={{ marginTop: 24 }}>
             Trafik, gösterim ve dönüşüm rakamları yayın başlangıcından itibaren ölçülmeye başlanacaktır. Bu sayfada doğrulanmamış performans verisi paylaşmıyoruz; güncel raporlama talebiniz için formu kullanabilirsiniz.
           </p>
-        </section>
-
-        <section className="fi-sec" aria-labelledby="prod-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">Envanter</div><h2 className="fi-h2" id="prod-h">Reklam çözümleri</h2><p className="fi-sub">Her alanın benzersiz bir placement ID'si vardır; gösterim, tıklama ve görünürlük ayrı ayrı raporlanır.</p></div></div>
-          <div className="fi-grid fi-g3">
-            {PRODUCTS.map((p) => (
-              <div className="fi-prod" key={p.t}>
-                <h3>{p.t}</h3>
-                <p>{p.d}</p>
-                <ul>{p.items.map(([n, id]) => <li key={id + n}><span>{n}</span><code>{id}</code></li>)}</ul>
-              </div>
-            ))}
-          </div>
         </section>
 
         <section className="fi-sec" aria-labelledby="pricing-h">
