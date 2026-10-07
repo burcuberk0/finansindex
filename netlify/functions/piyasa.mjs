@@ -13,10 +13,24 @@
  * Teşhis: /api/piyasa?debug=1
  */
 
+/* Sırayla denenir. Bir kaynak yanıt verse bile içinde gram altın fiyatı
+   yoksa (hata mesajı, sınır aşımı sayfası vb.) geçersiz sayılır ve
+   sıradaki kaynağa geçilir. */
 const METAL_URLS = [
   "https://finans.truncgil.com/today.json",
+  "https://finans.truncgil.com/v4/today.json",
   "https://api.genelpara.com/embed/altin.json",
 ];
+
+const GRAM_KEYS = ["gram-altin", "GA", "GRA", "GRAMALTIN", "gramaltin", "Gram Altın", "gram altın"];
+
+/* Maden kaynaklarına giden istekler tarayıcı kimliğiyle ve zaman aşımıyla
+   yapılır; bazı sağlayıcılar bot kimliğini engelliyor. */
+const METAL_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36",
+  Accept: "application/json,text/plain,*/*",
+  "Accept-Language": "tr-TR,tr;q=0.9",
+};
 
 const UA = {
   "User-Agent": "Mozilla/5.0 (compatible; FinansIndexBot/1.0; +https://finansindex.com)",
@@ -128,14 +142,25 @@ const findChange = (obj) => {
   return null;
 };
 
-async function fetchMetals() {
+async function fetchMetals(attempts = []) {
   for (const url of METAL_URLS) {
     try {
-      const res = await fetch(url, { headers: UA });
-      if (!res.ok) continue;
-      const data = JSON.parse(await res.text());
-      if (data && typeof data === "object" && Object.keys(data).length) return { source: url, data };
-    } catch { /* sıradaki kaynak */ }
+      const res = await fetch(url, { headers: METAL_HEADERS, signal: AbortSignal.timeout(6000) });
+      if (!res.ok) { attempts.push({ url, error: `HTTP ${res.status}` }); continue; }
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { attempts.push({ url, error: "JSON değil", sample: text.slice(0, 120) }); continue; }
+      if (!data || typeof data !== "object") { attempts.push({ url, error: "Boş yanıt" }); continue; }
+      /* Yanıtta gerçek bir gram altın fiyatı yoksa bu kaynağı kullanma */
+      if (!metalItem(data, GRAM_KEYS, "Gram Altın")) {
+        attempts.push({ url, error: "Gram altın fiyatı bulunamadı", keys: Object.keys(data).slice(0, 12) });
+        continue;
+      }
+      attempts.push({ url, ok: true });
+      return { source: url, data };
+    } catch (e) {
+      attempts.push({ url, error: String((e && e.message) || e) });
+    }
   }
   return null;
 }
@@ -195,16 +220,17 @@ export default async (req) => {
 
   // 2) Kıymetli maden
   let metalsRaw = null;
+  const metalAttempts = [];
   try {
-    const m = await fetchMetals();
+    const m = await fetchMetals(metalAttempts);
     if (!m) throw new Error("Hiçbir maden kaynağı yanıt vermedi");
     metalsRaw = m;
     const md = m.data;
     const push = (it) => { if (it) items.push(it); };
-    push(metalItem(md, ["gram-altin", "GA", "gramaltin", "Gram Altın", "gram altın"], "Gram Altın"));
-    push(metalItem(md, ["ceyrek-altin", "C", "ceyrekaltin", "Çeyrek Altın", "çeyrek altın"], "Çeyrek Altın"));
-    push(metalItem(md, ["yarim-altin", "Y", "Yarım Altın", "yarım altın"], "Yarım Altın"));
-    push(metalItem(md, ["tam-altin", "T", "Tam Altın", "tam altın", "cumhuriyet-altini"], "Tam Altın"));
+    push(metalItem(md, GRAM_KEYS, "Gram Altın"));
+    push(metalItem(md, ["ceyrek-altin", "C", "CEYREKALTIN", "ceyrekaltin", "Çeyrek Altın", "çeyrek altın"], "Çeyrek Altın"));
+    push(metalItem(md, ["yarim-altin", "Y", "YARIMALTIN", "Yarım Altın", "yarım altın"], "Yarım Altın"));
+    push(metalItem(md, ["tam-altin", "T", "TAMALTIN", "Tam Altın", "tam altın", "cumhuriyet-altini"], "Tam Altın"));
     push(metalItem(md, ["gumus", "GUMUS", "Gümüş", "gümüş", "silver"], "Gümüş"));
   } catch (e) {
     errors.metals = String(e.message || e);
@@ -218,6 +244,7 @@ export default async (req) => {
       errors,
       tcmbDate, prevDate,
       metalSource: metalsRaw ? metalsRaw.source : null,
+      metalAttempts,
       metalKeysSample: metalsRaw ? Object.keys(metalsRaw.data).filter((k) => /alt|gum|gümü|gram|ceyrek|çeyrek/i.test(k)).slice(0, 20) : null,
       oneMetalEntry: sampleKey ? { key: sampleKey, value: metalsRaw.data[sampleKey] } : null,
     }, null, 2), { headers: { ...headers, "Cache-Control": "no-store" } });
@@ -227,6 +254,13 @@ export default async (req) => {
     return new Response(JSON.stringify({ ok: false, error: "Kaynaklardan veri alınamadı", errors, items: [] }),
       { status: 200, headers });
   }
+
+  /* Netlify CDN önbelleği: aynı veri 5 dakika boyunca kaynaklara tekrar
+     gitmeden sunulur (sağlayıcıların istek sınırına takılmamak için).
+     Maden verisi eksikse önbellek 1 dakikayla sınırlanır, hızlı toparlanır. */
+  headers["Netlify-CDN-Cache-Control"] = errors.metals
+    ? "public, s-maxage=60"
+    : "public, s-maxage=300, stale-while-revalidate=600";
 
   return new Response(JSON.stringify({
     ok: true,
