@@ -671,6 +671,103 @@ const CSS = `
   .fi-side-i { grid-template-columns:1fr 76px; }
   .fi-side-th { width:76px; height:58px; }
 }
+/* ===================== KAPAK (görsel yoksa tipografik kapak) ===================== */
+.fi-cov { position:relative; width:100%; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:7cqi 7cqi 6cqi; text-align:left; }
+.fi-cov-ink { background:#1A1A1A; color:#FAF8F4; }
+.fi-cov-wine { background:#8C1D33; color:#FAF8F4; }
+.fi-cov-paper { background:#EFE9DF; color:#14100E; }
+.fi-cov-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; position:relative; z-index:1; }
+.fi-cov-cat { font:600 max(10px, 2.6cqi)/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
+.fi-cov-mark { font:700 max(10px, 2.8cqi)/1 var(--serif); letter-spacing:-.02em; padding:.45em .5em; border:1px solid currentColor; opacity:.55; }
+.fi-cov-bot { position:relative; z-index:1; }
+.fi-cov-v { display:block; font:600 18cqi/.92 var(--mono); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
+.fi-cov-v.m { font-size:13cqi; }
+.fi-cov-v.l { font-size:10cqi; }
+.fi-cov-paper .fi-cov-v { color:#8C1D33; }
+.fi-cov-k { display:block; font:500 max(12px, 3.3cqi)/1.35 var(--sans); margin-top:2.4cqi; max-width:30ch; opacity:.9; }
+.fi-cov-word { display:block; font:700 9.5cqi/1 var(--serif); letter-spacing:-.045em; max-width:12ch; }
+.fi-cov-type { display:block; font:500 max(11px, 2.8cqi)/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; margin-top:2.6cqi; opacity:.7; }
+.fi-cov-sm { padding:10px; justify-content:flex-end; }
+.fi-cov-sm .fi-cov-top, .fi-cov-sm .fi-cov-k, .fi-cov-sm .fi-cov-type { display:none; }
+.fi-cov-sm .fi-cov-v { font-size:25cqi; }
+.fi-cov-sm .fi-cov-v.m { font-size:17cqi; }
+.fi-cov-sm .fi-cov-v.l { font-size:12cqi; }
+.fi-cov-sm .fi-cov-word { font-size:15cqi; }
+.fi-cov-wrap { width:100%; border-radius:var(--r); overflow:hidden; container-type:inline-size; }
+.fi-card .fi-cov-wrap { border-radius:0; }
+.fi-side-fig .fi-cov-wrap { border-radius:3px; }
+
+/* Kart: görsel ağırlıklı, yalnızca başlık */
+.fi-card .fi-a { display:flex; flex-direction:column; height:100%; }
+.fi-card .fi-ttl { margin-bottom:0; }
+.fi-card:hover .fi-cov { filter:brightness(1.06); }
+
+/* Manşet: kısaltılmış metin */
+.fi-topgrid .fi-lead-t { font-size:32px; margin:14px 0 12px; }
+.fi-lead-s { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.fi-topgrid .fi-lead-s { font-size:16px; line-height:1.55; }
+.fi-lead-fig { margin-bottom:18px; }
+.fi-side-i { grid-template-columns:1fr 104px; }
+.fi-side-fig { width:104px; }
+
+/* Cep Etkisi Defteri: kart ızgarası, detay açılır */
+.fi-le-grid { display:grid; grid-template-columns:repeat(3,1fr); }
+.fi-le-grid .fi-le { display:flex; flex-direction:column; border-top:1px solid var(--line); border-left:1px solid var(--line); padding:22px 24px 22px; }
+.fi-le-grid .fi-le:nth-child(3n+1) { border-left:0; }
+.fi-le-grid .fi-le:nth-child(-n+3) { border-top:0; }
+.fi-le-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+.fi-le-grid .fi-le-n { padding:0; font-size:26px; font-weight:600; letter-spacing:-.04em; }
+.fi-le-grid .fi-le-tags { margin:0; justify-content:flex-end; }
+.fi-le-grid .fi-le-what { font-size:17px; line-height:1.36; margin:0 0 14px; }
+.fi-le-more { margin:auto 0 0; border-top:1px dashed var(--line-2); padding-top:12px; }
+.fi-le-more summary { cursor:pointer; list-style:none; font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--petrol); display:flex; justify-content:space-between; align-items:center; min-height:28px; }
+.fi-le-more summary::-webkit-details-marker { display:none; }
+.fi-le-more summary::after { content:"+"; font-size:16px; }
+.fi-le-more[open] summary::after { content:"–"; }
+.fi-le-grid .fi-le-how { font-size:14.5px; margin:10px 0 14px; }
+
+/* ===================== REKLAM ALANLARI (boşken kendi tanıtımımız) ===================== */
+.fi-house { display:block; width:100%; margin:0 auto; }
+.fi-house-in { position:relative; display:flex; align-items:center; justify-content:space-between; gap:22px; width:100%; height:100%; padding:22px 28px; background:repeating-linear-gradient(135deg, var(--surface) 0 14px, #F6F2EB 14px 28px); border:1px solid var(--line-2); border-radius:var(--r); text-align:left; color:var(--ink); }
+.fi-house-in:hover { border-color:var(--ink); }
+.fi-house-lbl { position:absolute; top:9px; left:12px; font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.fi-house-t { font:600 22px/1.2 var(--serif); letter-spacing:-.03em; margin:0; max-width:24ch; }
+.fi-house-x { font-size:13.5px; color:var(--muted); margin:6px 0 0; }
+.fi-house-cta { flex:0 0 auto; font:600 13.5px/1 var(--sans); padding:12px 16px; background:var(--ink); color:#FAF8F4; border-radius:var(--r); white-space:nowrap; }
+.fi-house-billboard { max-width:970px; }
+.fi-house-billboard .fi-house-in { aspect-ratio:970 / 250; }
+.fi-house-leader { max-width:970px; }
+.fi-house-leader .fi-house-in { min-height:110px; }
+.fi-house-leader .fi-house-t { font-size:19px; max-width:40ch; }
+.fi-house-box { max-width:336px; }
+.fi-house-box .fi-house-in { aspect-ratio:300 / 250; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:22px; }
+.fi-house-box .fi-house-t { font-size:20px; }
+.fi-house-native { height:100%; }
+.fi-house-native .fi-house-in { flex-direction:column; align-items:flex-start; justify-content:flex-end; min-height:300px; padding:22px; }
+.fi-house-native .fi-house-t { font-size:20px; }
+.fi-feed-ad { grid-column:1 / -1; }
+.fi-art .fi-house-box, .fi-body .fi-house { margin:28px auto; }
+
+@media (max-width:1000px) {
+  .fi-le-grid { grid-template-columns:repeat(2,1fr); }
+  .fi-le-grid .fi-le:nth-child(3n+1) { border-left:1px solid var(--line); }
+  .fi-le-grid .fi-le:nth-child(2n+1) { border-left:0; }
+  .fi-le-grid .fi-le:nth-child(3) { border-top:1px solid var(--line); }
+}
+@media (max-width:760px) {
+  .fi-le-grid { grid-template-columns:1fr; }
+  .fi-le-grid .fi-le { border-left:0 !important; border-top:1px solid var(--line) !important; padding:20px 18px; }
+  .fi-le-grid .fi-le:first-child { border-top:0 !important; }
+  .fi-topgrid .fi-lead-t { font-size:27px; }
+  .fi-side-i { grid-template-columns:1fr 88px; }
+  .fi-side-fig { width:88px; }
+  .fi-house-billboard .fi-house-in { aspect-ratio:auto; min-height:120px; }
+  .fi-house-in { flex-direction:column; align-items:flex-start; padding:30px 18px 18px; gap:14px; }
+  .fi-house-t, .fi-house-leader .fi-house-t { font-size:18px; }
+  /* Başlıktaki butonlar mobilde sayfayı yana taşırıyordu; ikisi de mobil menüde var. */
+  .fi-hd-acts .fi-btn { display:none; }
+}
+
 @media (prefers-reduced-motion:reduce) {
   .fi *, .fi *::before, .fi *::after { animation:none !important; transition:none !important; }
 }
@@ -1159,6 +1256,7 @@ const GAM = {
     search_native_01:       [[300, 250], [336, 280]],
     category_native_01:     [[300, 250], [336, 280]],
     home_native_01:         [[300, 250], [336, 280]],
+    home_feed_banner:       [[970, 90], [728, 90], [320, 100]],
   },
 };
 
@@ -1301,14 +1399,10 @@ const AD_INVENTORY = {
      Gerçek reklamveren geldiğinde image, alt, href ve sponsor güncellenir.
      Görsel `public/img/reklam/` klasörüne yüklenir.
      Kaldırmak için bu bloğu tekrar `null` yap. */
-  home_top_banner: {
-    sponsor: "Örnek Banka",
-    image: "/img/reklam/ornek-banner-970x250.png",
-    alt: "Örnek Banka konut kredisi kampanyası görseli",
-    href: null,
-    ratio: "970 / 250",
-  },
+  home_top_banner: null,
   home_native_01: null,
+  /* Ana sayfa içerik akışında, 8. karttan sonra tam genişlik bant. */
+  home_feed_banner: null,
   desktop_sidebar_sticky: null,
   article_inline_01: null,
   article_end: null,
@@ -1323,13 +1417,7 @@ const AD_INVENTORY = {
      hemen altında durduğu için sitenin tipografisiyle uyumlu olması,
      yabancı bir banner blokundan daha iyi çalışır.
      Gerçek reklamveren geldiğinde sponsor, title ve href güncellenir. */
-  category_sponsor: {
-    type: "display",
-    sponsor: "Örnek Banka",
-    title: "Kredi ve Mevduat kategorisi Örnek Banka katkılarıyla sunuluyor",
-    cta: "Kampanyayı gör",
-    href: null,
-  },
+  category_sponsor: null,
   newsletter_sponsor: null,
   /* Cep Etkisi Defteri içinde tek native blok. Sınırlı envanter olduğu için
      yüksek fiyatlanabilir; okuma akışını bozmadığından performansı iyi olur. */
@@ -1368,6 +1456,58 @@ const AD_INVENTORY = {
      bozduğu için yüksekliği sınırlı tutulmuştur. */
   mobile_sticky_footer: null,
 };
+
+/**
+ * KENDİ TANITIM ALANLARIMIZ (house ad)
+ *
+ * Bir reklam alanına henüz reklamveren atanmamışsa (AD_INVENTORY değeri null
+ * ve GAM kapalıysa) alan boş kalmaz: "Bu alana reklam verin" kutusu çıkar ve
+ * Medya Kiti sayfasına götürür. Böylece okur sayfa düzenini, reklamveren de
+ * satın alabileceği yeri görür.
+ *
+ * Kapatmak için: enabled: false. Tek bir alanı kapatmak için o satırı sil.
+ * variant: billboard (970×250) · leader (970×90 / 728×90) · box (300×250) · native (kart)
+ */
+const HOUSE_ADS = {
+  enabled: true,
+  slots: {
+    home_top_banner:        { variant: "billboard", size: "970 × 250" },
+    home_mid_banner:        { variant: "billboard", size: "970 × 250" },
+    home_feed_banner:       { variant: "leader",    size: "970 × 90" },
+    home_native_01:         { variant: "native",    size: "Sponsorlu içerik" },
+    desktop_sidebar_sticky: { variant: "box",       size: "300 × 250" },
+    category_native_01:     { variant: "native",    size: "Sponsorlu içerik" },
+    article_inline_01:      { variant: "box",       size: "300 × 250" },
+    article_end:            { variant: "leader",    size: "728 × 90" },
+    search_native_01:       { variant: "native",    size: "Sponsorlu içerik" },
+    tools_index_native:     { variant: "native",    size: "Sponsorlu içerik" },
+  },
+};
+
+/* Reklam kutularından Medya Kiti'ne gitmek için uygulama kökünün go fonksiyonu. */
+const NAV = { go: null };
+
+function HouseAd({ placementId, pageType, className = "" }) {
+  const cfg = HOUSE_ADS.slots[placementId];
+  if (!cfg) return null;
+  const open = () => {
+    track("house_ad_click", { placement_id: placementId, page_type: pageType });
+    if (NAV.go) NAV.go({ n: "mediakit" });
+  };
+  const wide = cfg.variant === "billboard" || cfg.variant === "leader";
+  return (
+    <div className={`fi-house fi-house-${cfg.variant} ${className}`}>
+      <button className="fi-a fi-house-in" onClick={open} aria-label="Reklam alanı: reklam vermek için Medya Kiti'ni incele">
+        <span className="fi-house-lbl">Reklam alanı · {cfg.size}</span>
+        <div>
+          <p className="fi-house-t">{wide ? "Markanızı finans kararı veren okurlarla buluşturun" : "Bu alan reklamınız için ayrıldı"}</p>
+          <p className="fi-house-x">{wide ? "Kredi, mevduat ve yatırım içeriklerinde, karar anında görünür olun." : "Finans kararı veren okurlara ulaşın."}</p>
+        </div>
+        <span className="fi-house-cta">Medya kiti →</span>
+      </button>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------ 6. TAKSONOMİ */
 
@@ -2282,6 +2422,87 @@ function Figure({ image, ratio = "16 / 9", className = "", priority = false, sho
 }
 
 /**
+ * KAPAK
+ *
+ * Yazının fotoğrafı `public/img/` içinde varsa fotoğraf gösterilir.
+ * Yoksa (ya da yüklenemezse) tipografik kapak çıkar: kategori rengi +
+ * yazının kendi metninde geçen, doğrulanmış bir rakam.
+ *
+ * Tasarım kararı: kapakta grafik, ikon veya süs deseni yok. Rakam yalnızca
+ * yazıda zaten yer alan veriden gelir; rakamı olmayan yazıda kategori adı
+ * yazılır. Yeni yazı eklerken COVERS'a satır eklemek isteğe bağlıdır.
+ */
+const COVERS = {
+  a1:  { v: "3", k: "aşamada politika faizi mevduat faizine ulaşır" },
+  a2:  { v: "47 ay", k: "25.000 TL borç, yalnızca asgari ödemeyle bu sürede kapanır" },
+  a4:  { v: "%30", k: "getiri, %30 enflasyonda sıfır reel kazanç demek" },
+  a5:  { v: "12 ay", k: "ortalama TÜFE kira artışında esas alınır" },
+  a12: { v: "~82 bin TL", k: "vadeyi 12'den 48 aya uzatmanın toplam ödemeye eklediği tutar" },
+  a13: { v: "131", k: "yatırım fonu tasfiye sürecinde" },
+};
+
+const COVER_TONE = {
+  "gundem": "ink", "yatirim": "ink", "finansindex-dosya": "ink",
+  "kredi-ve-mevduat": "wine", "parami-yonetiyorum": "wine",
+  "ekonomiyi-anla": "paper", "sigorta-ve-emeklilik": "paper", "is-ve-girisim": "paper",
+};
+
+function Cover({ a, ratio = "16 / 9", size = "md", priority = false, className = "", showCredit = false }) {
+  /* Fotoğraf önce arka planda yüklenir; başarılıysa kapakla yer değiştirir.
+     Böylece dosya henüz yüklenmemişse gri kutu veya kırık görsel görünmez. */
+  const [loaded, setLoaded] = useState(false);
+  const src = a && a.featured_image && a.featured_image.src;
+  useEffect(() => {
+    setLoaded(false);
+    if (!src || typeof Image === "undefined") return;
+    let alive = true;
+    const img = new Image();
+    img.onload = () => { if (alive && img.naturalWidth > 0) setLoaded(true); };
+    img.src = src;
+    return () => { alive = false; };
+  }, [src]);
+
+  if (!a) return null;
+  if (src && loaded) {
+    return (
+      <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
+        <div className="fi-fig-w" style={{ aspectRatio: ratio }}>
+          <img src={src} alt={a.featured_image.alt || ""} decoding="async" />
+        </div>
+        {showCredit && a.featured_image.credit && <figcaption className="fi-fig-c">{a.featured_image.credit}</figcaption>}
+      </figure>
+    );
+  }
+
+  const c = a.auto ? { v: "Bugün", k: "Döviz ve altın, canlı veriyle" } : COVERS[a.id];
+  const tone = COVER_TONE[a.category] || "ink";
+  const len = c ? c.v.length : 0;
+  return (
+    <div className={`fi-cov-wrap ${className}`} aria-hidden="true">
+      <div className={`fi-cov fi-cov-${tone} fi-cov-${size}`} style={{ aspectRatio: ratio }}>
+        <div className="fi-cov-top">
+          <span className="fi-cov-cat">{catName(a.category)}</span>
+          <span className="fi-cov-mark">FI</span>
+        </div>
+        <div className="fi-cov-bot">
+          {c ? (
+            <>
+              <span className={`fi-cov-v ${len > 7 ? "l" : len > 4 ? "m" : ""}`}>{c.v}</span>
+              <span className="fi-cov-k">{c.k}</span>
+            </>
+          ) : (
+            <>
+              <span className="fi-cov-word">{size === "sm" ? catName(a.category).split(" ")[0] : catName(a.category)}</span>
+              <span className="fi-cov-type">{a.contentType}</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Okunabilir karşılaştırma grafiği.
  * Tasarım kararı: renk tek başına anlam taşımaz — her çubuğun değeri
  * sayı olarak da yazılır ve etiket çubuğun dışında durur. Böylece
@@ -2382,7 +2603,9 @@ function AdSlot({ placementId, pageType, className = "" }) {
     return () => io.disconnect();
   }, [creative, placementId, pageType]);
 
-  if (!creative) return null;
+  if (!creative) {
+    return HOUSE_ADS.enabled ? <HouseAd placementId={placementId} pageType={pageType} className={className} /> : null;
+  }
 
   const click = () => track("ad_click", { placement_id: placementId, sponsor_name: creative.sponsor, page_type: pageType });
 
@@ -2647,7 +2870,7 @@ function ArticleCard({ a, go, source }) {
   return (
     <article className="fi-card">
       <button className="fi-a" onClick={open}>
-        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false} />
+        <Cover a={a} ratio="16 / 9" size="md" />
         <div className="fi-card-body">
           <div className="fi-meta">
             <span className="fi-cat">{catName(a.category)}</span>
@@ -2657,7 +2880,6 @@ function ArticleCard({ a, go, source }) {
             {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
           </div>
           <h3 className="fi-ttl">{a.title}</h3>
-          {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>}
         </div>
       </button>
     </article>
@@ -3673,7 +3895,7 @@ function Home({ go, market, daily }) {
             <section className="fi-lead" aria-label="Manşet">
               <div className="fi-lead-main">
                 <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
-                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
+                  <Cover a={hero} ratio="16 / 9" size="lg" priority className="fi-lead-fig" />
                   <div className="fi-meta">
                     <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
                     <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
@@ -3710,9 +3932,8 @@ function Home({ go, market, daily }) {
                     <div className="fi-side-txt">
                       <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
                       <h3 className="fi-side-t fi-ttl">{a.title}</h3>
-                      {a.hook && <p className="fi-side-hook">{a.hook}</p>}
                     </div>
-                    {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
+                    <div className="fi-side-fig"><Cover a={a} ratio="1 / 1" size="sm" /></div>
                   </button>
                 ))}
               </div>
@@ -3738,27 +3959,30 @@ function Home({ go, market, daily }) {
               </div>
               <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
             </div>
+            <div className="fi-le-grid">
             {LEDGER.map((l, i) => {
               const a = byId(l.article); const tool = toolById(l.tool);
               return (
                 <div className="fi-le" key={i}>
-                  <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
-                  <div className="fi-le-b">
+                  <div className="fi-le-head">
+                    <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
                     <div className="fi-le-tags">
                       {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
                     </div>
-                    <p className="fi-le-q">Ne oldu?</p>
-                    <p className="fi-le-what">{l.what}</p>
-                    <p className="fi-le-q">Seni nasıl etkileyebilir?</p>
+                  </div>
+                  <p className="fi-le-what">{l.what}</p>
+                  <details className="fi-le-more" onToggle={(e) => { if (e.currentTarget.open) track("ledger_expand", { article_id: a.id }); }}>
+                    <summary>Seni nasıl etkiler?</summary>
                     <p className="fi-le-how">{l.how}</p>
                     <div className="fi-le-acts">
                       <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
                       {tool && <button className="fi-le-lnk calc" onClick={() => go({ n: "tools", tool: tool.id })}>{tool.short} hesapla →</button>}
                     </div>
-                  </div>
+                  </details>
                 </div>
               );
             })}
+            </div>
             <AdSlot placementId="ledger_native" pageType="home" className="fi-le-ad" />
           </div>
         </section>
@@ -3835,6 +4059,7 @@ function Home({ go, market, daily }) {
                 <React.Fragment key={a.id}>
                   <ArticleCard a={a} go={go} source="home_feed" />
                   {i === 2 && <AdSlot placementId="home_native_01" pageType="home" />}
+                  {i === 7 && <AdSlot placementId="home_feed_banner" pageType="home" className="fi-feed-ad" />}
                 </React.Fragment>
               ))}
             </div>
@@ -4039,9 +4264,7 @@ function Article({ slug, go, daily }) {
             </div>
 
 
-            {a.featured_image && (
-              <Figure image={a.featured_image} ratio="16 / 9" priority className="fi-art-fig" />
-            )}
+            <Cover a={a} ratio="16 / 9" size="lg" priority showCredit className="fi-art-fig" />
 
             {heads.length > 1 && (
               <nav className="fi-toc" aria-label="İçindekiler">
@@ -4500,6 +4723,7 @@ export default function FinansIndex() {
     }
   }, []);
 
+  NAV.go = go;
   const page = (() => {
     switch (route.n) {
       case "home": return <Home go={go} market={market} daily={daily} />;
