@@ -92,13 +92,8 @@ const CSS = `
 .fi-band-in { display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
 .fi-band-in::-webkit-scrollbar { display:none; }
 .fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
-.fi-band-c { display:flex; align-items:center; gap:12px; padding:14px 18px 14px 0; margin-right:18px;
-  border-right:1px solid rgba(255,255,255,.1); flex:1 1 0; min-width:0; }
-.fi-band-k { white-space:nowrap; }
-.fi-band-ar.flat, .fi-band-d.flat { color:#8F8880; }
-.fi-band-ar.flat { font-size:7px; }
-/* Tüm göstergeler masaüstünde tek satıra sığar; dar ekranda yatay kaydırılır */
-@media (max-width:1200px) { .fi-band-c { flex:0 0 auto; min-width:200px; } }
+.fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
+  border-right:1px solid rgba(255,255,255,.1); flex:0 0 auto; min-width:240px; }
 .fi-band-c:last-child { border-right:0; margin-right:0; }
 .fi-band-txt { flex:1 1 auto; }
 .fi-band-k { display:flex; align-items:center; gap:6px; font:600 11px/1 var(--mono);
@@ -109,7 +104,7 @@ const CSS = `
 .fi-band-row { display:flex; align-items:baseline; gap:9px; }
 .fi-band-v { font:600 24px/1 var(--mono); letter-spacing:-.02em; color:#fff; font-variant-numeric:tabular-nums; }
 .fi-band-d { font:600 13px/1 var(--mono); font-variant-numeric:tabular-nums; }
-.fi-spark { width:72px; height:36px; flex:0 1 auto; min-width:0; }
+.fi-spark { width:110px; height:40px; flex:0 0 auto; }
 
 /* --- eski ince şerit (makale/kategori sayfalarında kullanılmıyor) --- */
 .fi-ticker { background:var(--ink); color:#fff; border-bottom:0; }
@@ -140,14 +135,8 @@ const CSS = `
 
 /* --- ana menü + açılır --- */
 .fi-nav { display:flex; gap:0; border-top:1px solid var(--line); overflow:visible; }
-.fi-nav > .fi-nav-i:first-child > button { padding-left:0; }
-.fi-nav { justify-content:space-between; }
-.fi-nav > .fi-nav-i:last-child > button { padding-right:0; }
-/* Menü tek satıra sığmadığında (1200px altı) hamburger menüye geçilir;
-   aksi hâlde son öğeler ekranın dışına taşıyordu. */
-@media (max-width:1200px) { .fi-nav { display:none; } .fi-burger { display:grid; } }
 .fi-nav-i { position:relative; }
-.fi-nav-i > button { background:none; border:0; padding:15px 7px; font-size:14px; font-weight:500; color:var(--ink-2);
+.fi-nav-i > button { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
   white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; min-height:52px; }
 .fi-nav-i > button:hover { color:var(--ink); }
 .fi-nav-i > button[aria-current="page"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); }
@@ -213,6 +202,12 @@ const CSS = `
 .fi-lead-stat-v span { font-size:15px; font-weight:500; margin-left:6px; letter-spacing:0; }
 .fi-lead-stat-b p { font-size:15px; line-height:1.45; color:var(--ink); margin:0; max-width:34ch; }
 .fi-lead-stat-b span { display:block; font:500 12px/1.4 var(--mono); color:var(--muted); margin-top:7px; }
+.fi-lead-brief { margin:24px 0 0; padding:20px 22px; background:var(--surface); border:1px solid var(--line); border-radius:2px; }
+.fi-lead-brief h2 { font:600 10.5px/1 var(--mono); letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+.fi-lead-brief ul { list-style:none; margin:0; padding:0; display:grid; gap:2px; }
+.fi-lead-brief li { font-size:14.5px; line-height:1.45; color:var(--ink-2); padding:8px 0 8px 22px; position:relative; border-bottom:1px solid var(--line); }
+.fi-lead-brief li:last-child { border-bottom:0; }
+.fi-lead-brief li::before { content:''; position:absolute; left:0; top:15px; width:9px; height:1px; background:var(--petrol); }
 .fi-lead-acts { display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 0; }
 
 .fi-lead-side { padding:38px 0 34px 34px; display:flex; flex-direction:column; }
@@ -272,7 +267,13 @@ const CSS = `
 .fi-gos-n { font:500 11.5px/1.4 var(--mono); color:var(--muted); margin-top:7px; }
 .fi-gos-b { margin-top:auto; padding-top:16px; background:none; border:0; text-align:left; font-size:13.5px; font-weight:600; color:var(--petrol); min-height:40px; }
 .fi-gos-b:hover { text-decoration:underline; }
-.fi-mkt-note { font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.55; }
+.fi-mkt-bayat { font-size:13px; line-height:1.55; color:#8C2B18; background:#FBEAE6;
+  border:1px solid #EFCBC2; border-left:3px solid var(--down); padding:12px 14px; margin:16px 0 0; }
+.fi-mkt-note { margin:16px 0 0; }
+.fi-mkt-note p { font-size:12.5px; line-height:1.6; color:var(--muted); margin:0 0 8px; }
+.fi-mkt-note p:last-child { margin-bottom:0; }
+.fi-mkt-note strong { color:var(--ink-2); font-weight:600; }
+.fi-mkt-time { font-family:var(--mono); font-size:11.5px !important; padding-top:8px; border-top:1px solid var(--line); }
 
 /* --- son güncellemeler paneli --- */
 .fi-qt { background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--ink); border-radius:2px; overflow:hidden; }
@@ -292,8 +293,7 @@ const CSS = `
 .fi-log-panel { background:var(--surface); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-log-hd { display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line); background:var(--ink); }
 .fi-log-hd h2 { font:600 13px/1 var(--mono); letter-spacing:.11em; text-transform:uppercase; color:#fff; margin:0; }
-.fi-log-live { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:500 10.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#7FCFA6; }
-.fi-log-live i { width:6px; height:6px; border-radius:50%; background:#7FCFA6; display:block; }
+.fi-log-live { margin-left:auto; font:500 9.5px/1.3 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:#8F8880; text-align:right; max-width:150px; }
 .fi-log-list { list-style:none; margin:0; padding:0; }
 .fi-log-list li { display:grid; grid-template-columns:46px 1fr; gap:12px; padding:13px 18px; border-bottom:1px solid var(--line); }
 .fi-log-list li:last-child { border-bottom:0; }
@@ -386,6 +386,13 @@ const CSS = `
 .fi-toggle { display:flex; align-items:flex-start; gap:9px; font-size:13.5px; color:var(--ink-2); }
 .fi-toggle input { width:20px; height:20px; margin-top:2px; flex:0 0 auto; }
 .fi-res-main { border-bottom:1px solid rgba(255,255,255,.14); padding-bottom:16px; margin-bottom:16px; }
+.fi-res-uyari { border-left:2px solid #F09A88; padding:4px 0 4px 14px; }
+.fi-res-uyari p { font-size:14px; line-height:1.5; color:#F09A88; margin:0 0 8px; }
+.fi-res-uyari p:last-child { margin-bottom:0; }
+.fi-res-eksik { margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,.14); }
+.fi-res-eksik p { font-size:13.5px; line-height:1.55; color:#C4B7AC; margin:0 0 7px; }
+.fi-res-eksik p:last-child { margin-bottom:0; }
+.fi-res-eksik strong { color:#fff; font-weight:600; }
 .fi-res-k { font:500 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#B5A79C; margin-bottom:8px; }
 .fi-res-v { font:600 32px/1.05 var(--mono); letter-spacing:-.02em; color:#fff; }
 .fi-res-row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; font-size:14px; }
@@ -553,6 +560,9 @@ const CSS = `
 .fi-src h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 12px; }
 .fi-src ol { margin:0; padding-left:20px; font-size:14px; color:var(--ink-2); }
 .fi-src li { margin-bottom:7px; }
+.fi-src a { color:var(--petrol); text-decoration:underline; text-underline-offset:2px; }
+.fi-src a:hover { text-decoration-thickness:2px; }
+.fi-src-not { font:500 12.5px/1.55 var(--mono); color:var(--muted); margin:14px 0 0; padding:11px 13px; background:var(--bg); border-left:2px solid var(--line-2); }
 .fi-disc { background:var(--bg); border:1px solid var(--line); border-radius:var(--r); padding:15px 17px; font-size:13px; color:var(--muted); margin:24px 0; }
 .fi-b-auto { background:var(--green-soft); color:var(--petrol); border:1px solid #EFD9DE; }
 .fi-autobox { background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--petrol); padding:18px 20px; margin:30px 0 0; }
@@ -682,126 +692,6 @@ const CSS = `
   .fi-side-i { grid-template-columns:1fr 76px; }
   .fi-side-th { width:76px; height:58px; }
 }
-/* ===================== KAPAK (görsel yoksa tipografik kapak) ===================== */
-.fi-cov { position:relative; width:100%; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:7cqi 7cqi 6cqi; text-align:left; }
-.fi-cov-ink { background:#1A1A1A; color:#FAF8F4; }
-.fi-cov-wine { background:#8C1D33; color:#FAF8F4; }
-.fi-cov-paper { background:#EFE9DF; color:#14100E; }
-.fi-cov-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; position:relative; z-index:1; }
-.fi-cov-cat { font:600 max(10px, 2.6cqi)/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
-.fi-cov-mark { font:700 max(10px, 2.8cqi)/1 var(--serif); letter-spacing:-.02em; padding:.45em .5em; border:1px solid currentColor; opacity:.55; }
-.fi-cov-bot { position:relative; z-index:1; }
-.fi-cov-v { display:block; font:600 18cqi/.92 var(--mono); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
-.fi-cov-v.m { font-size:13cqi; }
-.fi-cov-v.l { font-size:10cqi; }
-.fi-cov-paper .fi-cov-v { color:#8C1D33; }
-.fi-cov-k { display:block; font:500 max(12px, 3.3cqi)/1.35 var(--sans); margin-top:2.4cqi; max-width:30ch; opacity:.9; }
-.fi-cov-word { display:block; font:700 9.5cqi/1 var(--serif); letter-spacing:-.045em; max-width:12ch; }
-.fi-cov-type { display:block; font:500 max(11px, 2.8cqi)/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; margin-top:2.6cqi; opacity:.7; }
-.fi-cov-sm { padding:10px; justify-content:flex-end; }
-.fi-cov-sm .fi-cov-top, .fi-cov-sm .fi-cov-k, .fi-cov-sm .fi-cov-type { display:none; }
-.fi-cov-sm .fi-cov-v { font-size:25cqi; }
-.fi-cov-sm .fi-cov-v.m { font-size:17cqi; }
-.fi-cov-sm .fi-cov-v.l { font-size:12cqi; }
-.fi-cov-sm .fi-cov-word { font-size:15cqi; }
-.fi-cov-wrap { width:100%; border-radius:var(--r); overflow:hidden; container-type:inline-size; }
-.fi-card .fi-cov-wrap { border-radius:0; }
-.fi-side-fig .fi-cov-wrap { border-radius:3px; }
-
-/* Kart: görsel ağırlıklı, yalnızca başlık */
-.fi-card .fi-a { display:flex; flex-direction:column; height:100%; }
-.fi-card .fi-ttl { margin-bottom:0; }
-.fi-card:hover .fi-cov { filter:brightness(1.06); }
-
-/* Manşet: kısaltılmış metin */
-.fi-topgrid .fi-lead-t { font-size:32px; margin:14px 0 12px; }
-.fi-lead-s { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.fi-topgrid .fi-lead-s { font-size:16px; line-height:1.55; }
-.fi-lead-fig { margin-bottom:18px; }
-.fi-side-i { grid-template-columns:1fr 104px; }
-.fi-side-fig { width:104px; }
-
-/* Manşet altı 4'lü blok: sağ sütunun yanındaki boşluğu doldurur */
-.fi-latest { margin-top:34px; padding-top:0; }
-.fi-latest-g { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
-@media (max-width:520px) { .fi-latest-g { grid-template-columns:1fr; } }
-
-/* Cep Etkisi Defteri: kart ızgarası, detay açılır */
-.fi-le-grid { display:grid; grid-template-columns:repeat(3,1fr); }
-.fi-le-grid .fi-le { display:flex; flex-direction:column; border-top:1px solid var(--line); border-left:1px solid var(--line); padding:22px 24px 22px; }
-.fi-le-grid .fi-le:nth-child(3n+1) { border-left:0; }
-.fi-le-grid .fi-le:nth-child(-n+3) { border-top:0; }
-.fi-le-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
-.fi-le-grid .fi-le-n { padding:0; font-size:26px; font-weight:600; letter-spacing:-.04em; }
-.fi-le-grid .fi-le-tags { margin:0; justify-content:flex-end; }
-.fi-le-grid .fi-le-what { font-size:17px; line-height:1.36; margin:0 0 14px; }
-.fi-le-more { margin:auto 0 0; border-top:1px dashed var(--line-2); padding-top:12px; }
-.fi-le-more summary { cursor:pointer; list-style:none; font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--petrol); display:flex; justify-content:space-between; align-items:center; min-height:28px; }
-.fi-le-more summary::-webkit-details-marker { display:none; }
-.fi-le-more summary::after { content:"+"; font-size:16px; }
-.fi-le-more[open] summary::after { content:"–"; }
-.fi-le-grid .fi-le-how { font-size:14.5px; margin:10px 0 14px; }
-
-/* ===================== REKLAM ALANLARI (boşken kendi tanıtımımız) ===================== */
-.fi-house { display:block; width:100%; margin:0 auto; }
-.fi-house-in { position:relative; display:flex; align-items:center; justify-content:space-between; gap:22px; width:100%; height:100%; padding:22px 28px; background:repeating-linear-gradient(135deg, var(--surface) 0 14px, #F6F2EB 14px 28px); border:1px solid var(--line-2); border-radius:var(--r); text-align:left; color:var(--ink); }
-.fi-house-in:hover { border-color:var(--ink); }
-.fi-house-lbl { position:absolute; top:9px; left:12px; font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-.fi-house-t { font:600 22px/1.2 var(--serif); letter-spacing:-.03em; margin:0; max-width:24ch; }
-.fi-house-x { font-size:13.5px; color:var(--muted); margin:6px 0 0; }
-.fi-house-cta { flex:0 0 auto; font:600 13.5px/1 var(--sans); padding:12px 16px; background:var(--ink); color:#FAF8F4; border-radius:var(--r); white-space:nowrap; }
-.fi-house-billboard { max-width:970px; }
-.fi-house-billboard .fi-house-in { aspect-ratio:970 / 250; }
-.fi-house-leader { max-width:970px; }
-.fi-house-leader .fi-house-in { min-height:110px; }
-.fi-house-leader .fi-house-t { font-size:19px; max-width:40ch; }
-.fi-house-box { max-width:336px; }
-.fi-house-box .fi-house-in { aspect-ratio:300 / 250; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:22px; }
-.fi-house-box .fi-house-t { font-size:20px; }
-.fi-house-native { height:100%; }
-.fi-house-native .fi-house-in { flex-direction:column; align-items:flex-start; justify-content:flex-end; min-height:300px; padding:22px; }
-.fi-house-native .fi-house-t { font-size:20px; }
-.fi-house-halfpage { max-width:300px; }
-.fi-house-halfpage .fi-house-in { aspect-ratio:300 / 600; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:24px; }
-.fi-house-halfpage .fi-house-t { font-size:24px; }
-.fi-house-rect { max-width:336px; }
-.fi-house-rect .fi-house-in { aspect-ratio:336 / 280; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:22px; }
-.fi-house-rect .fi-house-t { font-size:20px; }
-.fi-hl-t, .fi-hl-m { display:none; }
-.fi-feed-ad { grid-column:1 / -1; }
-.fi-art-top-ad { margin:24px auto 4px; }
-.fi-calc-ad { padding:18px 22px 22px; border-top:1px solid var(--line); }
-@media (max-width:1000px) {
-  .fi-hl-d, .fi-hl-m { display:none; } .fi-hl-t { display:inline; }
-  .fi-house-billboard .fi-house-in { aspect-ratio:auto; min-height:110px; }
-  .fi-house-billboard, .fi-house-leader { max-width:728px; }
-}
-.fi-art .fi-house-box, .fi-body .fi-house { margin:28px auto; }
-
-@media (max-width:1000px) {
-  .fi-le-grid { grid-template-columns:repeat(2,1fr); }
-  .fi-le-grid .fi-le:nth-child(3n+1) { border-left:1px solid var(--line); }
-  .fi-le-grid .fi-le:nth-child(2n+1) { border-left:0; }
-  .fi-le-grid .fi-le:nth-child(3) { border-top:1px solid var(--line); }
-}
-@media (max-width:760px) {
-  .fi-le-grid { grid-template-columns:1fr; }
-  .fi-le-grid .fi-le { border-left:0 !important; border-top:1px solid var(--line) !important; padding:20px 18px; }
-  .fi-le-grid .fi-le:first-child { border-top:0 !important; }
-  .fi-topgrid .fi-lead-t { font-size:27px; }
-  .fi-side-i { grid-template-columns:1fr 88px; }
-  .fi-side-fig { width:88px; }
-  .fi-house-billboard .fi-house-in { aspect-ratio:auto; min-height:120px; }
-  .fi-house-in { flex-direction:column; align-items:flex-start; padding:30px 18px 18px; gap:14px; }
-  .fi-house-t, .fi-house-leader .fi-house-t { font-size:18px; }
-  .fi-hl-d, .fi-hl-t { display:none; } .fi-hl-m { display:inline; }
-  .fi-house-halfpage, .fi-house-rect { max-width:300px; }
-  .fi-house-halfpage .fi-house-in, .fi-house-rect .fi-house-in { aspect-ratio:300 / 250; padding:30px 18px 18px; }
-  .fi-house-billboard, .fi-house-leader { max-width:none; }
-  /* Başlıktaki butonlar mobilde sayfayı yana taşırıyordu; ikisi de mobil menüde var. */
-  .fi-hd-acts .fi-btn { display:none; }
-}
-
 @media (prefers-reduced-motion:reduce) {
   .fi *, .fi *::before, .fi *::after { animation:none !important; transition:none !important; }
 }
@@ -1067,11 +957,11 @@ function buildDailyMarketArticle(market) {
 
   /* Öne çıkan rakamlar */
   const stats = [];
-  if (usd) stats.push({ v: f(usd.v), k: "Dolar (TCMB satış)", sub: usd.d != null ? `Günlük ${pct(usd.d)} ${yon(usd.d)}` : "TCMB resmî kuru" });
-  if (eur) stats.push({ v: f(eur.v), k: "Euro (TCMB satış)", sub: eur.d != null ? `Günlük ${pct(eur.d)} ${yon(eur.d)}` : "TCMB resmî kuru" });
-  if (ga) stats.push({ v: f(ga.v), k: "Gram altın (TL)", sub: "Serbest piyasa satış" });
-  if (gumus) stats.push({ v: f(gumus.v), k: "Gümüş (TL)", sub: "Serbest piyasa satış" });
-  if (stats.length) body.push({ type: "stats", items: stats, caption: "Döviz kurları TCMB resmî kurlarıdır. Kıymetli maden fiyatları serbest piyasa verisidir." });
+  if (usd) stats.push({ v: f(usd.v), k: "Dolar (TCMB döviz satış)", sub: usd.d != null ? `Önceki yayına göre ${pct(usd.d)} ${yon(usd.d)}` : "TCMB günlük gösterge kuru" });
+  if (eur) stats.push({ v: f(eur.v), k: "Euro (TCMB döviz satış)", sub: eur.d != null ? `Önceki yayına göre ${pct(eur.d)} ${yon(eur.d)}` : "TCMB günlük gösterge kuru" });
+  if (ga) stats.push({ v: f(ga.v), k: "Gram altın (TL)", sub: "Serbest piyasa satış · doğrulanmamış" });
+  if (gumus) stats.push({ v: f(gumus.v), k: "Gümüş (TL)", sub: "Serbest piyasa satış · doğrulanmamış" });
+  if (stats.length) body.push({ type: "stats", items: stats, caption: "Döviz: TCMB günlük gösterge kurları, döviz satış. Efektif kurlardan ve bankaların uyguladığı kurlardan farklıdır. Maden: üçüncü taraf serbest piyasa sağlayıcısı, gram başına TL; bağımsız olarak doğrulanmamıştır." });
 
   /* Döviz bölümü */
   if (usd || eur || gbp) {
@@ -1213,8 +1103,8 @@ function buildMarketLog(market) {
     rows.push({
       time: hhmm,
       text: usd.d != null
-        ? `Dolar/TL, TCMB resmî kurunda ${fmt(usd.v)} seviyesinde. Bir önceki iş gününe göre %${num(Math.abs(usd.d), 2)} ${yon(usd.d)}.`
-        : `Dolar/TL, TCMB resmî kurunda ${fmt(usd.v)} seviyesinde.`,
+        ? `Dolar/TL, TCMB günlük gösterge kurunda (döviz satış) ${fmt(usd.v)}. Bir önceki yayımlanmış kura göre %${num(Math.abs(usd.d), 2)} ${yon(usd.d)}.`
+        : `Dolar/TL, TCMB günlük gösterge kurunda (döviz satış) ${fmt(usd.v)}.`,
       tag: "Döviz",
     });
   }
@@ -1222,8 +1112,8 @@ function buildMarketLog(market) {
     rows.push({
       time: hhmm,
       text: eur.d != null
-        ? `Euro/TL ${fmt(eur.v)} olarak açıklandı, günlük değişim %${num(Math.abs(eur.d), 2)} ${yon(eur.d)}.`
-        : `Euro/TL, TCMB resmî kurunda ${fmt(eur.v)} seviyesinde.`,
+        ? `Euro/TL, TCMB gösterge kurunda ${fmt(eur.v)}; bir önceki yayına göre %${num(Math.abs(eur.d), 2)} ${yon(eur.d)}.`
+        : `Euro/TL, TCMB günlük gösterge kurunda ${fmt(eur.v)}.`,
       tag: "Döviz",
     });
   }
@@ -1232,19 +1122,19 @@ function buildMarketLog(market) {
     rows.push({
       time: hhmm,
       text: makas != null
-        ? `Gram altın serbest piyasada ${fmt(ga.satis)} TL'den satılıyor. Alış-satış farkı %${num(makas, 2)}.`
-        : `Gram altın serbest piyasada ${fmt(ga.v)} TL seviyesinde.`,
+        ? `Gram altın, serbest piyasa sağlayıcısına göre ${fmt(ga.satis)} TL satış. Alış-satış farkı %${num(makas, 2)}. Kuyumcu fiyatları farklılık gösterir.`
+        : `Gram altın, serbest piyasa sağlayıcısına göre ${fmt(ga.v)} TL.`,
       tag: "Altın",
     });
   }
   if (gm) {
-    rows.push({ time: hhmm, text: `Gümüş ${fmt(gm.v)} TL seviyesinde işlem görüyor.`, tag: "Gümüş" });
+    rows.push({ time: hhmm, text: `Gümüş, serbest piyasa sağlayıcısına göre gram başına ${fmt(gm.v)} TL.`, tag: "Gümüş" });
   }
   if (usd && eur) {
     const parite = eur.v / usd.v;
     rows.push({
       time: hhmm,
-      text: `TCMB kurlarına göre EUR/USD paritesi ${num(parite, 4)} seviyesinde.`,
+      text: `TCMB gösterge kurlarından hesaplanan EUR/USD paritesi ${num(parite, 4)}. Bu, uluslararası piyasa paritesi değil, TCMB kurlarının oranıdır.`,
       tag: "Parite",
     });
   }
@@ -1276,14 +1166,12 @@ const GAM = {
   /* placement ID → kabul edilen boyutlar.
      Ajansa bu ölçüler bildirilir; GAM birimi de bu boyutlarla tanımlanır. */
   sizes: {
-    home_top_banner:        [[970, 250], [970, 90], [728, 90], [320, 100], [320, 50]],
-    home_mid_banner:        [[970, 250], [728, 90], [320, 100], [320, 50]],
+    home_top_banner:        [[970, 250], [970, 90], [728, 90], [320, 100]],
+    home_mid_banner:        [[970, 250], [728, 90], [320, 100]],
     desktop_sidebar_sticky: [[300, 600], [300, 250]],
-    article_inline_01:      [[336, 280], [300, 250], [728, 90]],
-    article_inline_02:      [[336, 280], [300, 250], [728, 90]],
-    article_end:            [[728, 90], [300, 250], [320, 100]],
-    article_top_banner:     [[970, 250], [970, 90], [728, 90], [320, 100], [300, 250]],
-    calculator_result_banner: [[728, 90], [300, 250], [320, 100]],
+    article_inline_01:      [[728, 90], [300, 250], [336, 280]],
+    article_inline_02:      [[728, 90], [300, 250], [336, 280]],
+    article_end:            [[728, 90], [300, 250]],
     rail_left:              [[160, 600], [120, 600]],
     rail_right:             [[160, 600], [120, 600]],
     mobile_sticky_footer:   [[320, 50], [320, 100]],
@@ -1292,20 +1180,7 @@ const GAM = {
     search_native_01:       [[300, 250], [336, 280]],
     category_native_01:     [[300, 250], [336, 280]],
     home_native_01:         [[300, 250], [336, 280]],
-    home_feed_banner:       [[970, 90], [728, 90], [320, 100], [320, 50]],
   },
-
-  /* Ekran genişliğine göre hangi ölçülerin istenebileceği.
-     Geniş banner'lar dar ekranda küçültülmez; o ekrana uygun ayrı kreatif istenir.
-       masaüstü (1000px+) : tanımlı tüm ölçüler
-       tablet  (760–999px): genişliği en fazla 728 olanlar
-       mobil   (<760px)   : genişliği en fazla 336, yüksekliği en fazla 280 olanlar
-                            (300×600 mobilde 300×250'ye düşer) */
-  breakpoints: [
-    { minWidth: 1000, maxW: Infinity, maxH: Infinity },
-    { minWidth: 760,  maxW: 728,      maxH: Infinity },
-    { minWidth: 0,    maxW: 336,      maxH: 280 },
-  ],
 };
 
 const gamPath = (pid) => `/${GAM.networkCode}/${GAM.parentPath}/${pid}`;
@@ -1370,11 +1245,6 @@ function GamSlot({ placementId, pageType }) {
           .defineSlot(gamPath(placementId), sizes, domId)
           .addService(googletag.pubads());
         if (!slot) return;
-        const mapping = GAM.breakpoints.reduce(
-          (m, bp) => m.addSize([bp.minWidth, 0], sizes.filter(([w, h]) => w <= bp.maxW && h <= bp.maxH)),
-          googletag.sizeMapping()
-        ).build();
-        slot.defineSizeMapping(mapping);
         slotRef.current = slot;
         googletag.pubads().enableSingleRequest();
         googletag.pubads().collapseEmptyDivs(true);   // dolmayan alan yer kaplamaz
@@ -1452,15 +1322,14 @@ const AD_INVENTORY = {
      Gerçek reklamveren geldiğinde image, alt, href ve sponsor güncellenir.
      Görsel `public/img/reklam/` klasörüne yüklenir.
      Kaldırmak için bu bloğu tekrar `null` yap. */
-  home_top_banner: null,
+  home_top_banner: {
+    sponsor: "Örnek Banka",
+    image: "/img/reklam/ornek-banner-970x250.png",
+    alt: "Örnek Banka konut kredisi kampanyası görseli",
+    href: null,
+    ratio: "970 / 250",
+  },
   home_native_01: null,
-  /* Ana sayfa içerik akışında, 8. karttan sonra tam genişlik bant. */
-  home_feed_banner: null,
-  /* Yazı sayfası: menü ve piyasa bandından sonra, yazı başlığından önce. */
-  article_top_banner: null,
-  /* Araçlar sayfası: hesaplama sonucunun hemen altında, tam genişlik banner.
-     calculator_result (metin sponsorluk) ile birlikte ya da ayrı satılabilir. */
-  calculator_result_banner: null,
   desktop_sidebar_sticky: null,
   article_inline_01: null,
   article_end: null,
@@ -1475,7 +1344,13 @@ const AD_INVENTORY = {
      hemen altında durduğu için sitenin tipografisiyle uyumlu olması,
      yabancı bir banner blokundan daha iyi çalışır.
      Gerçek reklamveren geldiğinde sponsor, title ve href güncellenir. */
-  category_sponsor: null,
+  category_sponsor: {
+    type: "display",
+    sponsor: "Örnek Banka",
+    title: "Kredi ve Mevduat kategorisi Örnek Banka katkılarıyla sunuluyor",
+    cta: "Kampanyayı gör",
+    href: null,
+  },
   newsletter_sponsor: null,
   /* Cep Etkisi Defteri içinde tek native blok. Sınırlı envanter olduğu için
      yüksek fiyatlanabilir; okuma akışını bozmadığından performansı iyi olur. */
@@ -1514,71 +1389,6 @@ const AD_INVENTORY = {
      bozduğu için yüksekliği sınırlı tutulmuştur. */
   mobile_sticky_footer: null,
 };
-
-/**
- * KENDİ TANITIM ALANLARIMIZ (house ad)
- *
- * Bir reklam alanına henüz reklamveren atanmamışsa (AD_INVENTORY değeri null
- * ve GAM kapalıysa) alan boş kalmaz: "Bu alana reklam verin" kutusu çıkar ve
- * Medya Kiti sayfasına götürür. Böylece okur sayfa düzenini, reklamveren de
- * satın alabileceği yeri görür.
- *
- * Kapatmak için: enabled: false. Tek bir alanı kapatmak için o satırı sil.
- * variant: billboard (970×250) · leader (970×90 / 728×90) · box (300×250) · native (kart)
- */
-const HOUSE_ADS = {
-  enabled: true,
-  /* size: ekranda yazan ölçü etiketi — d: masaüstü, t: tablet, m: mobil */
-  slots: {
-    home_top_banner:          { variant: "billboard", size: { d: "970 × 250", t: "728 × 90", m: "320 × 100" } },
-    home_mid_banner:          { variant: "billboard", size: { d: "970 × 250", t: "728 × 90", m: "320 × 100" } },
-    home_feed_banner:         { variant: "leader",    size: { d: "970 × 90",  t: "728 × 90", m: "320 × 50" } },
-    home_native_01:           { variant: "native",    size: { d: "Sponsorlu içerik" } },
-    desktop_sidebar_sticky:   { variant: "box",       size: { d: "300 × 250" },
-                                /* Yazı ve araç sayfalarında dikey Half Page */
-                                byPage: { article: { variant: "halfpage", size: { d: "300 × 600", t: "300 × 600", m: "300 × 250" } },
-                                          tools:   { variant: "halfpage", size: { d: "300 × 600", t: "300 × 600", m: "300 × 250" } } } },
-    category_native_01:       { variant: "native",    size: { d: "Sponsorlu içerik" } },
-    article_top_banner:       { variant: "leader",    size: { d: "970 × 90",  t: "728 × 90", m: "320 × 100" } },
-    article_inline_01:        { variant: "rect",      size: { d: "336 × 280", m: "300 × 250" } },
-    article_inline_02:        { variant: "rect",      size: { d: "336 × 280", m: "300 × 250" } },
-    article_end:              { variant: "leader",    size: { d: "728 × 90",  m: "320 × 100" } },
-    calculator_result_banner: { variant: "leader",    size: { d: "728 × 90",  m: "320 × 100" } },
-    search_native_01:         { variant: "native",    size: { d: "Sponsorlu içerik" } },
-    tools_index_native:       { variant: "native",    size: { d: "Sponsorlu içerik" } },
-  },
-};
-
-/* Reklam kutularından Medya Kiti'ne gitmek için uygulama kökünün go fonksiyonu. */
-const NAV = { go: null };
-
-function HouseAd({ placementId, pageType, className = "" }) {
-  const base = HOUSE_ADS.slots[placementId];
-  if (!base) return null;
-  const cfg = (base.byPage && base.byPage[pageType]) || base;
-  const sz = cfg.size || {};
-  const open = () => {
-    track("house_ad_click", { placement_id: placementId, page_type: pageType });
-    if (NAV.go) NAV.go({ n: "mediakit" });
-  };
-  const wide = cfg.variant === "billboard" || cfg.variant === "leader";
-  return (
-    <div className={`fi-house fi-house-${cfg.variant} ${className}`}>
-      <button className="fi-a fi-house-in" onClick={open} aria-label="Reklam alanı: reklam vermek için Medya Kiti'ni incele">
-        <span className="fi-house-lbl">
-          Reklam alanı · <span className="fi-hl-d">{sz.d}</span>
-          <span className="fi-hl-t">{sz.t || sz.d}</span>
-          <span className="fi-hl-m">{sz.m || sz.t || sz.d}</span>
-        </span>
-        <div>
-          <p className="fi-house-t">{wide ? "Markanızı finans kararı veren okurlarla buluşturun" : "Bu alan reklamınız için ayrıldı"}</p>
-          <p className="fi-house-x">{wide ? "Kredi, mevduat ve yatırım içeriklerinde, karar anında görünür olun." : "Finans kararı veren okurlara ulaşın."}</p>
-        </div>
-        <span className="fi-house-cta">Medya kiti →</span>
-      </button>
-    </div>
-  );
-}
 
 /* ------------------------------------------------------------ 6. TAKSONOMİ */
 
@@ -1822,7 +1632,11 @@ const ARTICLES = [
     featured_image: { src: "/img/kira-artis.jpg", alt: "Bir apartman dairesinin salonu ve kira sözleşmesi", credit: "Görsel: Unsplash" },
     tags: ["kira", "enflasyon", "konut"],
     source_name: "TÜİK / Resmî Gazete",
-    source_urls: ["TÜİK — Tüketici Fiyat Endeksi, on iki aylık ortalamalara göre değişim oranları", "Türk Borçlar Kanunu — Kira bedelinin belirlenmesine ilişkin hükümler"],
+    source_urls: [
+      { t: "TÜİK — Tüketici Fiyat Endeksi, on iki aylık ortalamalara göre değişim oranları", u: "https://data.tuik.gov.tr/Bulten/Index?p=Tuketici-Fiyat-Endeksi" },
+      { t: "6098 sayılı Türk Borçlar Kanunu — kira bedelinin belirlenmesi", u: "https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6098.pdf" },
+    ],
+    oranNotu: "Kira artışında kullanılacak oran her ay TÜİK bülteniyle güncellenir. Yazıdaki yöntem kalıcıdır; oranı kendi yenileme ayınıza göre bültenden alın. Son kontrol: 7 Ekim 2026.",
     seo_title: "Kira artış oranı nasıl hesaplanır? | FinansIndex",
     meta_description: "Kira artışında kullanılan endeks, hesaplama yöntemi, yasal sınır ve anlaşmazlık durumunda izlenecek adımlar.",
     body: [
@@ -1892,7 +1706,7 @@ const ARTICLES = [
   {
     id: "a7", slug: "bes-devlet-katkisi-nasil-calisir",
     title: "BES devlet katkısı nasıl çalışır? Hak kazanma süreleri ve çıkış senaryoları",
-    summary: "Katkı payı, devlet katkısı oranı, kademeli hak kazanma takvimi ve sistemden erken ayrılmanın maliyeti. Emeklilik planı kurmadan önce bilinmesi gerekenler.",
+    summary: "2026'da devlet katkısı %20. Hak kazanma oranları 3 yılda %15, 6 yılda %35, 10 yılda %60. Oranları, kademeli takvimi ve 10 yılın neden tek başına emeklilik anlamına gelmediğini anlatıyoruz.",
     category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "finansindex",
     published_at: "2026-07-31T09:45:00+03:00", updated_at: "2026-07-31T09:45:00+03:00",
     read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
@@ -1900,15 +1714,42 @@ const ARTICLES = [
     featured_image: { src: "/img/bes-emeklilik.jpg", alt: "Emeklilik planı üzerine çalışan bir kişinin elleri ve belgeler", credit: "Görsel: Unsplash" },
     tags: ["BES", "emeklilik", "devlet katkısı"],
     source_name: "SPK / Emeklilik Gözetim Merkezi",
-    source_urls: ["Bireysel Emeklilik Tasarruf ve Yatırım Sistemi Kanunu", "Emeklilik Gözetim Merkezi — Sistem istatistikleri ve bilgilendirme sayfaları"],
+    source_urls: [
+      "4632 sayılı Bireysel Emeklilik Tasarruf ve Yatırım Sistemi Kanunu",
+      "7 Ocak 2026 tarihli ve 10811 sayılı Cumhurbaşkanı Kararı (Resmî Gazete)",
+      { t: "Emeklilik Gözetim Merkezi — bilgilendirme sayfaları", u: "https://www.egm.org.tr" },
+    ],
+    oranNotu: "Devlet katkısı oranı (%20) ve hak kazanma kademeleri mevzuata bağlıdır ve Cumhurbaşkanı Kararı ile değişebilir. Sözleşme yapmadan önce oranı ve kendi hak kazanma sürenizi emeklilik şirketinizden veya Emeklilik Gözetim Merkezi'nin sayfasından teyit edin. Son kontrol: 7 Ekim 2026.",
     seo_title: "BES devlet katkısı nasıl çalışır? | FinansIndex",
     meta_description: "Bireysel emeklilik sisteminde devlet katkısı, hak kazanma süreleri ve sistemden ayrılmanın sonuçları sade bir dille anlatılıyor.",
     body: [
       P("Bireysel emeklilik sisteminin temel mantığı basittir: düzenli olarak katkı payı ödersiniz, bu tutar bir emeklilik yatırım fonunda değerlendirilir ve devlet belirli bir oranda katkı yapar. Sistemin ayırt edici tarafı, katkının doğrudan sizin hesabınıza ayrı bir alt hesapta işlenmesidir."),
+      H("Devlet katkısı oranı 2026'da ne kadar?"),
+      P("7 Ocak 2026 tarihli Cumhurbaşkanı Kararı ile Türk lirası cinsinden yapılan katkı payı ödemelerinde devlet katkısı oranı **%30'dan %20'ye indirildi.** Yeni oran 1 Ocak 2026'dan itibaren yatırılan katkı payları için geçerli."),
+      P("Yani sisteme yatırdığınız her 100 TL için devlet hesabınıza 20 TL ekliyor. Devlet katkısının yıllık bir üst sınırı var ve bu sınır brüt asgari ücrete göre belirleniyor."),
+      { type: "stats", items: [
+        { v: "%20", k: "2026 devlet katkısı oranı", sub: "TL cinsinden katkı payları için" },
+        { v: "%60", k: "10 yıl sonunda hak kazanılan oran", sub: "Emeklilik şartı ayrıca aranır" },
+        { v: "%100", k: "Emeklilik, vefat, maluliyette", sub: "Katkının tamamına hak kazanılır" },
+      ], caption: "Kaynak: Emeklilik Gözetim Merkezi ve 7 Ocak 2026 tarihli Cumhurbaşkanı Kararı. Son kontrol: 7 Ekim 2026." },
+
       H("Devlet katkısına nasıl hak kazanılır?"),
-      P("Devlet katkısı hesaba işlense de tamamına anında sahip olmazsınız. Sistemde kalma süreniz arttıkça katkının size ait olan oranı kademeli olarak yükselir. Belirli bir süreden önce ayrılırsanız katkının bir kısmı ya da tamamı hesabınızdan çıkar."),
-      { type: "table", head: ["Durum", "Sonuç"],
-        rows: [["Erken ayrılma", "Devlet katkısının tamamına hak kazanılamaz"], ["Kademeli süre tamamlanması", "Katkının belirli bir oranına hak kazanılır"], ["Emekliliğe hak kazanma", "Katkının tamamı ve getirisi hesapta kalır"]] },
+      P("Burada iki ayrı kavramı karıştırmamak gerekiyor. **Devlet katkısı oranı**, hesabınıza ne kadar katkı yatırılacağını belirler. **Hak kazanma oranı** ise bu katkının ne kadarını alabileceğinizi belirler. İkisi farklı şeydir."),
+      P("Devlet katkısı hesaba işlense de tamamına anında sahip olmazsınız. Sistemde kalma süreniz arttıkça katkının size ait olan oranı kademeli yükselir."),
+      { type: "table", head: ["Sistemde kalma süresi", "Devlet katkısının hak kazanılan oranı"],
+        rows: [
+          ["3 yıldan az", "Hak kazanılmaz"],
+          ["En az 3 yıl", "%15"],
+          ["En az 6 yıl", "%35"],
+          ["En az 10 yıl", "%60"],
+          ["Emeklilik, vefat veya maluliyet", "%100"],
+        ] },
+      { type: "note", t: "Bu oranlar devlet katkısı hesabındaki tutara uygulanır, kendi yatırdığınız katkı paylarına değil. Kendi ödediğiniz tutar ve getirisi her durumda sizindir." },
+
+      H("10 yıl dolduğunda emekli mi olunur?"),
+      P("Hayır. Bu, sistemde en sık karıştırılan konulardan biri. **Sistemde 10 yıl kalmak tek başına emeklilik anlamına gelmez.**"),
+      P("10 yılı doldurmak, devlet katkısının %60'ına hak kazandırır. Katkının tamamına hak kazanmak ve bireysel emeklilik sisteminden emekli sayılmak için 10 yıl şartının yanında **yaş şartının da sağlanması** gerekir. Emeklilik şartlarınızı kendi sözleşmenize ve güncel mevzuata göre emeklilik şirketinizden teyit edin."),
+      P("Emeklilik hakkı kazanmanın bir sonucu daha var: sistemden çıkış sırasında uygulanan stopaj oranı, emeklilik hakkıyla çıkanlarda daha düşük uygulanır. Yani süre yalnızca katkıyı değil, vergi yükünü de etkiler."),
       H("Katkı payınızı planlarken"),
       { type: "ul", items: [
         "Ödeme düzenliliği, sistemdeki en belirleyici unsurdur; ara verilen dönemler hem birikimi hem katkıyı etkiler.",
@@ -1918,9 +1759,9 @@ const ARTICLES = [
       P("BES uzun vadeli bir plandır. Kısa vadede paraya ihtiyaç duyma ihtimaliniz varsa, bu ihtiyacı sistemin dışında ayrı bir birikimle karşılamak daha uygun olur."),
     ],
     impact: {
-      lead: "Devlet katkısına tam olarak hak kazanmak sistemde kalma süresine bağlıdır.",
+      lead: "2026'da devlet katkısı %20; bu katkının ne kadarını alabileceğiniz sistemde kalma sürenize bağlı.",
       points: [
-        "Sözleşmenizin başlangıç tarihini ve hak kazanma takviminizi öğrenin.",
+        "Sözleşme başlangıç tarihinizi öğrenin; hak kazanma oranınız (%15, %35 veya %60) buna göre belirlenir.",
         "Ödemeye ara vermeniz gerekirse, bunun katkı ve birikime etkisini şirketinizden yazılı olarak isteyin.",
         "Kısa vadeli nakit ihtiyacınızı BES dışında planlayın.",
       ],
@@ -2087,10 +1928,12 @@ const ARTICLES = [
     tags: ["kredi", "faiz", "maliyet"],
     source_name: "TCMB / BDDK",
     source_urls: [
-      "TCMB — Bankalarca tüketici kredilerine uygulanan ağırlıklı ortalama faiz oranları",
-      "BDDK — Tüketici kredisi sözleşmelerine ilişkin düzenlemeler",
-      "Resmî Gazete — KKDF ve BSMV oranlarına ilişkin düzenlemeler",
+      { t: "7345 sayılı Cumhurbaşkanı Kararı — Tüketici kredilerinde BSMV %15 (RG 7.7.2023, sayı 32241)", u: "https://www.resmigazete.gov.tr/eskiler/2023/07/20230707-10.pdf" },
+      { t: "Gelir İdaresi Başkanlığı — BSMV nispetlerine ilişkin Bakanlar Kurulu Kararı", u: "https://gib.gov.tr/mevzuat/kanun/445/bkk/1849" },
+      { t: "TCMB — Bankalarca tüketici kredilerine uygulanan ağırlıklı ortalama faiz oranları", u: "https://evds2.tcmb.gov.tr/" },
+      { t: "BDDK — Tüketici kredisi sözleşmelerine ilişkin düzenlemeler", u: "https://www.bddk.org.tr/" },
     ],
+    oranNotu: "Kullanılan oranlar: KKDF %15, BSMV %15 (yalnızca tüketici kredilerinde ve yalnızca faiz üzerinden). BSMV %15 oranı 7 Temmuz 2023'te yürürlüğe girdi. Son kontrol: 7 Ekim 2026.",
     seo_title: "Kredi faizi ve toplam maliyet nasıl hesaplanır? | FinansIndex",
     meta_description: "Aylık faiz oranı, vade, KKDF ve BSMV'nin toplam geri ödemeye etkisi. Kredi tekliflerini doğru karşılaştırmanın yolu.",
     body: [
@@ -2101,20 +1944,20 @@ const ARTICLES = [
       { type: "chart", title: "100.000 TL kredi, aylık %2,50 faiz: vadeye göre toplam geri ödeme",
         unit: "₺", highlight: 0,
         rows: [
-          { k: "12 ay", sub: "Taksit ≈ 9.900 TL", v: 118800 },
-          { k: "24 ay", sub: "Taksit ≈ 5.985 TL", v: 143600 },
-          { k: "36 ay", sub: "Taksit ≈ 4.760 TL", v: 171400 },
-          { k: "48 ay", sub: "Taksit ≈ 4.190 TL", v: 201100 },
+          { k: "12 ay", sub: "Taksit ≈ 10.197 TL", v: 122361 },
+          { k: "24 ay", sub: "Taksit ≈ 6.065 TL", v: 145557 },
+          { k: "36 ay", sub: "Taksit ≈ 4.753 TL", v: 171102 },
+          { k: "48 ay", sub: "Taksit ≈ 4.142 TL", v: 198831 },
         ],
-        note: "Vadeyi 12 aydan 48 aya çıkarmak aylık taksiti yarıdan fazla düşürüyor, ancak toplam ödemeye yaklaşık 82.000 TL ekliyor.",
-        caption: "Örnek hesaplama. KKDF %15 ve BSMV %10 dahil edilmiştir. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın." },
+        note: "Vadeyi 12 aydan 48 aya çıkarmak aylık taksiti yaklaşık %59 düşürüyor, ancak toplam ödemeye yaklaşık 76.500 TL ekliyor.",
+        caption: "Örnek hesaplama. KKDF %15 ve BSMV %15 faiz üzerinden dahil edilmiştir; dosya masrafı, tahsis ücreti ve sigorta primi hariçtir. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın. (Son kontrol: 7 Ekim 2026)" },
 
       H("Vergiler oranı sessizce yükseltir"),
       P("Tüketici kredilerinde faiz tutarı üzerinden **KKDF** ve **BSMV** alınır. Bu, bankanın söylediği oranın efektif olarak daha yüksek bir orana karşılık gelmesi anlamına gelir. Konut kredilerinde ve ticari kredilerde bu kalemler farklı uygulanır."),
       { type: "stats", items: [
         { v: "%2,50", k: "Bankanın söylediği aylık oran", sub: "Sözleşmede yazan nominal oran" },
-        { v: "%3,13", k: "Vergiler dahil efektif oran", sub: "KKDF ve BSMV eklendikten sonra" },
-        { v: "%25", k: "Faiz maliyetindeki artış", sub: "Yalnızca vergilerden kaynaklanan" },
+        { v: "%3,25", k: "Vergiler dahil efektif oran", sub: "KKDF %15 + BSMV %15 eklendikten sonra" },
+        { v: "%30", k: "Faiz maliyetindeki artış", sub: "Yalnızca vergilerden kaynaklanan" },
       ], caption: "Örnek hesaplama. Oranlar mevzuatla değişebildiği için kendi sözleşmenizdeki güncel oranları esas alın." },
 
       H("Karşılaştırmayı nasıl yapmalı?"),
@@ -2129,7 +1972,14 @@ const ARTICLES = [
       H("Sık yapılan hata"),
       P("En yaygın hata, ödeyebileceğiniz aylık taksite göre vade seçmektir. Bu, bütçe açısından anlaşılır bir refleks ama uzun vadede pahalıya mal olur. Daha sağlıklı yaklaşım: ödeyebileceğiniz **en kısa vadeyi** seçmek ve gerekirse kredi tutarını düşürmektir."),
     ],
-    hook: "Vadeyi 12'den 48 aya çıkarmak toplam ödemeye ~82.000 TL ekliyor",
+    hook: "Vadeyi 12'den 48 aya çıkarmak toplam ödemeye ~76.500 TL ekliyor",
+    keyStat: { v: "76,5", unit: "bin ₺", k: "Vadeyi 12 aydan 48 aya çıkarmanın toplam ödemeye eklediği tutar", sub: "100.000 TL kredi, aylık %2,50 · KKDF ve BSMV dahil · örnek hesaplama" },
+    inBrief: [
+      "Vade uzatmanın toplam maliyete etkisi",
+      "KKDF ve BSMV efektif oranı nasıl yükseltiyor",
+      "İki teklifi doğru karşılaştırmanın yolu",
+      "En sık yapılan hata: taksite göre vade seçmek",
+    ],
     impact: {
       lead: "Kredi tekliflerini aylık faiz oranıyla değil, toplam geri ödeme tutarıyla karşılaştırın.",
       points: [
@@ -2142,7 +1992,7 @@ const ARTICLES = [
   {
     id: "a13", slug: "fon-tasfiyesi-yatirimci-ne-yapmali",
     title: "Fon tasfiyesi sürecinde yatırımcı ne yapmalı? Adım adım kontrol listesi",
-    summary: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecine girdi. Tasfiye, işleme kapatma ve temerrüt üç ayrı durum; hangisinde olduğunuzu bilmek hakkınızı belirliyor. Süreci ve kontrol etmeniz gerekenleri anlatıyoruz.",
+    summary: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecine girdi. Tasfiye, işleme kapatma ve temerrüt üç ayrı durum; ara ödeme hakkı ise fonların tamamını kapsamıyor. Süreci ve kontrol etmeniz gerekenleri anlatıyoruz.",
     category: "yatirim", contentType: "Rehber", author: "finansindex",
     published_at: "2026-10-05T09:00:00+03:00", updated_at: "2026-10-05T09:00:00+03:00",
     read: 11, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
@@ -2150,18 +2000,25 @@ const ARTICLES = [
     tags: ["fon", "SPK", "tasfiye", "yatırım", "TEFAS"],
     source_name: "SPK / KAP",
     source_urls: [
-      "SPK — 17.09.2026 tarihli 2026/60 ve 2026/61 sayılı Bültenler (tasfiye kararı ve usul esasları)",
-      "SPK — 20.09.2026 tarih ve 59/1710 sayılı karar (tasfiye süresinin 6 aya çıkarılması)",
-      "SPK — 30.09.2026 tarihli 2026/67 sayılı Bülten ve 01.10.2026 tarihli ara ödeme duyurusu",
-      "SPK — 28.08.2026 tarih ve 52/1589 sayılı karar (Yatırım Fonlarına İlişkin Rehber m.4.2.3 değişikliği)",
-      "KAP — İlgili portföy yönetim şirketlerinin katılma payı iade temerrüdü açıklamaları",
-      "SPK — 23.09.2026 tarihli basın duyurusu (etkilenen yatırımcı sayısı)",
+      { t: "SPK — Tasfiyedeki fonlara ilişkin ara ödeme duyurusu (1 Ekim 2026)", u: "https://spk.gov.tr/duyurular/basin-duyurulari/2026/tasfiyedeki-fonlara-iliskin-ara-odeme-duyurusu" },
+      { t: "SPK — Basın duyuruları (tasfiye kararı, süre uzatımı, etkilenen yatırımcı sayısı)", u: "https://spk.gov.tr/duyurular/basin-duyurulari" },
+      { t: "SPK — Haftalık bültenler (2026/60, 2026/61, 2026/67)", u: "https://spk.gov.tr/duyurular/haftalik-bulten" },
+      { t: "SPK — Yatırım Fonlarına İlişkin Rehber", u: "https://spk.gov.tr/" },
+      { t: "KAP — Portföy yönetim şirketlerinin bildirimleri", u: "https://www.kap.org.tr/" },
     ],
+    oranNotu: "Yazıdaki tarihli bilgiler 7 Ekim 2026 itibarıyla geçerlidir. Süreç haftalık SPK kararlarıyla ilerlemektedir; ara ödeme kapsamı ve takvim değişebilir. Son kontrol: 7 Ekim 2026.",
     seo_title: "Fon tasfiyesinde yatırımcı ne yapmalı? Kontrol listesi | FinansIndex",
     meta_description:
       "SPK'nın tasfiye kararı sonrası yatırımcı hakları, ara ödeme mekanizması, tasfiye süresi ve kendi fonunuzda kontrol etmeniz gerekenler. Yatırım tavsiyesi içermez.",
     featured_image: null,
     hook: "131 fon tasfiyede, 455.758 yatırımcı etkilendi",
+    keyStat: { v: "455.758", unit: "yatırımcı", k: "SPK'nın tasfiye kararından etkilenen tekil yatırımcı sayısı", sub: "131 fon · 7 portföy yönetim şirketi" },
+    inBrief: [
+      "Tasfiye, işleme kapatma ve temerrüt arasındaki fark",
+      "Ara ödeme hangi fonları kapsıyor, kimler alabiliyor",
+      "Kapsamdaysanız: altı maddelik kontrol listesi",
+      "Kapsamda değilseniz: kendi fonunuzda neye bakmalı",
+    ],
     body: [
       P("Sermaye Piyasası Kurulu, 17 Eylül 2026 tarihli kararlarıyla yedi portföy yönetim şirketinin TEFAS'ta işlem gören fonlarında alım satımı durdurdu ve bu fonlardan 131'i için tasfiye süreci başlattı. Kurulun 23 Eylül'deki açıklamasına göre süreçten **455.758 tekil yatırımcı** etkileniyor."),
       P("Bu yazı bir haber özeti değil. Amacı iki soruya cevap vermek: tasfiye kapsamındaysanız süreç nasıl işliyor, ve kapsamda olmasanız bile kendi fonunuzda neye bakmanız gerekiyor."),
@@ -2188,22 +2045,26 @@ const ARTICLES = [
       P("17 Eylül, sürecin dönüm noktası oldu. SPK aynı gün hem işleme kapatma hem tasfiye kararlarını açıkladı; tasfiye işlemlerini yürütmek üzere Türkiye İş Bankası ve Ziraat Bankası yetkilendirildi."),
 
       H("Ara ödeme mekanizması nasıl işliyor?"),
-      P("SPK, 30 Eylül tarihli kararı ve 1 Ekim tarihli duyurusuyla, nihai tasfiye beklenmeden ara ödeme yapılmasının önünü açtı. İşleyiş şöyle:"),
+      P("SPK, 1 Ekim 2026 tarihli duyurusuyla nihai tasfiye beklenmeden ara ödeme yapılmasının önünü açtı. Ancak **bu duyuru tasfiyedeki fonların tamamını kapsamıyor.**"),
+      { type: "note", t: "Kapsam: 1 Ekim 2026 tarihli duyuru, Tera Portföy, Pusula Portföy, Atlas Portföy ve Hedef Portföy'ün kurucusu olduğu fonlar için geçerlidir. Tasfiye kararı verilen diğer fonlar bu duyurunun kapsamı dışındadır; onlar için ayrı bir duyuru yapılması gerekir. Kendi fonunuzun kapsamda olup olmadığını SPK'nın duyuru metnindeki listeden teyit edin." },
+      P("Kapsamdaki fonlar için işleyiş şöyle:"),
       { type: "ul", items: [
-        "Ödeme, **mutabakatı tamamlanmış** katılma payı sahiplerine yapılır.",
+        "Ödeme, **mutabakat işlemleri tamamlanmış** katılma payı sahiplerine yapılır. Mutabakatı tamamlanmayan yatırımcı, kapsamdaki bir fonda olsa bile ödeme alamaz.",
         "Tutar, Merkezi Kayıt Kuruluşu tarafından hesaplanan **net yatırım tutarı** esas alınarak belirlenir.",
-        "Her yatırımcıya, **her bir fon için ayrı ayrı**, en fazla **1 milyon TL** ödenir. İki ayrı fonda payınız varsa sınır her biri için ayrı uygulanır.",
+        "Kapsamdaki fonlarda her yatırımcıya, **her bir fon için ayrı ayrı**, en fazla **1 milyon TL** ödenir. İki ayrı kapsam fonunda payınız varsa sınır her biri için ayrı uygulanır.",
         "Net yatırım tutarınız 1 milyon TL'nin altındaysa tamamı ödenir.",
-        "Uygulama **para piyasası fonlarından** başlar; diğer fon türleri için takvim ayrıca açıklanacaktır.",
+        "Uygulama **para piyasası fonlarından** başlar; diğer fon türleri için takvim ayrıca açıklanır.",
         "Ara ödeme karşılığında katılma payı iadesi yapılmaz. Paylar nihai tasfiye ödemesi sırasında iade edilir.",
-        "Ödenen tutar, tasfiye sonunda hak kazanacağınız nihai tutardan mahsup edilir.",
+        "**Ödenen tutar, tasfiye sonunda hak kazanacağınız nihai tutardan mahsup edilir.** Ara ödeme ek bir ödeme değil, nihai alacağınızın peşin ödenen kısmıdır.",
       ] },
-      { type: "note", t: "Ara ödeme, zararınızın karşılandığı anlamına gelmez. Nihai tutar, fon varlıklarının tasfiye sonucunda ulaştığı değere göre belirlenir ve yatırdığınız tutarın altında kalabilir." },
+      { type: "note", t: "Ara ödeme bir zarar tazmini değildir. Nihai tutar, fon varlıklarının tasfiye sonucunda ulaştığı değere göre belirlenir ve yatırdığınız tutarın altında kalabilir. Ara ödeme aldığınız tutar bu nihai hesaptan düşülür." },
+      P("Kapsam dışındaki fonlarda ne yapılacağı, SPK'nın sonraki duyurularıyla belirlenir. Süreç haftalık kararlarla ilerlediği için kapsamın genişlemiş olup olmadığını Kurul'un güncel duyurularından kontrol edin."),
 
       H("Tasfiye kapsamındaysanız: kontrol listesi"),
       { type: "ul", items: [
         "**Hangi fonda olduğunuzu kesinleştirin.** Fon kodunu SPK'nın 17 Eylül tarihli bültenindeki listeyle karşılaştırın. Benzer adlı fonlar farklı kurucu şirketlere ait olabilir.",
-        "**Mutabakat sürecini takip edin.** Ara ödeme, mutabakatı tamamlanmış yatırımcılara yapılıyor. Aracı kurumunuzdan veya kurucu şirketten mutabakat durumunuzu öğrenin.",
+        "**Fonunuzun ara ödeme kapsamında olup olmadığını teyit edin.** 1 Ekim 2026 duyurusu yalnızca Tera, Pusula, Atlas ve Hedef Portföy fonlarını kapsıyor. Kapsamda değilseniz ara ödeme hakkınız henüz doğmamıştır.",
+        "**Mutabakat sürecini takip edin.** Kapsamdaki fonlarda ödeme yalnızca mutabakatı tamamlanmış yatırımcılara yapılıyor. Aracı kurumunuzdan veya kurucu şirketten mutabakat durumunuzu öğrenin.",
         "**İşlem kayıtlarınızı saklayın.** 17 Eylül öncesinde verdiğiniz satış emirlerinin tarih ve saatleri, iptal edildiyse gerekçesi önem taşıyor. Ekran görüntüsü ve emir dekontlarını arşivleyin.",
         "**Net yatırım tutarınızı not edin.** Hesaplama MKK verisine dayanıyor; kendi kaydınızla karşılaştırabilmek için yatırdığınız ve çektiğiniz tutarları çıkarın.",
         "**SPK bültenlerini düzenli izleyin.** Süreç haftalık kararlarla ilerliyor; takvim ve kapsam değişebiliyor.",
@@ -2236,9 +2097,9 @@ const ARTICLES = [
       P("Süreç devam ediyor ve kararlar haftalık olarak güncelleniyor. Bu yazıdaki tarihli bilgiler yayın tarihi itibarıyla geçerlidir; güncel durumu her zaman SPK'nın kendi duyurularından teyit edin."),
     ],
     impact: {
-      lead: "Tasfiye kapsamındaysanız ara ödeme hakkınız doğdu; kapsamda değilseniz kendi fonunuzun kurucu şirketini ve portföy yapısını kontrol etme zamanı.",
+      lead: "Ara ödeme hakkı yalnızca 1 Ekim duyurusu kapsamındaki fonlar için doğdu; tasfiyedeki her fon kapsamda değil.",
       points: [
-        "Fon kodunuzu SPK'nın tasfiye listesiyle karşılaştırın; benzer adlar yanıltabilir.",
+        "Fon kodunuzu önce tasfiye listesiyle, sonra ara ödeme duyurusunun kapsam listesiyle ayrı ayrı karşılaştırın.",
         "17 Eylül öncesi verdiğiniz emirlerin kayıtlarını ve ekran görüntülerini saklayın.",
         "Kendi fonlarınızın bilgilendirme dokümanındaki varlık dağılımını ve kurucu şirketini bugün gözden geçirin.",
       ],
@@ -2255,16 +2116,24 @@ const ARTICLES = [
     tags: ["borsa", "manipülasyon", "risk", "portföy", "likidite"],
     source_name: "SPK / Borsa İstanbul",
     source_urls: [
-      "6362 sayılı Sermaye Piyasası Kanunu — piyasa dolandırıcılığı ve bilgi suistimaline ilişkin hükümler",
-      "SPK — Yatırım Fonlarına İlişkin Rehber",
-      "Borsa İstanbul — Fiili dolaşımdaki pay oranı ve Volatilite Bazlı Tedbir Sistemi duyuruları",
-      "KAP — Şirket bildirimleri ve fon bilgilendirme dokümanları",
+      { t: "6362 sayılı Sermaye Piyasası Kanunu — piyasa dolandırıcılığı hükümleri", u: "https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6362.pdf" },
+      { t: "Borsa İstanbul — Volatilite Bazlı Tedbir Sistemi ve fiili dolaşım oranı", u: "https://www.borsaistanbul.com/" },
+      { t: "SPK — Mevzuat ve duyurular", u: "https://spk.gov.tr/" },
+      { t: "KAP — Şirket bildirimleri ve fon bilgilendirme dokümanları", u: "https://www.kap.org.tr/" },
     ],
+    oranNotu: "Yazıdaki grafik, mekanizmayı göstermek için hazırlanmış örnek hesaplamadır; gerçek fiyat etkisi hisseye ve piyasa koşullarına göre değişir. Son kontrol: 7 Ekim 2026.",
     seo_title: "Borsa manipülasyonu nasıl işler, nasıl korunulur? | FinansIndex",
     meta_description:
       "Fiili dolaşım oranı düşük hisselerde manipülasyon mekanizması, uyarı sinyalleri ve portföyünüzde kontrol edebileceğiniz başlıklar. Yatırım tavsiyesi niteliğinde değildir.",
     featured_image: null,
     hook: "Risksiz seçenek yok; size uyan riski seçmek var",
+    keyStat: { v: "%5", unit: "dolaşım", k: "Fiili dolaşım oranı bu seviyedeyken fiyatı hareket ettirmek en kolay, çıkmak en zordur", sub: "Risk yükselişte birikir, düşüşte görünür" },
+    inBrief: [
+      "Fiili dolaşım oranı neden belirleyici?",
+      "Kendiniz kontrol edebileceğiniz altı uyarı sinyali",
+      "“Güvenli liman” neden yanıltıcı bir çerçeve",
+      "Yapısal korunma: pozisyon, likidite, vade, tampon",
+    ],
     body: [
       P("Manipülasyon haberleri çıktığında ilk refleks genellikle şu oluyor: “Borsadan çıkıp güvenli bir yere geçeyim.” Bu refleks anlaşılır ama iki sorun taşıyor. Birincisi, **risksiz varlık diye bir şey yok**; her seçenek farklı bir riski taşır. İkincisi, paniğe dayalı kararlar genellikle en kötü anda verilir."),
       P("Bu yazı size nereye yatırım yapacağınızı söylemez. Manipülasyonun nasıl işlediğini ve kendi portföyünüzde hangi başlıkları kontrol edebileceğinizi anlatır."),
@@ -2378,7 +2247,7 @@ const bySlug = (s) => ARTICLES.find((a) => a.slug === s);
 const LEDGER = [
   {
     what: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecinde; süreçten 455.758 tekil yatırımcı etkileniyor.",
-    how: "Tasfiye kapsamındaysanız ara ödeme hakkınız doğdu: mutabakatı tamamlanan yatırımcılara, her fon için ayrı olmak üzere en fazla 1 milyon TL ödeniyor. Kapsamda değilseniz kendi fonunuzun kurucu şirketini ve portföy yapısını kontrol edin.",
+    how: "Ara ödeme hakkı tasfiyedeki her fonu kapsamıyor: 1 Ekim duyurusu Tera, Pusula, Atlas ve Hedef Portföy fonları için geçerli. Kapsamdaki fonlarda mutabakatı tamamlanan yatırımcılara, her fon için ayrı olmak üzere en fazla 1 milyon TL ödeniyor ve bu tutar nihai tasfiye hesabından mahsup ediliyor.",
     tags: ["Fon", "SPK"], warn: true,
     article: "a13", tool: "enflasyon",
   },
@@ -2396,7 +2265,7 @@ const LEDGER = [
   },
   {
     what: "Kredi teklifinde aylık faiz oranı, ödeyeceğiniz toplam tutarı tek başına göstermez.",
-    how: "Vergiler (KKDF ve BSMV) faiz maliyetini yaklaşık dörtte bir oranında artırır. Vadeyi uzatmak aylık taksiti düşürür ama toplam ödemeyi belirgin şekilde büyütür. Karşılaştırmayı toplam geri ödeme üzerinden yapın.",
+    how: "Tüketici kredilerinde faiz üzerinden KKDF %15 ve BSMV %15 alınır; bu, faiz maliyetini yaklaşık üçte bir oranında artırır. Vadeyi uzatmak aylık taksiti düşürür ama toplam ödemeyi belirgin şekilde büyütür. Karşılaştırmayı toplam geri ödeme üzerinden yapın.",
     tags: ["Kredi", "Faiz"],
     article: "a12", tool: "kredi",
   },
@@ -2437,6 +2306,29 @@ const DOSSIER = {
 
 /* ------------------------------------------------------- 8. YARDIMCI FONKSİYON */
 
+/* ------------------------------------------------- MEVZUAT ORANLARI ---- */
+
+/**
+ * Tüketici kredilerinde faiz üzerinden alınan kamu kesintileri.
+ *
+ * Her ikisi de ANAPARAYA DEĞİL, yalnızca tahakkuk eden faize uygulanır.
+ * Konut kredileri KKDF ve BSMV'den istisnadır; ticari kredilerde oranlar
+ * farklıdır. Buradaki değerler yalnızca tüketici (ihtiyaç/taşıt) kredileri
+ * içindir.
+ *
+ * Oranlar mevzuatla değişir. Tek yerde tutulmalarının sebebi, değiştiğinde
+ * hesaplayıcı ile makale metinlerinin birbirinden ayrışmaması.
+ */
+const TUKETICI_KREDI_VERGI = {
+  kkdf: 0.15,
+  bsmv: 0.15,
+  /* Faiz üzerindeki toplam yük: faiz × (1 + kkdf + bsmv) */
+  get carpan() { return 1 + this.kkdf + this.bsmv; },
+  yururluk: "BSMV %15: 7 Temmuz 2023 (7345 sayılı Cumhurbaşkanı Kararı)",
+  sonKontrol: "7 Ekim 2026",
+  kaynak: "https://www.resmigazete.gov.tr/eskiler/2023/07/20230707-10.pdf",
+};
+
 const tl = (n, dec = 2) =>
   new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: dec, maximumFractionDigits: dec }).format(isFinite(n) ? n : 0);
 const num = (n, dec = 2) =>
@@ -2445,6 +2337,24 @@ const dateTR = (iso) =>
   new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso));
 const initials = (n) => n.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 const toNum = (v) => { const n = parseFloat(String(v).replace(/\./g, "").replace(",", ".")); return isNaN(n) ? 0 : n; };
+
+/**
+ * Boş giriş ile bilinçli girilen "0" ayrımı.
+ *
+ * toNum() boş alanı 0 döndürür; bu, "stopaj yok" ile "stopajı bilmiyorum"
+ * durumlarını aynı sonuca götürür ve kullanıcıya hesaplanmamış bir rakamı
+ * kesin sonuç gibi gösterir. Bu yardımcı, alan gerçekten boşsa null döner.
+ */
+const toNumOrNull = (v) => {
+  const raw = String(v ?? "").trim();
+  if (raw === "") return null;
+  const n = parseFloat(raw.replace(/\./g, "").replace(",", "."));
+  return isNaN(n) ? null : n;
+};
+
+/** Girdi doğrulama: negatif, geçersiz ve sıfır değerleri ayırt eder. */
+const pozitifMi = (v) => typeof v === "number" && isFinite(v) && v > 0;
+const negatifMi = (v) => typeof v === "number" && isFinite(v) && v < 0;
 
 const DISCLAIMERS = {
   invest: "Bu içerik genel bilgilendirme amacıyla hazırlanmıştır ve yatırım tavsiyesi niteliğinde değildir. Yatırım kararlarınız kendi risk tercihinize ve ihtiyaçlarınıza bağlıdır.",
@@ -2489,87 +2399,6 @@ function Figure({ image, ratio = "16 / 9", className = "", priority = false, sho
       </div>
       {showCredit && image.credit && <figcaption className="fi-fig-c">{image.credit}</figcaption>}
     </figure>
-  );
-}
-
-/**
- * KAPAK
- *
- * Yazının fotoğrafı `public/img/` içinde varsa fotoğraf gösterilir.
- * Yoksa (ya da yüklenemezse) tipografik kapak çıkar: kategori rengi +
- * yazının kendi metninde geçen, doğrulanmış bir rakam.
- *
- * Tasarım kararı: kapakta grafik, ikon veya süs deseni yok. Rakam yalnızca
- * yazıda zaten yer alan veriden gelir; rakamı olmayan yazıda kategori adı
- * yazılır. Yeni yazı eklerken COVERS'a satır eklemek isteğe bağlıdır.
- */
-const COVERS = {
-  a1:  { v: "3", k: "aşamada politika faizi mevduat faizine ulaşır" },
-  a2:  { v: "47 ay", k: "25.000 TL borç, yalnızca asgari ödemeyle bu sürede kapanır" },
-  a4:  { v: "%30", k: "getiri, %30 enflasyonda sıfır reel kazanç demek" },
-  a5:  { v: "12 ay", k: "ortalama TÜFE kira artışında esas alınır" },
-  a12: { v: "~82 bin TL", k: "vadeyi 12'den 48 aya uzatmanın toplam ödemeye eklediği tutar" },
-  a13: { v: "131", k: "yatırım fonu tasfiye sürecinde" },
-};
-
-const COVER_TONE = {
-  "gundem": "ink", "yatirim": "ink", "finansindex-dosya": "ink",
-  "kredi-ve-mevduat": "wine", "parami-yonetiyorum": "wine",
-  "ekonomiyi-anla": "paper", "sigorta-ve-emeklilik": "paper", "is-ve-girisim": "paper",
-};
-
-function Cover({ a, ratio = "16 / 9", size = "md", priority = false, className = "", showCredit = false }) {
-  /* Fotoğraf önce arka planda yüklenir; başarılıysa kapakla yer değiştirir.
-     Böylece dosya henüz yüklenmemişse gri kutu veya kırık görsel görünmez. */
-  const [loaded, setLoaded] = useState(false);
-  const src = a && a.featured_image && a.featured_image.src;
-  useEffect(() => {
-    setLoaded(false);
-    if (!src || typeof Image === "undefined") return;
-    let alive = true;
-    const img = new Image();
-    img.onload = () => { if (alive && img.naturalWidth > 0) setLoaded(true); };
-    img.src = src;
-    return () => { alive = false; };
-  }, [src]);
-
-  if (!a) return null;
-  if (src && loaded) {
-    return (
-      <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
-        <div className="fi-fig-w" style={{ aspectRatio: ratio }}>
-          <img src={src} alt={a.featured_image.alt || ""} decoding="async" />
-        </div>
-        {showCredit && a.featured_image.credit && <figcaption className="fi-fig-c">{a.featured_image.credit}</figcaption>}
-      </figure>
-    );
-  }
-
-  const c = a.auto ? { v: "Bugün", k: "Döviz ve altın, canlı veriyle" } : COVERS[a.id];
-  const tone = COVER_TONE[a.category] || "ink";
-  const len = c ? c.v.length : 0;
-  return (
-    <div className={`fi-cov-wrap ${className}`} aria-hidden="true">
-      <div className={`fi-cov fi-cov-${tone} fi-cov-${size}`} style={{ aspectRatio: ratio }}>
-        <div className="fi-cov-top">
-          <span className="fi-cov-cat">{catName(a.category)}</span>
-          <span className="fi-cov-mark">FI</span>
-        </div>
-        <div className="fi-cov-bot">
-          {c ? (
-            <>
-              <span className={`fi-cov-v ${len > 7 ? "l" : len > 4 ? "m" : ""}`}>{c.v}</span>
-              <span className="fi-cov-k">{c.k}</span>
-            </>
-          ) : (
-            <>
-              <span className="fi-cov-word">{size === "sm" ? catName(a.category).split(" ")[0] : catName(a.category)}</span>
-              <span className="fi-cov-type">{a.contentType}</span>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -2674,9 +2503,7 @@ function AdSlot({ placementId, pageType, className = "" }) {
     return () => io.disconnect();
   }, [creative, placementId, pageType]);
 
-  if (!creative) {
-    return HOUSE_ADS.enabled ? <HouseAd placementId={placementId} pageType={pageType} className={className} /> : null;
-  }
+  if (!creative) return null;
 
   const click = () => track("ad_click", { placement_id: placementId, sponsor_name: creative.sponsor, page_type: pageType });
 
@@ -2941,16 +2768,17 @@ function ArticleCard({ a, go, source }) {
   return (
     <article className="fi-card">
       <button className="fi-a" onClick={open}>
-        <Cover a={a} ratio="16 / 9" size="md" />
+        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false} />
         <div className="fi-card-body">
           <div className="fi-meta">
             <span className="fi-cat">{catName(a.category)}</span>
             <span className="fi-dot" />
             <span>{a.read} dk</span>
-            {a.auto && <span className="fi-badge fi-b-auto">Otomatik · Canlı veri</span>}
+            {a.auto && <span className="fi-badge fi-b-auto">Otomatik · Resmî veri</span>}
             {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
           </div>
           <h3 className="fi-ttl">{a.title}</h3>
+          {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>}
         </div>
       </button>
     </article>
@@ -2994,7 +2822,6 @@ function CalcShell({ tool, children, out, note, compact }) {
           <AdSlot placementId="calculator_result" pageType="tool" />
         </div>
       </div>
-      {!compact && <AdSlot placementId="calculator_result_banner" pageType="tool" className="fi-calc-ad" />}
     </section>
   );
 }
@@ -3016,21 +2843,31 @@ function CalcKredi({ tool, compact }) {
   const t = useCalcTracking("kredi_taksit");
 
   const res = useMemo(() => {
-    const P0 = toNum(p), n0 = Math.max(1, Math.round(toNum(n)));
-    // İhtiyaç kredilerinde faiz üzerinden KKDF %15 + BSMV %10 alınır → efektif oran = i × 1,25
-    const i = (toNum(r) / 100) * (tax ? 1.25 : 1);
-    if (P0 <= 0 || i <= 0) return null;
+    const P0 = toNumOrNull(p), rr = toNumOrNull(r), nn = toNumOrNull(n);
+    const hatalar = [];
+    if (negatifMi(P0)) hatalar.push("Kredi tutarı negatif olamaz.");
+    if (negatifMi(rr)) hatalar.push("Faiz oranı negatif olamaz.");
+    if (nn !== null && nn <= 0) hatalar.push("Vade sıfır veya negatif olamaz.");
+    if (hatalar.length) return { hatalar };
+    if (!pozitifMi(P0) || !pozitifMi(rr) || !pozitifMi(nn)) return null;
+
+    const n0 = Math.round(nn);
+    // Tüketici kredilerinde faiz üzerinden KKDF %15 + BSMV %15 alınır (anaparaya değil).
+    // Efektif aylık oran = nominal faiz × 1,30
+    const i = (rr / 100) * (tax ? TUKETICI_KREDI_VERGI.carpan : 1);
     const k = Math.pow(1 + i, n0);
     const inst = (P0 * i * k) / (k - 1);
     return { inst, total: inst * n0, cost: inst * n0 - P0, ratio: ((inst * n0 - P0) / P0) * 100, n: n0 };
   }, [p, r, n, tax]);
 
-  useEffect(() => { if (res) t(true); }, [res, t]);
+  useEffect(() => { if (res && !res.hatalar?.length) t(true); }, [res, t]);
 
   return (
     <CalcShell tool={tool} compact={compact}
       note="Bankalar dosya masrafı, sigorta ve tahsis ücreti gibi ek kalemler uygulayabilir. Sonuç, yalnızca faiz üzerinden hesaplanan gösterge niteliğindedir."
-      out={res ? (
+      out={res && res.hatalar?.length ? (
+        <div className="fi-res-uyari">{res.hatalar.map((h) => <p key={h}>{h}</p>)}</div>
+      ) : res ? (
         <>
           <div className="fi-res-main">
             <div className="fi-res-k">Aylık taksit</div>
@@ -3040,7 +2877,11 @@ function CalcKredi({ tool, compact }) {
           <div className="fi-res-row"><span>Toplam maliyet</span><span>{tl(res.cost)}</span></div>
           <div className="fi-res-row"><span>Maliyet / anapara</span><span>%{num(res.ratio, 1)}</span></div>
           <div className="fi-res-row"><span>Taksit sayısı</span><span>{res.n}</span></div>
-          <p className="fi-note">Vergiler {tax ? "dahil edildi (KKDF %15 + BSMV %10)" : "hariç tutuldu"}.</p>
+          <p className="fi-note">
+            {tax
+              ? "Vergiler dahil: KKDF %15 + BSMV %15, yalnızca faiz üzerinden. Dosya masrafı, tahsis ücreti ve sigorta primleri bu sonuca DAHİL DEĞİLDİR."
+              : "Vergiler hariç tutuldu. Tüketici kredilerinde faiz üzerinden KKDF ve BSMV alınır."}
+          </p>
         </>
       ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Tutar ve faiz oranını girin, taksit tutarı burada hesaplanır.</p>}
     >
@@ -3049,7 +2890,7 @@ function CalcKredi({ tool, compact }) {
       <Field label="Vade (ay)" value={n} onChange={(e) => { setN(e.target.value); t(false); }} />
       <label className="fi-toggle">
         <input type="checkbox" checked={tax} onChange={(e) => setTax(e.target.checked)} />
-        <span>Tüketici kredisi vergilerini dahil et (KKDF %15 + BSMV %10). Ticari ve konut kredilerinde bu kalemler farklı uygulanır.</span>
+        <span>Tüketici kredisi vergilerini dahil et (KKDF %15 + BSMV %15, faiz üzerinden). Konut kredileri bu kesintilerden istisnadır; ticari kredilerde oranlar farklıdır.</span>
       </label>
     </CalcShell>
   );
@@ -3064,35 +2905,81 @@ function CalcMevduat({ tool, compact }) {
   const t = useCalcTracking("mevduat_getirisi");
 
   const res = useMemo(() => {
-    const P0 = toNum(p), r0 = toNum(r), d0 = toNum(d), s0 = toNum(s);
-    if (P0 <= 0 || r0 <= 0 || d0 <= 0) return null;
+    const P0 = toNumOrNull(p);
+    const r0 = toNumOrNull(r);
+    const d0 = toNumOrNull(d);
+    const s0 = toNumOrNull(s);   // boş bırakılırsa null
+
+    const hatalar = [];
+    if (negatifMi(P0)) hatalar.push("Anapara negatif olamaz.");
+    if (negatifMi(r0)) hatalar.push("Faiz oranı negatif olamaz.");
+    if (negatifMi(s0)) hatalar.push("Stopaj oranı negatif olamaz.");
+    if (d0 !== null && d0 <= 0) hatalar.push("Vade sıfır veya negatif olamaz.");
+    if (hatalar.length) return { hatalar };
+
+    if (!pozitifMi(P0) || !pozitifMi(r0) || !pozitifMi(d0)) return null;
+
     const gross = P0 * (r0 / 100) * (d0 / 365);
-    const tax = gross * (s0 / 100);
-    return { gross, tax, net: gross - tax, end: P0 + gross - tax, eff: ((gross - tax) / P0) * (365 / d0) * 100 };
+
+    /* Stopaj girilmediyse NET getiri hesaplanmaz.
+       Güncel stopaj oranı vade, ürün türü, para birimi ve hesap açılış
+       tarihine göre değişir; bu koşullar doğrulanmadan otomatik bir oran
+       uygulamak yanlış sonuç üretir. Oranı kullanıcıdan istiyoruz. */
+    const stopajVar = s0 !== null;
+    const tax = stopajVar ? gross * (s0 / 100) : null;
+
+    return {
+      gross,
+      tax,
+      stopajVar,
+      net: stopajVar ? gross - tax : null,
+      end: stopajVar ? P0 + gross - tax : null,
+      eff: stopajVar ? ((gross - tax) / P0) * (365 / d0) * 100 : null,
+      brutEff: (gross / P0) * (365 / d0) * 100,
+      hatalar: [],
+    };
   }, [p, r, d, s]);
 
-  useEffect(() => { if (res) t(true); }, [res, t]);
+  useEffect(() => { if (res && !res.hatalar?.length) t(true); }, [res, t]);
 
   return (
     <CalcShell tool={tool} compact={compact}
-      note="Stopaj oranı vade, para birimi ve ürün türüne göre değişebilir ve mevzuatla güncellenir. Güncel oranı bankanızdan veya resmî düzenlemeden teyit ederek girin."
-      out={res ? (
-        <>
-          <div className="fi-res-main">
-            <div className="fi-res-k">Net getiri</div>
-            <div className="fi-res-v">{tl(res.net)}</div>
-          </div>
-          <div className="fi-res-row"><span>Brüt getiri</span><span>{tl(res.gross)}</span></div>
-          <div className="fi-res-row"><span>Stopaj kesintisi</span><span>−{tl(res.tax)}</span></div>
-          <div className="fi-res-row"><span>Vade sonu toplam</span><span>{tl(res.end)}</span></div>
-          <div className="fi-res-row"><span>Yıllık net getiri oranı</span><span>%{num(res.eff, 2)}</span></div>
-        </>
-      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Anapara, faiz oranı ve vadeyi girin.</p>}
+      note="Stopaj oranı vade, ürün türü ve para birimine göre değişir ve mevzuatla güncellenir. Güncel oranı bankanızdan veya resmî düzenlemeden teyit ederek girin; bu araç otomatik bir stopaj oranı varsaymaz."
+      out={
+        res && res.hatalar?.length ? (
+          <div className="fi-res-uyari">{res.hatalar.map((h) => <p key={h}>{h}</p>)}</div>
+        ) : res ? (
+          res.stopajVar ? (
+            <>
+              <div className="fi-res-main">
+                <div className="fi-res-k">Net getiri</div>
+                <div className="fi-res-v">{tl(res.net)}</div>
+              </div>
+              <div className="fi-res-row"><span>Brüt getiri</span><span>{tl(res.gross)}</span></div>
+              <div className="fi-res-row"><span>Stopaj kesintisi</span><span>−{tl(res.tax)}</span></div>
+              <div className="fi-res-row"><span>Vade sonu toplam</span><span>{tl(res.end)}</span></div>
+              <div className="fi-res-row"><span>Yıllık net getiri oranı</span><span>%{num(res.eff, 2)}</span></div>
+            </>
+          ) : (
+            <>
+              <div className="fi-res-main">
+                <div className="fi-res-k">Brüt getiri (stopaj öncesi)</div>
+                <div className="fi-res-v">{tl(res.gross)}</div>
+              </div>
+              <div className="fi-res-row"><span>Yıllık brüt getiri oranı</span><span>%{num(res.brutEff, 2)}</span></div>
+              <div className="fi-res-eksik">
+                <p><strong>Net getiri hesaplanmadı.</strong></p>
+                <p>Elinize geçecek tutarı görmek için vadenize uygulanan güncel stopaj oranını girin. Stopaj düşülmeden bu rakam elinize geçecek tutar değildir.</p>
+              </div>
+            </>
+          )
+        ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Anapara, faiz oranı ve vadeyi girin.</p>
+      }
     >
       <Field label="Anapara (TL)" value={p} onChange={(e) => { setP(e.target.value); t(false); }} />
       <Field label="Yıllık brüt faiz oranı (%)" hint="Bankanın açıkladığı yıllık oranı girin." placeholder="örn. 40" value={r} onChange={(e) => { setR(e.target.value); t(false); }} />
       <Field label="Vade (gün)" value={d} onChange={(e) => { setD(e.target.value); t(false); }} />
-      <Field label="Stopaj oranı (%)" hint="Vadenize uygulanan güncel stopaj oranını girin. Boş bırakırsanız 0 kabul edilir." placeholder="örn. 5" value={s} onChange={(e) => { setS(e.target.value); t(false); }} />
+      <Field label="Stopaj oranı (%)" hint="Vadenize uygulanan güncel oranı girin. Boş bırakılırsa yalnızca brüt getiri gösterilir." placeholder="örn. 5" value={s} onChange={(e) => { setS(e.target.value); t(false); }} />
     </CalcShell>
   );
 }
@@ -3107,30 +2994,74 @@ function CalcAsgari({ tool, compact }) {
   const t = useCalcTracking("asgari_odeme");
 
   const res = useMemo(() => {
-    const b0 = toNum(b), r0 = toNum(rate), i0 = toNum(inst), l0 = toNum(late), ir0 = toNum(ir);
-    if (b0 <= 0 || r0 <= 0) return null;
-    const min = b0 * (r0 / 100) + i0 + l0;
+    const b0 = toNumOrNull(b);
+    const r0 = toNumOrNull(rate);
+    const i0 = toNumOrNull(inst);
+    const l0 = toNumOrNull(late);
+    const ir0 = toNumOrNull(ir);   // boş bırakılırsa null kalır
+
+    const hatalar = [];
+    if (negatifMi(b0)) hatalar.push("Dönem borcu negatif olamaz.");
+    if (negatifMi(i0)) hatalar.push("Taksit tutarı negatif olamaz.");
+    if (negatifMi(l0)) hatalar.push("Gecikmiş tutar negatif olamaz.");
+    if (negatifMi(ir0)) hatalar.push("Faiz oranı negatif olamaz.");
+    if (hatalar.length) return { hatalar };
+
+    if (!pozitifMi(b0) || !pozitifMi(r0)) return null;
+
+    const min = b0 * (r0 / 100) + (i0 || 0) + (l0 || 0);
     const remain = Math.max(0, b0 - min);
-    return { min, remain, interest: remain * (ir0 / 100), next: remain + remain * (ir0 / 100) };
+
+    /* Faiz oranı girilmediyse faiz yükü HESAPLANMAZ.
+       toNum() kullanılsaydı boş alan 0 kabul edilip "faiz yükü: 0 TL"
+       yazardı; bu, hesaplanmamış bir sonucu kesin gibi gösterir. */
+    const faizVar = ir0 !== null;
+    const interest = faizVar ? remain * (ir0 / 100) : null;
+
+    return {
+      min, remain, interest,
+      next: faizVar ? remain + interest : null,
+      faizVar,
+      hatalar: [],
+    };
   }, [b, rate, inst, late, ir]);
 
-  useEffect(() => { if (res) t(true); }, [res, t]);
+  useEffect(() => { if (res && !res.hatalar?.length) t(true); }, [res, t]);
 
   return (
     <CalcShell tool={tool} compact={compact}
-      note="Asgari ödeme oranı kart limitine göre değişir ve mevzuatla güncellenebilir. Kendi ekstrenizdeki oranı ve akdi faiz oranını kullanın."
-      out={res ? (
-        <>
-          <div className="fi-res-main">
-            <div className="fi-res-k">Asgari ödeme tutarı</div>
-            <div className="fi-res-v">{tl(res.min)}</div>
+      note="Asgari ödeme oranı kart limitine göre değişir ve mevzuatla güncellenebilir. Kendi ekstrenizdeki oranı ve akdi faiz oranını kullanın. Bu araç basitleştirilmiş bir tahmin üretir: gecikme faizi, dönem içi yeni harcamalar ve faize uygulanan KKDF/BSMV hesaba katılmaz."
+      out={
+        res && res.hatalar?.length ? (
+          <div className="fi-res-uyari">
+            {res.hatalar.map((h) => <p key={h}>{h}</p>)}
           </div>
-          <div className="fi-res-row"><span>Devreden bakiye</span><span>{tl(res.remain)}</span></div>
-          <div className="fi-res-row"><span>Bir aylık faiz yükü</span><span>{tl(res.interest)}</span></div>
-          <div className="fi-res-row"><span>Gelecek ay taşınan borç</span><span>{tl(res.next)}</span></div>
-          <p className="fi-note">Yeni harcama yapılmadığı varsayılmıştır. Harcama eklendiğinde devreden bakiye büyür.</p>
-        </>
-      ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Dönem borcu ve asgari ödeme oranını girin.</p>}
+        ) : res ? (
+          <>
+            <div className="fi-res-main">
+              <div className="fi-res-k">Asgari ödeme tutarı</div>
+              <div className="fi-res-v">{tl(res.min)}</div>
+            </div>
+            <div className="fi-res-row"><span>Devreden bakiye</span><span>{tl(res.remain)}</span></div>
+
+            {res.faizVar ? (
+              <>
+                <div className="fi-res-row"><span>Bir aylık faiz yükü</span><span>{tl(res.interest)}</span></div>
+                <div className="fi-res-row"><span>Gelecek ay taşınan borç</span><span>{tl(res.next)}</span></div>
+                <p className="fi-note">
+                  Yeni harcama yapılmadığı varsayılmıştır. Faiz hesabı basitleştirilmiştir;
+                  ekstrenizdeki tutar gün sayısı ve vergiler nedeniyle farklı çıkabilir.
+                </p>
+              </>
+            ) : (
+              <div className="fi-res-eksik">
+                <p><strong>Faiz yükü hesaplanmadı.</strong></p>
+                <p>Devreden bakiyeye işleyecek faizi görmek için ekstrenizdeki aylık akdi faiz oranını girin.</p>
+              </div>
+            )}
+          </>
+        ) : <p style={{ color: "#C4B7AC", margin: 0 }}>Dönem borcu ve asgari ödeme oranını girin.</p>
+      }
     >
       <Field label="Dönem borcu (TL)" value={b} onChange={(e) => { setB(e.target.value); t(false); }} />
       <div className="fi-fld">
@@ -3141,7 +3072,7 @@ function CalcAsgari({ tool, compact }) {
       </div>
       <Field label="Bu aya düşen taksitler (TL)" value={inst} onChange={(e) => { setInst(e.target.value); t(false); }} />
       <Field label="Gecikmiş tutar (TL)" value={late} onChange={(e) => { setLate(e.target.value); t(false); }} />
-      <Field label="Aylık akdi faiz oranı (%)" hint="Ekstrenizde belirtilen orandır." placeholder="örn. 4" value={ir} onChange={(e) => { setIr(e.target.value); t(false); }} />
+      <Field label="Aylık akdi faiz oranı (%)" hint="Ekstrenizde belirtilen orandır. Boş bırakılırsa faiz yükü hesaplanmaz." placeholder="örn. 4" value={ir} onChange={(e) => { setIr(e.target.value); t(false); }} />
     </CalcShell>
   );
 }
@@ -3153,18 +3084,24 @@ function CalcKira({ tool, compact }) {
   const t = useCalcTracking("kira_artis");
 
   const res = useMemo(() => {
-    const r0 = toNum(rent), x = toNum(rate);
-    if (r0 <= 0 || x <= 0) return null;
+    const r0 = toNumOrNull(rent), x = toNumOrNull(rate);
+    const hatalar = [];
+    if (negatifMi(r0)) hatalar.push("Kira tutarı negatif olamaz.");
+    if (negatifMi(x)) hatalar.push("Artış oranı negatif olamaz.");
+    if (hatalar.length) return { hatalar };
+    if (!pozitifMi(r0) || !pozitifMi(x)) return null;
     const nw = r0 * (1 + x / 100);
     return { nw, diff: nw - r0, year: (nw - r0) * 12 };
   }, [rent, rate]);
 
-  useEffect(() => { if (res) t(true); }, [res, t]);
+  useEffect(() => { if (res && !res.hatalar?.length) t(true); }, [res, t]);
 
   return (
     <CalcShell tool={tool} compact={compact}
       note="Konut kiralarında artış, on iki aylık ortalamalara göre TÜFE değişim oranı ile sınırlıdır. Yenileme ayınıza ait güncel oranı TÜİK bülteninden alın."
-      out={res ? (
+      out={res && res.hatalar?.length ? (
+        <div className="fi-res-uyari">{res.hatalar.map((h) => <p key={h}>{h}</p>)}</div>
+      ) : res ? (
         <>
           <div className="fi-res-main">
             <div className="fi-res-k">Yeni aylık kira</div>
@@ -3190,19 +3127,27 @@ function CalcEnflasyon({ tool, compact }) {
   const t = useCalcTracking("enflasyon_etkisi");
 
   const res = useMemo(() => {
-    const a = toNum(amt), i = toNum(inf) / 100, g = toNum(ret) / 100, y = Math.max(1, toNum(yr));
-    if (a <= 0 || i <= 0) return null;
+    const a = toNumOrNull(amt), iv = toNumOrNull(inf), gv = toNumOrNull(ret), yv = toNumOrNull(yr);
+    const hatalar = [];
+    if (negatifMi(a)) hatalar.push("Tutar negatif olamaz.");
+    if (negatifMi(iv)) hatalar.push("Enflasyon oranı negatif olamaz.");
+    if (yv !== null && yv <= 0) hatalar.push("Süre sıfır veya negatif olamaz.");
+    if (hatalar.length) return { hatalar };
+    if (!pozitifMi(a) || !pozitifMi(iv)) return null;
+    const i = iv / 100, g = (gv ?? 0) / 100, y = pozitifMi(yv) ? yv : 1;
     const nominal = a * Math.pow(1 + g, y);
     const real = nominal / Math.pow(1 + i, y);
     return { nominal, real, loss: a - a / Math.pow(1 + i, y), realRate: ((1 + g) / (1 + i) - 1) * 100 };
   }, [amt, inf, ret, yr]);
 
-  useEffect(() => { if (res) t(true); }, [res, t]);
+  useEffect(() => { if (res && !res.hatalar?.length) t(true); }, [res, t]);
 
   return (
     <CalcShell tool={tool} compact={compact}
       note="Reel getiri = ((1 + nominal getiri) ÷ (1 + enflasyon)) − 1. Güncel enflasyon verisi için TÜİK bültenlerini esas alın."
-      out={res ? (
+      out={res && res.hatalar?.length ? (
+        <div className="fi-res-uyari">{res.hatalar.map((h) => <p key={h}>{h}</p>)}</div>
+      ) : res ? (
         <>
           <div className="fi-res-main">
             <div className="fi-res-k">Bugünkü alım gücüyle değeri</div>
@@ -3239,8 +3184,8 @@ function CalcKarsilastir({ tool, compact }) {
     const P0 = toNum(amt);
     if (P0 <= 0) return null;
 
-    // Banka kredisi: anüite + KKDF %15 + BSMV %10
-    const i = (toNum(kr) / 100) * 1.25;
+    // Banka kredisi: anüite + KKDF %15 + BSMV %15 (yalnızca faiz üzerinden)
+    const i = (toNum(kr) / 100) * TUKETICI_KREDI_VERGI.carpan;
     const n1 = Math.max(1, Math.round(toNum(kn)));
     let kredi = null;
     if (i > 0) {
@@ -3389,17 +3334,12 @@ function MarketBand({ market }) {
           {items.slice(0, 6).map((d) => {
             const has = d.d != null && Math.abs(d.d) >= 0.005;
             const up = has && d.d >= 0;
-            /* Kaynak değişimi açıkça %0,00 bildirdiyse yön oku yerine nötr
-               işaret gösterilir. Değişim hiç bildirilmediyse hiçbir şey
-               gösterilmez — tahmini yön üretilmez. */
-            const flat = d.d != null && !has;
             return (
               <div className="fi-band-c" key={d.k}>
                 <div className="fi-band-txt">
                   <div className="fi-band-k">
                     {d.k}
                     {has && <span className={`fi-band-ar ${up ? "up" : "down"}`} aria-hidden="true">{up ? "▲" : "▼"}</span>}
-                    {flat && <span className="fi-band-ar flat" aria-hidden="true">■</span>}
                   </div>
                   <div className="fi-band-row">
                     <span className="fi-band-v">{num(d.v, d.v >= 1000 ? 0 : 2)}</span>
@@ -3408,7 +3348,6 @@ function MarketBand({ market }) {
                         {up ? "+" : "−"}%{num(Math.abs(d.d), 2)}
                       </span>
                     )}
-                    {flat && <span className="fi-band-d flat" title="Kaynak günlük değişim bildirmedi">%0,00</span>}
                   </div>
                 </div>
                 <Sparkline data={d.series} up={up} />
@@ -3504,7 +3443,7 @@ function MarketLog({ market, go }) {
     <div className="fi-log-panel">
       <div className="fi-log-hd">
         <h2>Son güncellemeler</h2>
-        <span className="fi-log-live"><i />Canlı</span>
+        <span className="fi-log-live" title="TCMB günlük gösterge kurları ve serbest piyasa maden verisi">TCMB günlük · serbest piyasa</span>
       </div>
       <ul className="fi-log-list">
         {rows.map((r, i) => (
@@ -3526,6 +3465,14 @@ function MarketLog({ market, go }) {
 
 function MarketPanel({ market }) {
   const { status, items, updatedAt, tcmbDate } = market;
+
+  /* Veri bayatlama kontrolü. Çekim saatinden bu yana 6 saatten fazla
+     geçtiyse ekrandaki rakamlar önbellekten geliyor olabilir; bunu
+     güncelmiş gibi göstermemek için açık uyarı veriyoruz. */
+  const bayatMi = useMemo(() => {
+    if (!updatedAt) return false;
+    return (Date.now() - new Date(updatedAt).getTime()) > 6 * 60 * 60 * 1000;
+  }, [updatedAt]);
 
   if (status === "loading") {
     return (
@@ -3575,11 +3522,29 @@ function MarketPanel({ market }) {
           );
         })}
       </div>
-      <p className="fi-mkt-note">
-        Döviz: TCMB resmî kuru{tcmbDate ? ` (${tcmbDate})` : ""}. Değişim, bir önceki iş gününün resmî kuruna göre hesaplanmıştır.
-        Kıymetli maden: serbest piyasa verisi. Son çekim: {updatedAt ? new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt)) : "—"}.
-        Bankalar ve kuyumcularda uygulanan fiyatlar bu değerlerden farklılık gösterir.
-      </p>
+      {bayatMi && (
+        <p className="fi-mkt-bayat">
+          Bu rakamlar son çekimden bu yana 6 saatten uzun süredir güncellenmedi. Kaynağa
+          erişilemiyor olabilir; işlem yapmadan önce TCMB ve kurum sayfalarından teyit edin.
+        </p>
+      )}
+      <div className="fi-mkt-note">
+        <p>
+          <strong>Döviz:</strong> TCMB günlük gösterge kurları{tcmbDate ? `, ${tcmbDate} tarihli` : ""}.
+          Gösterilen değer <strong>döviz satış</strong> kurudur; efektif alış/satış kurlarından farklıdır ve
+          bankaların uyguladığı kur değildir. TCMB kuru günde bir kez yayımlanır, anlık piyasa fiyatı değildir.
+          Değişim, bir önceki yayımlanmış kura göre hesaplanmıştır.
+        </p>
+        <p>
+          <strong>Kıymetli maden:</strong> serbest piyasa verisi, üçüncü taraf sağlayıcıdan alınmaktadır.
+          Fiyatlar gram başına TL cinsindendir. Bu rakamlar bağımsız olarak doğrulanmamıştır;
+          kuyumcu ve bankaların uyguladığı fiyatlar farklılık gösterir.
+        </p>
+        <p className="fi-mkt-time">
+          Veriyi çektiğimiz saat: {updatedAt ? new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt)) : "—"}
+          {" · "}Kaynak erişilemezse veya veri eskiyse bu alanda uyarı gösterilir; eski veri güncel gibi sunulmaz.
+        </p>
+      </div>
     </>
   );
 }
@@ -3955,22 +3920,11 @@ function Home({ go, market, daily }) {
   const activeCalc = toolById(homeCalc);
   const hero = byId("a13");
   const side = ["a14", "a12", "a11"].map(byId);
-  /* Manşetin altındaki 4'lü blok: canlı piyasa özeti + manşet ve öne
-     çıkanlarda olmayan en yeni yazılar. Sponsorlu içerik buraya girmez.
-     Bu dört yazı "Son içerikler" akışında tekrar gösterilmez. */
-  const latest = useMemo(() => {
-    const used = new Set([hero.id, ...side.map((a) => a.id)]);
-    const pool = ARTICLES
-      .filter((a) => !used.has(a.id) && !a.sponsored)
-      .sort((x, y) => new Date(y.published_at) - new Date(x.published_at));
-    return (daily ? [daily, ...pool] : pool).slice(0, 4);
-  }, [hero.id, daily]);
   const feed = useMemo(() => {
-    const shown = new Set(latest.map((a) => a.id));
     const list = ARTICLES.filter((a) => a.id !== hero.id);
     const all = daily ? [daily, ...list] : list;
-    return filter === "hepsi" ? all.filter((a) => !shown.has(a.id)) : all.filter((a) => a.category === filter);
-  }, [filter, hero.id, daily, latest]);
+    return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
+  }, [filter, hero.id, daily]);
 
   return (
     <main id="icerik">
@@ -3984,7 +3938,7 @@ function Home({ go, market, daily }) {
             <section className="fi-lead" aria-label="Manşet">
               <div className="fi-lead-main">
                 <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
-                  <Cover a={hero} ratio="16 / 9" size="lg" priority className="fi-lead-fig" />
+                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
                   <div className="fi-meta">
                     <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
                     <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
@@ -4004,7 +3958,14 @@ function Home({ go, market, daily }) {
                   </div>
                 )}
 
-                <div className="fi-lead-acts">
+                {hero.inBrief && (
+              <div className="fi-lead-brief">
+                <h2>Yazıda ne var?</h2>
+                <ul>{hero.inBrief.map((x) => <li key={x}>{x}</li>)}</ul>
+              </div>
+            )}
+
+            <div className="fi-lead-acts">
                   <button className="fi-btn fi-btn-p" onClick={() => go({ n: "article", slug: hero.slug })}>Yazıyı oku</button>
                   {hero.related_tool && (
                     <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools", tool: hero.related_tool })}>
@@ -4021,21 +3982,13 @@ function Home({ go, market, daily }) {
                     <div className="fi-side-txt">
                       <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
                       <h3 className="fi-side-t fi-ttl">{a.title}</h3>
+                      {a.hook && <p className="fi-side-hook">{a.hook}</p>}
                     </div>
-                    <div className="fi-side-fig"><Cover a={a} ratio="1 / 1" size="sm" /></div>
+                    {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
                   </button>
                 ))}
               </div>
             </section>
-
-            {latest.length > 0 && (
-              <section className="fi-latest" aria-labelledby="latest-h">
-                <h2 className="fi-side-h" id="latest-h">Gündemden</h2>
-                <div className="fi-latest-g">
-                  {latest.map((a) => <ArticleCard key={a.id} a={a} go={go} source="home_latest" />)}
-                </div>
-              </section>
-            )}
           </div>
           <aside className="fi-topgrid-side">
             <MarketLog market={market} go={go} />
@@ -4057,30 +4010,27 @@ function Home({ go, market, daily }) {
               </div>
               <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
             </div>
-            <div className="fi-le-grid">
             {LEDGER.map((l, i) => {
               const a = byId(l.article); const tool = toolById(l.tool);
               return (
                 <div className="fi-le" key={i}>
-                  <div className="fi-le-head">
-                    <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="fi-le-b">
                     <div className="fi-le-tags">
                       {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
                     </div>
-                  </div>
-                  <p className="fi-le-what">{l.what}</p>
-                  <details className="fi-le-more" onToggle={(e) => { if (e.currentTarget.open) track("ledger_expand", { article_id: a.id }); }}>
-                    <summary>Seni nasıl etkiler?</summary>
+                    <p className="fi-le-q">Ne oldu?</p>
+                    <p className="fi-le-what">{l.what}</p>
+                    <p className="fi-le-q">Seni nasıl etkileyebilir?</p>
                     <p className="fi-le-how">{l.how}</p>
                     <div className="fi-le-acts">
                       <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
                       {tool && <button className="fi-le-lnk calc" onClick={() => go({ n: "tools", tool: tool.id })}>{tool.short} hesapla →</button>}
                     </div>
-                  </details>
+                  </div>
                 </div>
               );
             })}
-            </div>
             <AdSlot placementId="ledger_native" pageType="home" className="fi-le-ad" />
           </div>
         </section>
@@ -4095,7 +4045,7 @@ function Home({ go, market, daily }) {
         <section className="fi-sec" aria-labelledby="mkt-h">
           <div className="fi-sh">
             <div>
-              <div className="fi-eyebrow">Canlı piyasa</div>
+              <div className="fi-eyebrow">Piyasa göstergeleri</div>
               <h2 className="fi-h2" id="mkt-h">Döviz ve kıymetli maden<span className="fi-count">{market.items.length || "—"}</span></h2>
             </div>
           </div>
@@ -4157,7 +4107,6 @@ function Home({ go, market, daily }) {
                 <React.Fragment key={a.id}>
                   <ArticleCard a={a} go={go} source="home_feed" />
                   {i === 2 && <AdSlot placementId="home_native_01" pageType="home" />}
-                  {i === 7 && <AdSlot placementId="home_feed_banner" pageType="home" className="fi-feed-ad" />}
                 </React.Fragment>
               ))}
             </div>
@@ -4313,7 +4262,6 @@ function Article({ slug, go, daily }) {
   return (
     <main id="icerik">
       <div className="fi-wrap">
-        <AdSlot placementId="article_top_banner" pageType="article" className="fi-art-top-ad" />
         <div className="fi-art">
           <article>
             <nav className="fi-bc" aria-label="Konum">
@@ -4363,7 +4311,9 @@ function Article({ slug, go, daily }) {
             </div>
 
 
-            <Cover a={a} ratio="16 / 9" size="lg" priority showCredit className="fi-art-fig" />
+            {a.featured_image && (
+              <Figure image={a.featured_image} ratio="16 / 9" priority className="fi-art-fig" />
+            )}
 
             {heads.length > 1 && (
               <nav className="fi-toc" aria-label="İçindekiler">
@@ -4415,7 +4365,23 @@ function Article({ slug, go, daily }) {
 
               <div className="fi-src">
                 <h3>Kaynaklar</h3>
-                <ol>{a.source_urls.map((s, i) => <li key={i}>{s}</li>)}</ol>
+                {/* Kaynaklar düz metin veya {t, u} nesnesi olabilir.
+                    Bağlantı varsa tıklanabilir yapılır; yoksa metin kalır. */}
+                <ol>
+                  {a.source_urls.map((src, i) => {
+                    const isObj = src && typeof src === "object";
+                    const label = isObj ? src.t : src;
+                    const url = isObj ? src.u : null;
+                    return (
+                      <li key={i}>
+                        {url
+                          ? <a href={url} target="_blank" rel="noopener noreferrer">{label}<span aria-hidden="true"> ↗</span></a>
+                          : label}
+                      </li>
+                    );
+                  })}
+                </ol>
+                {a.oranNotu && <p className="fi-src-not">{a.oranNotu}</p>}
               </div>
 
               {a.auto && (
@@ -4595,8 +4561,6 @@ function MediaKit({ go }) {
 
   /* Envanter, değer sırasına göre listelenir: niyet yoğunluğu yüksek
      alanlar üstte. Placement ID'ler koddaki AD_INVENTORY ile birebir aynıdır. */
-  /* Yalnızca iletişim formundaki "İlgilendiğiniz çözüm" listesi için kullanılır.
-     Alan ölçüleri ve placement ID'leri sitede gösterilmez; rate card'da yer alır. */
   const PRODUCTS = [
     { t: "Finansal araç sponsorluğu", d: "Kredi, mevduat veya kira hesaplaması yapan kullanıcıya, kararın verildiği anda ulaşırsınız. Envanterimizdeki en yüksek niyetli alan.",
       items: [["Araç başlığı altı", "calculator_sponsor"], ["Hesaplama sonucu alanı", "calculator_result"], ["Makale içi ilgili araç kutusu", "article_tool_sponsor"]] },
@@ -4611,7 +4575,7 @@ function MediaKit({ go }) {
     { t: "Yüksek niyetli sayfalar", d: "Araçlar ve arama sayfaları, kullanıcının aktif olarak araştırma yaptığı alanlardır. Sorgu ve araç seçimi, niyeti doğrudan gösterir.",
       items: [["Araçlar sayfası native kart", "tools_index_native"], ["Arama sonuçları native kart", "search_native_01"], ["Kategori akışı native kart", "category_native_01"]] },
     { t: "Display envanteri", d: "Okuma akışını bölmeyen, sabit boyutlu görsel alanlar. Pop-up, sayfa arası geçiş reklamı ve otomatik oynayan video kullanılmaz.",
-      items: [["Header altı geniş alan · 970×250", "home_top_banner"], ["Ana sayfa orta bandı · 970×250", "home_mid_banner"], ["Ana sayfa akış içi bant · 970×90", "home_feed_banner"], ["Sağ sütun · 300×250 / Half Page 300×600", "desktop_sidebar_sticky"], ["Yazı üstü banner · 970×90", "article_top_banner"], ["Makale içi birinci · 336×280", "article_inline_01"], ["Makale içi ikinci · 336×280", "article_inline_02"], ["Makale sonu · 728×90", "article_end"], ["Hesaplama sonucu altı · 728×90", "calculator_result_banner"]] },
+      items: [["Header altı geniş alan", "home_top_banner"], ["Ana sayfa orta bandı", "home_mid_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi birinci", "article_inline_01"], ["Makale içi ikinci", "article_inline_02"], ["Makale sonu", "article_end"]] },
     { t: "Masaüstü yan panolar", d: "Geniş ekranlarda içerik sütununun iki yanında sabit duran dikey alanlar. İçerik genişliğini daraltmaz, dar ekranda görünmez.",
       items: [["Sol pano", "rail_left"], ["Sağ pano", "rail_right"]] },
     { t: "Mobil sabit bant", d: "Mobilde sayfa altında sabit duran, kullanıcının kapatabildiği tek satırlık alan. Yüksekliği sınırlıdır ve içeriğin üzerini örtmez.",
@@ -4646,6 +4610,19 @@ function MediaKit({ go }) {
           <p className="fi-disc" style={{ marginTop: 24 }}>
             Trafik, gösterim ve dönüşüm rakamları yayın başlangıcından itibaren ölçülmeye başlanacaktır. Bu sayfada doğrulanmamış performans verisi paylaşmıyoruz; güncel raporlama talebiniz için formu kullanabilirsiniz.
           </p>
+        </section>
+
+        <section className="fi-sec" aria-labelledby="prod-h">
+          <div className="fi-sh"><div><div className="fi-eyebrow">Envanter</div><h2 className="fi-h2" id="prod-h">Reklam çözümleri</h2><p className="fi-sub">Her alanın benzersiz bir placement ID'si vardır; gösterim, tıklama ve görünürlük ayrı ayrı raporlanır.</p></div></div>
+          <div className="fi-grid fi-g3">
+            {PRODUCTS.map((p) => (
+              <div className="fi-prod" key={p.t}>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+                <ul>{p.items.map(([n, id]) => <li key={id + n}><span>{n}</span><code>{id}</code></li>)}</ul>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="fi-sec" aria-labelledby="pricing-h">
@@ -4811,7 +4788,6 @@ export default function FinansIndex() {
     }
   }, []);
 
-  NAV.go = go;
   const page = (() => {
     switch (route.n) {
       case "home": return <Home go={go} market={market} daily={daily} />;
