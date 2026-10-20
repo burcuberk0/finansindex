@@ -44,6 +44,11 @@ const CSS = `
 }
 .fi img { max-width:100%; display:block; }
 .fi button { font-family:inherit; font-size:inherit; cursor:pointer; }
+/* Gezinme bağlantıları gerçek <a> etiketidir (arama motoru izleyebilsin,
+   okuyucu yeni sekmede açabilsin). Görünümleri düğmeyle aynı kalmalı. */
+.fi a.fi-logo, .fi a.fi-a, .fi a.fi-rail-i, .fi a.fi-dl, .fi a.fi-more,
+.fi a.fi-le-lnk, .fi a.fi-byline-l, .fi a.fi-drop-all, .fi a.fi-btn,
+.fi-nav-i > a, .fi-drop ul a, .fi-ft ul a, .fi-bc a { text-decoration:none; cursor:pointer; }
 .fi input, .fi select, .fi textarea { font-family:inherit; font-size:16px; }
 .fi a { color:inherit; }
 .fi :focus-visible { outline:3px solid var(--gold); outline-offset:2px; border-radius:2px; }
@@ -136,20 +141,20 @@ const CSS = `
 /* --- ana menü + açılır --- */
 .fi-nav { display:flex; gap:0; border-top:1px solid var(--line); overflow:visible; }
 .fi-nav-i { position:relative; }
-.fi-nav-i > button { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
+.fi-nav-i > :is(button, a) { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
   white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; min-height:52px; }
-.fi-nav-i > button:hover { color:var(--ink); }
-.fi-nav-i > button[aria-current="page"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); }
+.fi-nav-i > :is(button, a):hover { color:var(--ink); }
+.fi-nav-i > :is(button, a)[aria-current="page"] { color:var(--petrol); font-weight:600; border-bottom-color:var(--petrol); }
 .fi-nav-ch { opacity:.55; transition:transform .15s ease; }
-.fi-nav-i > button[aria-expanded="true"] .fi-nav-ch { transform:rotate(180deg); }
-.fi-nav-i > button[aria-expanded="true"] { color:var(--petrol); }
+.fi-nav-i > :is(button, a)[aria-expanded="true"] .fi-nav-ch { transform:rotate(180deg); }
+.fi-nav-i > :is(button, a)[aria-expanded="true"] { color:var(--petrol); }
 .fi-drop { position:absolute; top:100%; left:0; min-width:262px; background:var(--surface);
   border:1px solid var(--line); border-top:2px solid var(--petrol); border-radius:0 0 var(--r) var(--r);
   box-shadow:0 10px 28px rgba(0,0,0,.12); padding:16px 18px 12px; z-index:80; }
 .fi-drop-d { font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 12px; padding-bottom:12px; border-bottom:1px solid var(--line); }
 .fi-drop ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:2px; }
-.fi-drop ul button { background:none; border:0; padding:9px 8px; font-size:14px; color:var(--ink-2); text-align:left; width:100%; border-radius:3px; min-height:40px; }
-.fi-drop ul button:hover { background:var(--green-soft); color:var(--petrol); }
+.fi-drop ul :is(button, a) { background:none; border:0; padding:9px 8px; font-size:14px; color:var(--ink-2); text-align:left; width:100%; border-radius:3px; min-height:40px; }
+.fi-drop ul :is(button, a):hover { background:var(--green-soft); color:var(--petrol); }
 .fi-drop-all { width:100%; text-align:left; background:none; border:0; border-top:1px solid var(--line);
   margin-top:10px; padding:12px 8px 4px; font-size:13px; font-weight:600; color:var(--petrol); min-height:40px; }
 .fi-burger { display:none; }
@@ -159,7 +164,7 @@ const CSS = `
 .fi-drawer.on { display:block; }
 .fi-drawer-bg { position:absolute; inset:0; background:rgba(11,42,69,.5); }
 .fi-drawer-pan { position:absolute; top:0; right:0; bottom:0; width:min(340px,88vw); background:var(--surface); padding:18px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
-.fi-drawer-pan a, .fi-drawer-pan button.fi-dl { display:block; width:100%; text-align:left; background:none; border:0; border-bottom:1px solid var(--line); padding:15px 4px; font-size:17px; font-weight:500; color:var(--ink); min-height:52px; }
+.fi-drawer-pan :is(a, button).fi-dl { display:block; width:100%; text-align:left; background:none; border:0; border-bottom:1px solid var(--line); padding:15px 4px; font-size:17px; font-weight:500; color:var(--ink); min-height:52px; }
 
 /* --- search overlay --- */
 .fi-so { position:fixed; inset:0; z-index:95; background:rgba(11,42,69,.55); display:grid; place-items:start center; padding:12vh 16px; }
@@ -520,8 +525,8 @@ const CSS = `
 /* --- article --- */
 .fi-art { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:48px; padding:32px 0 0; }
 .fi-bc { font:500 12px/1.5 var(--mono); color:var(--muted); margin-bottom:18px; display:flex; gap:8px; flex-wrap:wrap; }
-.fi-bc button { background:none; border:0; padding:0; color:var(--muted); }
-.fi-bc button:hover { color:var(--navy); text-decoration:underline; }
+.fi-bc :is(button, a) { background:none; border:0; padding:0; color:var(--muted); }
+.fi-bc :is(button, a):hover { color:var(--navy); text-decoration:underline; }
 .fi-art h1 { font:700 42px/1.06 var(--serif); letter-spacing:-.042em; color:var(--ink); margin:14px 0 18px; }
 .fi-spot { font:400 18.5px/1.6 var(--sans); color:var(--ink-2); margin:0 0 24px; max-width:60ch; }
 .fi-byline { display:flex; align-items:center; gap:13px; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); flex-wrap:wrap; }
@@ -606,8 +611,8 @@ const CSS = `
 .fi-ft-g { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:34px; padding-bottom:34px; border-bottom:1px solid rgba(255,255,255,.13); }
 .fi-ft h3 { font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:#E5A3AE; margin:0 0 15px; }
 .fi-ft ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:2px; }
-.fi-ft ul button { background:none; border:0; padding:7px 0; color:#D5C9BE; font-size:14px; text-align:left; min-height:38px; }
-.fi-ft ul button:hover { color:#fff; text-decoration:underline; }
+.fi-ft ul :is(button, a) { background:none; border:0; padding:7px 0; color:#D5C9BE; font-size:14px; text-align:left; min-height:38px; }
+.fi-ft ul :is(button, a):hover { color:#fff; text-decoration:underline; }
 .fi-ft-about p { font-size:14px; color:#A8A29C; margin:14px 0 0; max-width:38ch; }
 .fi-ft-bot { padding-top:22px; display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:#A2948A; }
 .fi-ft-bot .fi-devlog { margin-left:8px; background:none; border:1px solid rgba(255,255,255,.2); color:#A2948A; padding:7px 12px; border-radius:var(--r); font:500 11px var(--mono); min-height:36px; }
@@ -898,9 +903,9 @@ function GostergePanel({ go }) {
             <div className="fi-gos-s">{c.sub}</div>
             <div className="fi-gos-n">{c.note}</div>
             {c.tool && (
-              <button className="fi-gos-b" onClick={() => go({ n: "tools", tool: c.tool })}>
+              <A to={{ n: "tools", tool: c.tool }} go={go} className="fi-gos-b">
                 Kendi kiranı hesapla →
-              </button>
+              </A>
             )}
           </div>
         ))}
@@ -3456,9 +3461,9 @@ function MarketLog({ market, go }) {
           </li>
         ))}
       </ul>
-      <button className="fi-log-more" onClick={() => go({ n: "tools", tool: "enflasyon" })}>
+      <A to={{ n: "tools", tool: "enflasyon" }} go={go} className="fi-log-more">
         Bu rakamlar bütçeni nasıl etkiliyor? →
-      </button>
+      </A>
     </div>
   );
 }
@@ -3551,14 +3556,14 @@ function MarketPanel({ market }) {
 
 function Logo({ go }) {
   return (
-    <button className="fi-logo" onClick={() => go({ n: "home" })} aria-label="FinansIndex ana sayfa">
+    <A to={{ n: "home" }} go={go} className="fi-logo" aria-label="FinansIndex ana sayfa">
       <svg className="fi-logo-m" viewBox="0 0 32 32" aria-hidden="true">
         <rect width="32" height="32" rx="3" fill="#2A211E" />
         <path d="M7 22.5V9.5h11v3.1H10.6v2.5h6.5v3.1h-6.5v4.3z" fill="#fff" />
         <rect x="20.6" y="9.5" width="3.2" height="13" fill="#B5485C" />
       </svg>
       <span className="fi-logo-t">Finans<em>Index</em></span>
-    </button>
+    </A>
   );
 }
 
@@ -3592,7 +3597,7 @@ function Header({ route, go, onSearch, market }) {
               <button className="fi-ico" onClick={onSearch} aria-label="Sitede ara">
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6" /><path d="m13.5 13.5 4 4" strokeLinecap="round" /></svg>
               </button>
-              <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools" })}>Araçlar</button>
+              <A to={{ n: "tools" }} go={go} className="fi-btn fi-btn-o">Araçlar</A>
               <button className="fi-btn fi-btn-g" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
             </div>
           </div>
@@ -3604,14 +3609,15 @@ function Header({ route, go, onSearch, market }) {
               return (
                 <div className="fi-nav-i" key={c.slug}
                   onMouseEnter={() => subs && enter(c.slug)} onMouseLeave={leave}>
-                  <button
+                  <A
+                    to={{ n: "category", slug: c.slug }}
+                    go={(r) => nav(r, c.name)}
                     aria-current={route.n === "category" && route.slug === c.slug ? "page" : undefined}
                     aria-expanded={subs ? isOpen : undefined}
-                    onClick={() => nav({ n: "category", slug: c.slug }, c.name)}
                     onFocus={() => subs && enter(c.slug)}>
                     {c.name}
                     {subs && <svg className="fi-nav-ch" width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                  </button>
+                  </A>
                   {subs && isOpen && (
                     <div className="fi-drop" onMouseEnter={() => enter(c.slug)} onMouseLeave={leave}>
                       <p className="fi-drop-d">{c.desc}</p>
@@ -3622,16 +3628,16 @@ function Header({ route, go, onSearch, market }) {
                           </li>
                         ))}
                       </ul>
-                      <button className="fi-drop-all" onClick={() => nav({ n: "category", slug: c.slug }, c.name)}>
+                      <A to={{ n: "category", slug: c.slug }} go={(r) => nav(r, c.name)} className="fi-drop-all">
                         Tüm {c.name} içerikleri →
-                      </button>
+                      </A>
                     </div>
                   )}
                 </div>
               );
             })}
             <div className="fi-nav-i">
-              <button aria-current={route.n === "tools" ? "page" : undefined} onClick={() => nav({ n: "tools" }, "Finansal Araçlar")}>Finansal Araçlar</button>
+              <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} aria-current={route.n === "tools" ? "page" : undefined}>Finansal Araçlar</A>
             </div>
           </nav>
         </div>
@@ -3649,10 +3655,10 @@ function Header({ route, go, onSearch, market }) {
             </button>
           </div>
           {CATEGORIES.map((c) => (
-            <button className="fi-dl" key={c.slug} onClick={() => nav({ n: "category", slug: c.slug }, c.name)}>{c.name}</button>
+            <A to={{ n: "category", slug: c.slug }} go={(r) => nav(r, c.name)} className="fi-dl" key={c.slug}>{c.name}</A>
           ))}
-          <button className="fi-dl" onClick={() => nav({ n: "tools" }, "Finansal Araçlar")}>Finansal Araçlar</button>
-          <button className="fi-dl" onClick={() => { go({ n: "mediakit" }); close(); }}>Reklam ve İş Birlikleri</button>
+          <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} className="fi-dl">Finansal Araçlar</A>
+          <A to={{ n: "mediakit" }} go={(r) => { go(r); close(); }} className="fi-dl">Reklam ve İş Birlikleri</A>
           <button className="fi-btn fi-btn-g" style={{ marginTop: 16 }} onClick={() => { go({ n: "home", hash: "bulten" }); close(); }}>Bültene katıl</button>
         </div>
       </div>
@@ -3840,7 +3846,7 @@ const STATIC_PAGES = {
 function Footer({ go }) {
   const [showLog, setShowLog] = useState(false);
   const log = useEventLog();
-  const link = (label, r) => <li key={label}><button onClick={() => go(r)}>{label}</button></li>;
+  const link = (label, r) => <li key={label}><A to={r} go={go}>{label}</A></li>;
 
   return (
     <footer className="fi-ft">
@@ -3937,7 +3943,7 @@ function Home({ go, market, daily }) {
             {/* Manşet — dekoratif görsel yok. Editoryal hiyerarşi tipografiyle kurulur. */}
             <section className="fi-lead" aria-label="Manşet">
               <div className="fi-lead-main">
-                <button className="fi-a" onClick={() => go({ n: "article", slug: hero.slug })}>
+                <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-a">
                   <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
                   <div className="fi-meta">
                     <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
@@ -3946,7 +3952,7 @@ function Home({ go, market, daily }) {
                   </div>
                   <h1 className="fi-lead-t fi-ttl">{hero.title}</h1>
                   <p className="fi-lead-s">{hero.summary}</p>
-                </button>
+                </A>
 
                 {hero.keyStat && (
                   <div className="fi-lead-stat">
@@ -3966,11 +3972,11 @@ function Home({ go, market, daily }) {
             )}
 
             <div className="fi-lead-acts">
-                  <button className="fi-btn fi-btn-p" onClick={() => go({ n: "article", slug: hero.slug })}>Yazıyı oku</button>
+                  <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-btn fi-btn-p">Yazıyı oku</A>
                   {hero.related_tool && (
-                    <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools", tool: hero.related_tool })}>
+                    <A to={{ n: "tools", tool: hero.related_tool }} go={go} className="fi-btn fi-btn-o">
                       {toolById(hero.related_tool)?.short} hesapla →
-                    </button>
+                    </A>
                   )}
                 </div>
               </div>
@@ -3978,14 +3984,14 @@ function Home({ go, market, daily }) {
               <div className="fi-lead-side">
                 <h2 className="fi-side-h">Öne çıkanlar</h2>
                 {side.map((a) => (
-                  <button className="fi-a fi-side-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
+                  <A to={{ n: "article", slug: a.slug }} go={go} className="fi-a fi-side-i" key={a.id}>
                     <div className="fi-side-txt">
                       <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
                       <h3 className="fi-side-t fi-ttl">{a.title}</h3>
                       {a.hook && <p className="fi-side-hook">{a.hook}</p>}
                     </div>
                     {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
-                  </button>
+                  </A>
                 ))}
               </div>
             </section>
@@ -4025,7 +4031,7 @@ function Home({ go, market, daily }) {
                     <p className="fi-le-how">{l.how}</p>
                     <div className="fi-le-acts">
                       <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
-                      {tool && <button className="fi-le-lnk calc" onClick={() => go({ n: "tools", tool: tool.id })}>{tool.short} hesapla →</button>}
+                      {tool && <A to={{ n: "tools", tool: tool.id }} go={go} className="fi-le-lnk calc">{tool.short} hesapla →</A>}
                     </div>
                   </div>
                 </div>
@@ -4063,7 +4069,7 @@ function Home({ go, market, daily }) {
                 <h2 id="calc-h">Karar vermeden önce rakamı görün<span className="fi-count">{TOOLS.filter((t) => t.ready).length} araç</span></h2>
                 <p>Oranları siz girersiniz. Girdiğiniz hiçbir veri sunucularımıza gönderilmez, hesaplama tarayıcınızda yapılır.</p>
               </div>
-              <button className="fi-more" onClick={() => go({ n: "tools" })}>Tüm araçlar →</button>
+              <A to={{ n: "tools" }} go={go} className="fi-more">Tüm araçlar →</A>
             </div>
             <div className="fi-calcband-tabs" role="tablist" aria-label="Hesaplama aracı seçimi">
               {TOOLS.filter((t) => t.ready).map((t) => (
@@ -4118,10 +4124,10 @@ function Home({ go, market, daily }) {
                   {GUIDES.map((g) => {
                     const a = byId(g.id);
                     return (
-                      <button className="fi-rail-i" key={g.id} onClick={() => go({ n: "article", slug: a.slug })}>
+                      <A to={{ n: "article", slug: a.slug }} go={go} className="fi-rail-i" key={g.id}>
                         <div className="fi-meta"><span style={{ color: "var(--gold)" }}>{g.label}</span></div>
                         <p className="fi-rail-t">{a.title}</p>
-                      </button>
+                      </A>
                     );
                   })}
                 </div>
@@ -4170,7 +4176,7 @@ function Category({ slug, go, daily }) {
     <main id="icerik">
       <div className="fi-wrap">
         <div className="fi-page-hd">
-          <nav className="fi-bc" aria-label="Konum"><button onClick={() => go({ n: "home" })}>Ana sayfa</button><span>/</span><span>{cat.name}</span></nav>
+          <nav className="fi-bc" aria-label="Konum"><A to={{ n: "home" }} go={go}>Ana sayfa</A><span>/</span><span>{cat.name}</span></nav>
           <div className="fi-eyebrow">Kategori</div>
           <h1>{cat.name}</h1>
           <p>{cat.desc}</p>
@@ -4265,8 +4271,8 @@ function Article({ slug, go, daily }) {
         <div className="fi-art">
           <article>
             <nav className="fi-bc" aria-label="Konum">
-              <button onClick={() => go({ n: "home" })}>Ana sayfa</button><span>/</span>
-              <button onClick={() => go({ n: "category", slug: a.category })}>{catName(a.category)}</button><span>/</span>
+              <A to={{ n: "home" }} go={go}>Ana sayfa</A><span>/</span>
+              <A to={{ n: "category", slug: a.category }} go={go}>{catName(a.category)}</A><span>/</span>
               <span style={{ color: "var(--ink-2)" }}>{a.title.slice(0, 42)}…</span>
             </nav>
 
@@ -4289,9 +4295,9 @@ function Article({ slug, go, daily }) {
                 <div className="fi-byline-n">{author.name}</div>
                 <div className="fi-byline-r">{author.role}</div>
                 {author.bio && <div className="fi-byline-r" style={{ maxWidth: "44ch", marginTop: 3 }}>{author.bio}</div>}
-                <button className="fi-byline-l" onClick={() => go({ n: "static", slug: "kunye" })}>
+                <A to={{ n: "static", slug: "kunye" }} go={go} className="fi-byline-l">
                   Yayın sorumlusu ve künye →
-                </button>
+                </A>
               </div>
               <div style={{ borderLeft: "1px solid var(--line)", paddingLeft: 14, marginLeft: 4 }}>
                 <div className="fi-byline-r">Yayın: {dateTR(a.published_at)}</div>
@@ -4358,7 +4364,7 @@ function Article({ slug, go, daily }) {
                   <div className="fi-eyebrow">İlgili araç</div>
                   <h3>{tool.name}</h3>
                   <p>{tool.desc}</p>
-                  <button className="fi-btn fi-btn-g" onClick={() => go({ n: "tools", tool: tool.id })}>Aracı aç</button>
+                  <A to={{ n: "tools", tool: tool.id }} go={go} className="fi-btn fi-btn-g">Aracı aç</A>
                   <AdSlot placementId="article_tool_sponsor" pageType="article" />
                 </div>
               )}
@@ -4442,7 +4448,7 @@ function Article({ slug, go, daily }) {
                 <p style={{ fontSize: 13.5, color: "var(--muted)", margin: 0 }}>
                   Kaynak: {a.source_name} · Editör onayı: {AUTHORS[a.reviewed_by]?.name} · Risk düzeyi: {a.risk_level}
                 </p>
-                <button className="fi-btn fi-btn-o" style={{ marginTop: 12, width: "100%" }} onClick={() => go({ n: "static", slug: "editoryal-ilkeler" })}>Editoryal ilkelerimiz</button>
+                <A to={{ n: "static", slug: "editoryal-ilkeler" }} go={go} className="fi-btn fi-btn-o" style={{ marginTop: 12, width: "100%" }}>Editoryal ilkelerimiz</A>
               </div>
             </div>
           </aside>
@@ -4471,7 +4477,7 @@ function Tools({ activeTool, go }) {
     <main id="icerik">
       <div className="fi-wrap">
         <div className="fi-page-hd">
-          <nav className="fi-bc" aria-label="Konum"><button onClick={() => go({ n: "home" })}>Ana sayfa</button><span>/</span><span>Finansal Araçlar</span></nav>
+          <nav className="fi-bc" aria-label="Konum"><A to={{ n: "home" }} go={go}>Ana sayfa</A><span>/</span><span>Finansal Araçlar</span></nav>
           <div className="fi-eyebrow">Finansal araçlar</div>
           <h1>Karar vermeden önce hesaplayın</h1>
           <p>Oranları siz girersiniz; hiçbir güncel faiz, stopaj veya enflasyon değeri araçlara gömülü değildir. Girdiğiniz veriler sunucularımıza gönderilmez.</p>
@@ -4518,10 +4524,10 @@ function Tools({ activeTool, go }) {
               <div>
                 <h3 className="fi-rail-h">Aracı anlatan içerikler</h3>
                 {ARTICLES.filter((a) => a.related_tool === active).slice(0, 4).map((a) => (
-                  <button className="fi-rail-i" key={a.id} onClick={() => go({ n: "article", slug: a.slug })}>
+                  <A to={{ n: "article", slug: a.slug }} go={go} className="fi-rail-i" key={a.id}>
                     <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
                     <p className="fi-rail-t">{a.title}</p>
-                  </button>
+                  </A>
                 ))}
               </div>
               <Newsletter compact pageType="tools" />
@@ -4713,7 +4719,7 @@ function SearchPage({ q, go, daily }) {
             <div className="fi-empty">
               <h2>Eşleşen içerik bulunamadı</h2>
               <p>Farklı bir kelime deneyin veya kategorilere göz atın.</p>
-              <button className="fi-btn fi-btn-p" onClick={() => go({ n: "home" })}>Ana sayfaya dön</button>
+              <A to={{ n: "home" }} go={go} className="fi-btn fi-btn-p">Ana sayfaya dön</A>
             </div>
           ) : (
             <div className="fi-grid fi-g3">
@@ -4739,7 +4745,7 @@ function StaticPage({ slug, go }) {
     <main id="icerik">
       <div className="fi-wrap">
         <div className="fi-page-hd">
-          <nav className="fi-bc" aria-label="Konum"><button onClick={() => go({ n: "home" })}>Ana sayfa</button><span>/</span><span>{p.title}</span></nav>
+          <nav className="fi-bc" aria-label="Konum"><A to={{ n: "home" }} go={go}>Ana sayfa</A><span>/</span><span>{p.title}</span></nav>
           <h1>{p.title}</h1>
           <p>{p.lead}</p>
         </div>
@@ -4761,8 +4767,8 @@ function NotFound({ go }) {
           <h2>Aradığınız sayfayı bulamadık</h2>
           <p>Bağlantı değişmiş veya içerik kaldırılmış olabilir. Aşağıdan devam edebilirsiniz.</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <button className="fi-btn fi-btn-p" onClick={() => go({ n: "home" })}>Ana sayfa</button>
-            <button className="fi-btn fi-btn-o" onClick={() => go({ n: "tools" })}>Finansal araçlar</button>
+            <A to={{ n: "home" }} go={go} className="fi-btn fi-btn-p">Ana sayfa</A>
+            <A to={{ n: "tools" }} go={go} className="fi-btn fi-btn-o">Finansal araçlar</A>
           </div>
         </div>
       </div>
@@ -4770,23 +4776,139 @@ function NotFound({ go }) {
   );
 }
 
+/* -------------------------------------------------------- 18b. ADRES ŞEMASI
+
+   Her görünümün kendi adresi vardır. Bu olmadan arama motoru siteyi tek
+   sayfa görür, okuyucu bir yazının bağlantısını paylaşamaz, geri tuşu
+   çalışmaz. Şema public/sitemap.xml ile birebir aynıdır; biri değişirse
+   diğeri de değişmelidir.
+
+     /                                 ana sayfa
+     /<kategori>                       kategori
+     /<kategori>/<yazi>                yazı
+     /finansal-araclar[/<arac>]        hesaplama araçları
+     /reklam-ve-is-birlikleri          medya kiti
+     /ara?q=...                        arama
+     /<sayfa>                          kurumsal ve yasal sayfalar          */
+
+const TOOLS_PATH = "finansal-araclar";
+const MEDIAKIT_PATH = "reklam-ve-is-birlikleri";
+const SEARCH_PATH = "ara";
+
+/* Günlük otomatik yazı ARTICLES dizisinde durmaz, canlı veriden üretilir;
+   adresini çözebilmek için kategorisini ayrıca biliyoruz. */
+const DAILY_SLUG_RE = /^doviz-ve-altin-bugun-\d{4}-\d{2}-\d{2}$/;
+
+const categoryOfSlug = (slug) => {
+  const a = bySlug(slug);
+  if (a) return a.category;
+  if (DAILY_SLUG_RE.test(slug)) return "gundem";
+  return null;
+};
+
+function routeToPath(r) {
+  if (!r || !r.n) return "/";
+  const hash = r.hash ? `#${r.hash}` : "";
+  switch (r.n) {
+    case "home": return `/${hash}`;
+    case "category": return `/${r.slug}`;
+    case "article": {
+      const cat = categoryOfSlug(r.slug);
+      return cat ? `/${cat}/${r.slug}` : `/gundem/${r.slug}`;
+    }
+    case "tools": return r.tool ? `/${TOOLS_PATH}/${r.tool}` : `/${TOOLS_PATH}`;
+    case "mediakit": return `/${MEDIAKIT_PATH}`;
+    case "search": return r.q ? `/${SEARCH_PATH}?q=${encodeURIComponent(r.q)}` : `/${SEARCH_PATH}`;
+    case "static": return `/${r.slug}`;
+    default: return "/";
+  }
+}
+
+function pathToRoute(pathname, searchStr = "", hashStr = "") {
+  const hash = (hashStr || "").replace(/^#/, "") || undefined;
+  const seg = (pathname || "/").split("/").filter(Boolean).map(decodeURIComponent);
+
+  if (seg.length === 0) return hash ? { n: "home", hash } : { n: "home" };
+
+  if (seg[0] === TOOLS_PATH) {
+    const tool = seg[1] && toolById(seg[1]) ? seg[1] : undefined;
+    return tool ? { n: "tools", tool } : { n: "tools" };
+  }
+  if (seg[0] === MEDIAKIT_PATH) return { n: "mediakit" };
+  if (seg[0] === SEARCH_PATH) {
+    const q = new URLSearchParams(searchStr || "").get("q") || "";
+    return { n: "search", q };
+  }
+
+  if (seg.length === 1) {
+    if (CATEGORIES.some((c) => c.slug === seg[0])) return { n: "category", slug: seg[0] };
+    if (STATIC_PAGES[seg[0]]) return { n: "static", slug: seg[0] };
+    return { n: "404" };
+  }
+
+  if (seg.length === 2 && CATEGORIES.some((c) => c.slug === seg[0])) {
+    return { n: "article", slug: seg[1] };
+  }
+
+  return { n: "404" };
+}
+
+/* Gezinme bağlantısı. Gerçek bir <a href> üretir: arama motoru bağlantıyı
+   izleyebilsin, okuyucu yeni sekmede açabilsin, fareyle üzerine gelince
+   hedefi görebilsin. Tıklama yakalanıp sayfa yenilenmeden gezilir; ancak
+   yeni sekme / orta tık / değiştirici tuşlar tarayıcıya bırakılır. */
+function A({ to, go, className, children, ...rest }) {
+  const href = routeToPath(to);
+  const onClick = (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    go(to);
+  };
+  return <a href={href} className={className} onClick={onClick} {...rest}>{children}</a>;
+}
+
 /* ------------------------------------------------------------------ 19. APP */
 
 export default function FinansIndex() {
-  const [route, setRoute] = useState({ n: "home" });
+  const [route, setRoute] = useState(() =>
+    typeof window === "undefined"
+      ? { n: "home" }
+      : pathToRoute(window.location.pathname, window.location.search, window.location.hash)
+  );
   const [search, setSearch] = useState(false);
   const market = useMarket();
   /* Otomatik günlük içerik canlı veriden üretilir ve statik içeriklerle
      aynı şekilde dolaşır: akışta, kategoride, aramada ve kendi sayfasında. */
   const daily = useMemo(() => buildDailyMarketArticle(market), [market]);
 
+  const settle = useCallback((r) => {
+    if (typeof window === "undefined") return;
+    if (r.hash) { setTimeout(() => document.getElementById(r.hash)?.scrollIntoView({ behavior: "smooth", block: "center" }), 60); }
+    else window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  }, []);
+
   const go = useCallback((r) => {
     setRoute(r);
     if (typeof window !== "undefined") {
-      if (r.hash) { setTimeout(() => document.getElementById(r.hash)?.scrollIntoView({ behavior: "smooth", block: "center" }), 60); }
-      else window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+      const path = routeToPath(r);
+      if (path !== window.location.pathname + window.location.search + window.location.hash) {
+        window.history.pushState({ fi: r }, "", path);
+      }
     }
-  }, []);
+    settle(r);
+  }, [settle]);
+
+  /* Tarayıcının geri/ileri tuşları: adresten görünümü yeniden çöz. */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onPop = () => {
+      const r = pathToRoute(window.location.pathname, window.location.search, window.location.hash);
+      setRoute(r);
+      settle(r);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [settle]);
 
   const page = (() => {
     switch (route.n) {
@@ -4797,6 +4919,7 @@ export default function FinansIndex() {
       case "mediakit": return <MediaKit go={go} />;
       case "search": return <SearchPage q={route.q} go={go} daily={daily} />;
       case "static": return <StaticPage slug={route.slug} go={go} />;
+      case "404":
       default: return <NotFound go={go} />;
     }
   })();
