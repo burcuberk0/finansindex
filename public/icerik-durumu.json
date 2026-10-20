@@ -1,0 +1,5 @@
+{
+ "durum": "bilinmiyor",
+ "detay": "Bu dosya her derlemede yeniden yazılır. 'guncel' ise içerik Sanity'den alınmıştır, 'eskiYedek' ise Sanity'ye erişilememiş ve depodaki son kopya kullanılmıştır.",
+ "zaman": null
+}

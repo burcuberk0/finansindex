@@ -17,6 +17,16 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(__dirname, "..", "src", "content.json");
+/* Yayın hattının durumu site üzerinden görülebilsin: finansindex.com/icerik-durumu.json
+   İçeriğin en son ne zaman ve nereden alındığını söyler. Sanity'ye erişilemediğinde
+   bu dosya "eskiYedek" der; aksi hâlde sorun fark edilmeden günlerce sürebilir. */
+const STATUS = path.join(__dirname, "..", "public", "icerik-durumu.json");
+
+const writeStatus = (durum, detay) => {
+  try {
+    fs.writeFileSync(STATUS, JSON.stringify({ durum, detay, zaman: new Date().toISOString() }, null, 1) + "\n");
+  } catch { /* durum dosyası yazılamazsa derleme yine de sürsün */ }
+};
 
 const PROJECT = process.env.SANITY_PROJECT_ID || "u13dxmis";
 const DATASET = process.env.SANITY_DATASET || "production";
@@ -141,6 +151,7 @@ function keepExisting(reason) {
   if (fs.existsSync(OUT)) {
     const n = JSON.parse(fs.readFileSync(OUT, "utf8")).articles.length;
     console.warn(`[icerik] ${reason} — mevcut content.json korunuyor (${n} yazı).`);
+    writeStatus("eskiYedek", `${reason}. Depodaki son kopya kullanıldı: ${n} yazı.`);
     process.exit(0);
   }
   console.error(`[icerik] ${reason} — ve elde content.json yok. Derleme durduruluyor.`);
@@ -165,6 +176,7 @@ try {
   };
 
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 1) + "\n");
+  writeStatus("guncel", `${payload.articles.length} yazı, ${payload.categories.length} kategori Sanity'den alındı.`);
   console.log(
     `[icerik] Sanity'den ${payload.articles.length} yazı, ${payload.categories.length} kategori alındı.`
   );
