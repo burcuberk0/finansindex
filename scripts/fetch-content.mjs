@@ -21,6 +21,8 @@ const OUT = path.join(__dirname, "..", "src", "content.json");
    İçeriğin en son ne zaman ve nereden alındığını söyler. Sanity'ye erişilemediğinde
    bu dosya "eskiYedek" der; aksi hâlde sorun fark edilmeden günlerce sürebilir. */
 const STATUS = path.join(__dirname, "..", "public", "icerik-durumu.json");
+const SITEMAP = path.join(__dirname, "..", "public", "sitemap.xml");
+const SITE_URL = "https://finansindex.com";
 
 const writeStatus = (durum, detay) => {
   try {
@@ -143,6 +145,42 @@ function mapArticle(a) {
   return out;
 }
 
+/* Sitemap elle tutulduğunda yeni yazılar unutuluyor. İçerikle aynı
+   kaynaktan, her derlemede yeniden üretiliyor. Adresler routeToPath ile
+   aynı şemayı izler. */
+const STATIC_PATHS = [
+  "", "finansal-araclar", "reklam-ve-is-birlikleri", "hakkimizda", "kunye",
+  "editoryal-ilkeler", "duzeltme-politikasi", "reklam-politikasi", "kvkk",
+  "cerez-politikasi", "kullanim-kosullari", "iletisim",
+];
+
+function writeSitemap({ categories, articles }) {
+  const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const gun = (d) => (d ? new Date(d).toISOString().slice(0, 10) : null);
+  const bugun = new Date().toISOString().slice(0, 10);
+
+  const girdi = (yol, tarih, sik) =>
+    `  <url>\n    <loc>${esc(SITE_URL)}/${esc(yol)}</loc>\n` +
+    (tarih ? `    <lastmod>${tarih}</lastmod>\n` : "") +
+    `    <changefreq>${sik}</changefreq>\n  </url>`;
+
+  const satirlar = [
+    ...STATIC_PATHS.map((y) => girdi(y, bugun, y === "" ? "daily" : "monthly")),
+    ...categories.map((c) => girdi(c.slug, bugun, "daily")),
+    ...articles.map((a) => girdi(`${a.category}/${a.slug}`, gun(a.updated_at || a.published_at), "monthly")),
+  ];
+
+  try {
+    fs.writeFileSync(
+      SITEMAP,
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${satirlar.join("\n")}\n</urlset>\n`
+    );
+    console.log(`[icerik] sitemap.xml yeniden üretildi (${satirlar.length} adres).`);
+  } catch (e) {
+    console.warn(`[icerik] sitemap yazılamadı: ${e.message}`);
+  }
+}
+
 const url =
   `https://${PROJECT}.apicdn.sanity.io/v${API}/data/query/${DATASET}` +
   `?query=${encodeURIComponent(QUERY)}`;
@@ -177,6 +215,7 @@ try {
 
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 1) + "\n");
   writeStatus("guncel", `${payload.articles.length} yazı, ${payload.categories.length} kategori Sanity'den alındı.`);
+  writeSitemap(payload);
   console.log(
     `[icerik] Sanity'den ${payload.articles.length} yazı, ${payload.categories.length} kategori alındı.`
   );
