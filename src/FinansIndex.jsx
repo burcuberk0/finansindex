@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import CONTENT from "./content.json";
 
 /* ============================================================================
    FinansIndex — Finans ve ekonomi yayın platformu
@@ -1409,16 +1410,10 @@ const SUBNAV = {
   "is-ve-girisim": ["KOBİ", "Nakit akışı", "Finansman"],
 };
 
-const CATEGORIES = [
-  { slug: "gundem", name: "Gündem", desc: "Türkiye ve dünyadan, finansal hayatınızı etkileyebilecek gelişmeler." },
-  { slug: "parami-yonetiyorum", name: "Paramı Yönetiyorum", desc: "Bütçe, tasarruf, borç kapatma, kredi kartı ve harcama yönetimi." },
-  { slug: "kredi-ve-mevduat", name: "Kredi ve Mevduat", desc: "Kredi türleri, faiz mantığı, mevduat seçenekleri ve karşılaştırmalar." },
-  { slug: "yatirim", name: "Yatırım", desc: "Altın, döviz, fon ve borsa araçlarını başlangıç seviyesinde anlatan içerikler." },
-  { slug: "sigorta-ve-emeklilik", name: "Sigorta ve Emeklilik", desc: "BES, sağlık, araç, konut ve diğer sigorta ürünleri." },
-  { slug: "ekonomiyi-anla", name: "Ekonomiyi Anla", desc: "Enflasyon, faiz, kur ve vergi politikalarının günlük hayata etkisi." },
-  { slug: "is-ve-girisim", name: "İş ve Girişim", desc: "KOBİ finansmanı, e-ticaret, girişimcilik ve yeni iş modelleri." },
-  { slug: "finansindex-dosya", name: "FinansIndex Dosya", desc: "Bir konuyu tüm yönleriyle ele alan özel araştırma ve dosyalar." },
-];
+/* Kategoriler ve yazılar Sanity'de durur; scripts/fetch-content.mjs
+   derleme öncesi çeker ve content.json'a yazar. Burada diziye
+   dönüştürülür, uygulamanın geri kalanı değişmeden çalışır. */
+const CATEGORIES = CONTENT.categories;
 const catName = (s) => CATEGORIES.find((c) => c.slug === s)?.name || s;
 
 /* İmza kurumsal. Yazarın adı makale sayfasında değil, künye sayfasında
@@ -1446,804 +1441,8 @@ const AI_NOTE = {
 const P = (t) => ({ type: "p", t });
 const H = (t) => ({ type: "h2", t, id: t.toLowerCase().replace(/[^a-zçğıöşü0-9]+/g, "-").replace(/^-|-$/g, "") });
 
-const ARTICLES = [
-  {
-    id: "a1", slug: "politika-faizi-mevduat-getirisi-iliskisi",
-    title: "Politika faizi değiştiğinde mevduat getiriniz neden hemen değişmez?",
-    summary: "Merkez Bankası'nın faiz kararı ile hesabınıza yansıyan mevduat faizi arasında birkaç aşamalı bir aktarım mekanizması var. Bu yazıda o mekanizmayı ve vade planlamanıza etkisini adım adım anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Analiz", author: "finansindex",
-    published_at: "2026-08-06T09:15:00+03:00", updated_at: "2026-08-06T14:40:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "invest", related_tool: "mevduat",
-    featured_image: { src: "/img/faiz-mevduat.jpg", alt: "Bir bankanın vadeli mevduat ekranında görünen faiz oranı tablosu", credit: "Görsel: Unsplash" },
-    tags: ["faiz", "mevduat", "para politikası"],
-    source_name: "TCMB", source_urls: ["TCMB — Para Politikası Kurulu karar metinleri", "TCMB — Ağırlıklı ortalama mevduat faiz oranları istatistikleri", "BDDK — Aylık bankacılık sektörü verileri"],
-    seo_title: "Politika faizi mevduat faizini nasıl etkiler? | FinansIndex",
-    meta_description: "Politika faizi ile mevduat faizi arasındaki aktarım mekanizması, gecikme süresi ve vade planlamanıza etkisi sade bir dille.",
-    body: [
-      P("Para politikası kararları duyurulduğunda ilk akla gelen soru genellikle şu oluyor: “Mevduat faizim yarın değişecek mi?” Kısa cevap: çoğu zaman hayır. Politika faizi, bankaların Merkez Bankası ile yaptığı işlemlerin fiyatıdır. Sizin hesabınıza yazılan faiz ise bankanın kendi fonlama maliyeti, likidite ihtiyacı ve rekabet koşullarıyla belirlenir."),
-      H("Aktarım zinciri nasıl işliyor?"),
-      P("Politika faizinden mevduat faizine giden yol üç durakta ilerler. İlk durak bankalar arası para piyasasıdır; buradaki gecelik faizler karara genellikle aynı gün tepki verir. İkinci durak bankaların fonlama maliyetidir. Üçüncü durak ise mevduat ve kredi fiyatlamasıdır ve buraya ulaşması haftalar alabilir."),
-      P("Bu gecikmenin nedeni teknik değil, ticari. Bankanın elinde belirli bir vadeye kadar sabitlenmiş mevduat stoğu vardır. Yeni fiyatlama yalnızca yeni açılan ve vadesi yenilenen hesaplara uygulanır. Yani sizin mevcut vadeli hesabınız, vade sonuna kadar sözleşmedeki oranla işlemeye devam eder."),
-      H("Vade planlamanız için bu ne anlama geliyor?"),
-      P("Faizlerin yönü hakkında kesin bir öngörüde bulunmak mümkün değil, ancak vade yapısı üzerinde kontrolünüz var. Kısa vade esneklik sağlar; oranlar yükselirse hızlı uyum sağlarsınız, düşerse aynı hızla getiriniz azalır. Uzun vade ise mevcut oranı kilitler."),
-      { type: "quote", t: "Vade kararı bir tahmin değil, bir risk tercihidir: neyi kaçırmayı göze aldığınızı belirler." },
-      H("Örnek bir karşılaştırma"),
-      { type: "note", t: "Aşağıdaki tablo yalnızca mekanizmayı göstermek için hazırlanmış örnek bir hesaplamadır. Gerçek oranlar bankadan bankaya ve döneme göre değişir." },
-      { type: "table", head: ["Senaryo", "Vade", "Yenileme sayısı", "Ana risk"],
-        rows: [["Kısa vade tercih", "32 gün", "Yılda ~11", "Yenilemede oran düşerse getiri azalır"], ["Orta vade tercih", "3 ay", "Yılda 4", "Dengeli"], ["Uzun vade tercih", "12 ay", "Yılda 1", "Oranlar yükselirse fırsat kaybı"]] },
-      H("Ne yapabilirsiniz?"),
-      { type: "ul", items: [
-        "Birikiminizi tek vadede toplamak yerine farklı vadelere bölerek yenileme tarihlerinizi dağıtın.",
-        "Hesap açmadan önce brüt değil net getiriyi hesaplayın; stopaj oranı vade ve ürün türüne göre değişebilir.",
-        "Bankanızın kampanya oranının hangi tutar ve vade aralığında geçerli olduğunu sözleşmede kontrol edin.",
-      ] },
-      P("Faiz kararlarını izlemek faydalıdır, ancak bütçenizi asıl etkileyen şey kararın kendisi değil; sizin vade, tutar ve ürün tercihlerinizdir."),
-    ],
-    keyStat: { v: "3", unit: "durak", k: "Politika faizinin mevduat faizine ulaşması için geçtiği aşama sayısı", sub: "Aktarım haftalar sürebilir" },
-    impact: {
-      lead: "Politika faizindeki değişiklik, vadeli hesabınıza genellikle vade yenileme tarihinizde yansır.",
-      points: [
-        "Mevcut vadeli hesabınızın oranı vade sonuna kadar değişmez.",
-        "Yeni hesap açacaksanız, farklı bankaların güncel oranlarını aynı vade üzerinden karşılaştırın.",
-        "Net getiriyi hesaplarken stopajı mutlaka dahil edin.",
-      ],
-    },
-  },
-  {
-    id: "a2", slug: "kredi-karti-asgari-odeme-nasil-hesaplanir",
-    title: "Kredi kartı asgari ödeme tutarı nasıl hesaplanır ve neden bir çözüm değildir?",
-    summary: "Asgari ödeme, borcu kapatmanın değil ertelemenin yoludur. Hesaplama mantığını, kalan borca işleyen faizin nasıl büyüdüğünü ve çıkış planını örnek bir hesaplama üzerinden gösteriyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-05T08:00:00+03:00", updated_at: "2026-08-05T08:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "general", related_tool: "asgari",
-    featured_image: { src: "/img/kredi-karti.jpg", alt: "Masada duran kredi kartı ve hesap ekstresi", credit: "Görsel: Unsplash" },
-    tags: ["kredi kartı", "borç", "bütçe"],
-    source_name: "BDDK / Resmî Gazete",
-    source_urls: ["BDDK — Banka Kartları ve Kredi Kartları Hakkında Yönetmelik", "Resmî Gazete — İlgili yönetmelik değişiklikleri", "TCMB — Kredi kartı işlemlerinde uygulanacak azami faiz oranları duyuruları"],
-    seo_title: "Kredi kartı asgari ödeme tutarı nasıl hesaplanır? | FinansIndex",
-    meta_description: "Kredi kartı asgari ödeme oranı, hesaplama yöntemi ve yalnızca asgariyi ödemenin uzun vadeli maliyeti örnek hesaplamayla anlatılıyor.",
-    body: [
-      P("Ekstre geldiğinde iki rakam görürsünüz: dönem borcu ve asgari ödeme tutarı. İkincisi, o ay kartınızın kapanmaması ve gecikme durumuna düşmemeniz için ödemeniz gereken en düşük tutardır. Ancak bu tutar bir hedef değil, bir alt sınırdır."),
-      H("Hesaplama nasıl yapılıyor?"),
-      P("Asgari ödeme tutarı, dönem borcunun yönetmelikle belirlenen bir oranıyla hesaplanır. Bu oran kartın limitine göre farklılaşır; limit eşiği ve oranlar mevzuat değişiklikleriyle güncellenebildiği için, güncel oranı bankanızın ekstresinden ya da resmî düzenlemeden teyit etmeniz gerekir."),
-      P("Formül basittir: **Asgari ödeme = Dönem borcu × asgari ödeme oranı.** Taksitli işlemlerin o aya düşen taksitleri ve gecikmiş tutarlar varsa bunlar asgari tutara tam olarak eklenir."),
-      H("Asgariyi ödediğinizde ne oluyor?"),
-      P("Ödenmeyen kısım bir sonraki döneme devreder ve bu tutara akdi faiz işler. Faiz oranları kredi kartlarında konut veya ihtiyaç kredilerine kıyasla yüksektir. Sonuç: her ay asgariyi ödeseniz bile anapara çok yavaş azalır, hatta yeni harcama yapıyorsanız hiç azalmaz."),
-      { type: "note", t: "Aşağıdaki örnek hesaplama, mekanizmayı göstermek amacıyla varsayımsal bir faiz oranıyla kurgulanmıştır. Gerçek rakamlar için kendi ekstre oranınızı kullanın." },
-      { type: "chart", title: "25.000 TL borç, aylık %4 faiz: ödeme stratejisine göre kapanma süresi",
-        unit: " ay", dec: 0, highlight: 0,
-        rows: [
-          { k: "Tamamı", v: 1 },
-          { k: "Asgari + 2.000 TL", v: 8 },
-          { k: "Asgari + 1.000 TL", v: 13 },
-          { k: "Yalnızca asgari", v: 47 },
-        ],
-        caption: "Örnek hesaplama. Yeni harcama yapılmadığı ve faiz oranının sabit kaldığı varsayılmıştır. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın." },
-      H("Borçtan çıkış planı"),
-      { type: "ul", items: [
-        "Kartı harcamaya kapatın; borç azalırken yeni harcama eklemek planı sıfırlar.",
-        "Ödeyebileceğiniz sabit bir aylık tutar belirleyin ve borç bitene kadar bu tutarı düşürmeyin.",
-        "Birden fazla kart varsa önce faiz oranı en yüksek olandan başlayın.",
-        "Bankanızın yapılandırma veya borç transferi seçeneklerini, toplam geri ödeme tutarını karşılaştırarak değerlendirin.",
-      ] },
-      P("Asgari ödeme, nakit akışınızın daraldığı bir ayda size zaman kazandırır. Kalıcı bir çözüm hâline geldiğinde ise maliyeti en yüksek borçlanma biçimlerinden birine dönüşür."),
-    ],
-    hook: "Sadece asgari ödeyen 25.000 TL borcu 47 ayda kapatır",
-    impact: {
-      lead: "Yalnızca asgariyi ödemek, borcunuzu kapatmaz; ödeme takviminizi uzatır ve toplam faiz yükünü artırır.",
-      points: [
-        "Ekstrenizdeki akdi faiz oranını bulun ve kalan borcunuzla çarparak aylık faiz yükünü görün.",
-        "Asgari tutarın üzerine ekleyebileceğiniz en küçük sabit tutarı bile belirleyin; süreyi kısaltır.",
-        "Borç kapanana kadar aynı kartla yeni harcama yapmaktan kaçının.",
-      ],
-    },
-  },
-  {
-    id: "a3", slug: "borc-kapatma-hangi-krediden-baslanmali",
-    title: "Birden fazla borcunuz varsa hangisinden başlamalısınız?",
-    summary: "Çığ yöntemi mi, kartopu yöntemi mi? İkisinin matematiğini ve davranışsal farkını karşılaştırıyor, kendi durumunuza uygun olanı seçmeniz için basit bir karar çerçevesi sunuyoruz.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-04T10:30:00+03:00", updated_at: "2026-08-04T10:30:00+03:00",
-    read: 5, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "general", related_tool: "kredi",
-    featured_image: { src: "/img/borc-kapatma.jpg", alt: "Üzerinde ödeme planı yazılı not defteri ve hesap makinesi", credit: "Görsel: Unsplash" },
-    tags: ["borç", "kredi", "bütçe"],
-    source_name: "FinansIndex editoryal",
-    source_urls: ["TCMB — Tüketici kredileri faiz oranları istatistikleri", "BDDK — Tüketici kredileri ve bireysel kredi kartları verileri"],
-    seo_title: "Borç kapatırken hangi krediden başlanmalı? | FinansIndex",
-    meta_description: "Çığ ve kartopu yöntemlerinin karşılaştırması, hangi durumda hangisinin işe yaradığı ve borç kapatma planı kurma adımları.",
-    body: [
-      P("Elinizde birden fazla borç varken her birine aynı anda fazladan ödeme yapmak, hiçbirini hızlandırmaz. Etkili yöntem, ekstra ödeme gücünüzü tek bir borca yığmaktır. Soru şu: hangisine?"),
-      H("Çığ yöntemi: önce en pahalı borç"),
-      P("Tüm borçların asgari ödemelerini yapar, artan tutarı **faiz oranı en yüksek** borca yönlendirirsiniz. O borç bittiğinde aynı tutarı sıradaki en yüksek faizli borca aktarırsınız. Matematiksel olarak toplam faiz maliyetini en aza indiren yöntem budur."),
-      H("Kartopu yöntemi: önce en küçük bakiye"),
-      P("Bu kez ekstra ödeme, faiz oranına bakılmaksızın **bakiyesi en küçük** borca gider. Toplam maliyet çığ yöntemine göre biraz daha yüksek olur, ancak ilk borcun kapanması kısa sürede gerçekleşir ve planı sürdürme motivasyonunu güçlendirir."),
-      { type: "table", head: ["Kriter", "Çığ yöntemi", "Kartopu yöntemi"],
-        rows: [["Toplam faiz maliyeti", "Daha düşük", "Biraz daha yüksek"], ["İlk sonuç görme süresi", "Uzun olabilir", "Kısa"], ["Uygun olduğu durum", "Faiz farkları belirgin", "Motivasyon sorunu yaşanıyor"]] },
-      H("Karar çerçevesi"),
-      { type: "ul", items: [
-        "Borçlar arasındaki faiz farkı büyükse (örneğin kredi kartı ile taşıt kredisi arasında) çığ yöntemi belirgin avantaj sağlar.",
-        "Faiz oranları birbirine yakınsa fark küçülür; bu durumda kartopu yöntemi psikolojik olarak daha sürdürülebilir olabilir.",
-        "Hangi yöntemi seçerseniz seçin, ekstra ödeme tutarını sabitleyin ve bir borç kapandığında o tutarı harcamaya değil sıradaki borca aktarın.",
-      ] },
-      P("Yöntemin adı önemli değil; planın uygulanabilir olması önemli. En iyi plan, altı ay sonra hâlâ uyguluyor olduğunuz plandır."),
-    ],
-    impact: {
-      lead: "Ekstra ödeme gücünüzü tek borca yoğunlaştırmak, hepsine bölüştürmekten hızlı sonuç verir.",
-      points: [
-        "Tüm borçlarınızı bakiye ve faiz oranıyla birlikte tek listeye yazın.",
-        "Aylık bütçenizden ayırabileceğiniz sabit ekstra tutarı belirleyin.",
-        "Bir borç kapandığında o ödemeyi bütçeye geri almayın, sıradaki borca aktarın.",
-      ],
-    },
-  },
-  {
-    id: "a4", slug: "enflasyon-birikim-satin-alma-gucu",
-    title: "Enflasyon birikimlerinizin satın alma gücünü nasıl aşındırır?",
-    summary: "Nominal getiri ile reel getiri arasındaki fark, birikim kararlarının en çok gözden kaçan kısmı. Bu farkı hesaplamanın yolunu ve bütçeye yansımasını anlatıyoruz.",
-    category: "ekonomiyi-anla", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-03T11:00:00+03:00", updated_at: "2026-08-03T11:00:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
-    featured_image: { src: "/img/enflasyon-birikim.jpg", alt: "Türk lirası banknotlar ve bozuk paralar", credit: "Görsel: Unsplash" },
-    tags: ["enflasyon", "birikim", "reel getiri"],
-    source_name: "TÜİK",
-    source_urls: ["TÜİK — Tüketici Fiyat Endeksi bülteni", "TCMB — Enflasyon Raporu"],
-    seo_title: "Enflasyon birikimleri nasıl etkiler? Reel getiri hesabı | FinansIndex",
-    meta_description: "Nominal getiri ile reel getiri farkı, satın alma gücü kaybının hesaplanması ve birikim planlamasında dikkat edilmesi gerekenler.",
-    body: [
-      P("Bir birikimin “kazandırdığı” tutar ile “alabildiği” mal ve hizmet miktarı iki farklı şeydir. Nominal getiri hesabınızdaki rakamın ne kadar büyüdüğünü söyler. Reel getiri ise o rakamın alım gücünün artıp artmadığını söyler."),
-      H("Reel getiri nasıl hesaplanır?"),
-      P("Basit çıkarma işlemi (getiri eksi enflasyon) yaklaşık bir sonuç verir, ancak oranlar yükseldikçe sapma büyür. Doğru hesap şudur: **Reel getiri = ((1 + nominal getiri) ÷ (1 + enflasyon)) − 1.** Sonuç negatifse, paranız büyümüş ama satın alma gücünüz azalmış demektir."),
-      { type: "note", t: "Aşağıdaki değerler örnek hesaplamadır; güncel enflasyon verisi için TÜİK bültenlerini esas alın." },
-      { type: "chart", title: "Enflasyon %30 iken, farklı getiri oranlarında reel sonuç",
-        unit: "%", dec: 1, highlight: 1,
-        rows: [
-          { k: "Getiri %40", v: 7.7 },
-          { k: "Getiri %30", v: 0.01, dec: 0 },
-          { k: "Getiri %20", v: -7.7 },
-        ],
-        caption: "Örnek hesaplama. Sıfır çizgisinin altındaki değer, paranın büyümesine rağmen alım gücünün azaldığı anlamına gelir." },
-      H("Bütçeye yansıması"),
-      P("Reel getirinin negatif olduğu dönemlerde birikimi tamamen nakitte tutmak, sessiz bir maliyet yaratır. Öte yandan reel getiri arayışı, riski göz ardı etmek anlamına gelmez. Farklı araçların vergi, likidite ve dalgalanma özellikleri birbirinden ayrışır."),
-      H("Pratik adımlar"),
-      { type: "ul", items: [
-        "Birikiminizi tek bir getiri rakamına göre değil, vade ve amaç bazında planlayın.",
-        "Acil durum fonunuzu getiri hedefiyle değil, hızlı erişim hedefiyle konumlandırın.",
-        "Getiri karşılaştırmalarında vergi ve masraf sonrası net rakamı kullanın.",
-      ] },
-      P("Enflasyon, bütçenin görünmeyen kalemidir. Hesaba katılmadığı sürece, kâğıt üzerinde kazanırken pratikte kaybetmek mümkündür."),
-    ],
-    hook: "%30 getiri, %30 enflasyonda sıfır kazanç demek",
-    impact: {
-      lead: "Nominal getiriniz enflasyonun altında kaldığında, birikiminizin alım gücü azalır.",
-      points: [
-        "Getirinizi enflasyona bölerek reel sonucu hesaplayın.",
-        "Kısa vadeli ihtiyaçlar için likiditeyi, uzun vadeli hedefler için reel getiriyi önceliklendirin.",
-        "Vergi ve masrafları düştükten sonraki net rakamla karşılaştırma yapın.",
-      ],
-    },
-  },
-  {
-    id: "a5", slug: "kira-artis-orani-nasil-hesaplanir",
-    title: "Kira artış oranı nasıl hesaplanır? Kiracı ve ev sahibi için sade rehber",
-    summary: "Yasal üst sınır, hangi endeksin kullanıldığı, hesaplamanın hangi tarihe göre yapıldığı ve anlaşmazlık durumunda izlenecek yol.",
-    category: "parami-yonetiyorum", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-02T09:00:00+03:00", updated_at: "2026-08-02T09:00:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "legal", related_tool: "kira",
-    featured_image: { src: "/img/kira-artis.jpg", alt: "Bir apartman dairesinin salonu ve kira sözleşmesi", credit: "Görsel: Unsplash" },
-    tags: ["kira", "enflasyon", "konut"],
-    source_name: "TÜİK / Resmî Gazete",
-    source_urls: [
-      { t: "TÜİK — Tüketici Fiyat Endeksi, on iki aylık ortalamalara göre değişim oranları", u: "https://data.tuik.gov.tr/Bulten/Index?p=Tuketici-Fiyat-Endeksi" },
-      { t: "6098 sayılı Türk Borçlar Kanunu — kira bedelinin belirlenmesi", u: "https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6098.pdf" },
-    ],
-    oranNotu: "Kira artışında kullanılacak oran her ay TÜİK bülteniyle güncellenir. Yazıdaki yöntem kalıcıdır; oranı kendi yenileme ayınıza göre bültenden alın. Son kontrol: 7 Ekim 2026.",
-    seo_title: "Kira artış oranı nasıl hesaplanır? | FinansIndex",
-    meta_description: "Kira artışında kullanılan endeks, hesaplama yöntemi, yasal sınır ve anlaşmazlık durumunda izlenecek adımlar.",
-    body: [
-      P("Kira yenileme dönemi yaklaştığında iki taraf da aynı soruyu sorar: artış ne kadar olabilir? Cevap büyük ölçüde sözleşme tarihine ve ilgili dönemin endeks verisine bağlıdır."),
-      H("Hangi oran esas alınıyor?"),
-      P("Konut kiralarında artış, kural olarak **tüketici fiyat endeksinin on iki aylık ortalamalara göre değişim oranı** ile sınırlıdır. Bu, aylık enflasyon ya da yıllık enflasyon rakamından farklı bir seridir ve TÜİK tarafından her ay yayımlanır. Sözleşmede bu oranın üzerinde bir artış yazsa bile, sınırı aşan kısım uygulanamaz."),
-      H("Hesaplama"),
-      P("Formül basittir: **Yeni kira = Mevcut kira × (1 + artış oranı).** Kritik nokta, hangi ayın verisinin kullanılacağıdır. Genel uygulamada, kira döneminin yenilendiği ayda yayımlanmış olan en güncel on iki aylık ortalama oranı esas alınır."),
-      { type: "note", t: "Hesaplama aracımızda oranı siz giriyorsunuz; böylece kendi yenileme ayınıza ait TÜİK verisini kullanabilirsiniz." },
-      H("Anlaşmazlık durumunda"),
-      { type: "ul", items: [
-        "Önce yazılı bildirim yoluyla hesaplamanızı ve dayandığınız veriyi paylaşın.",
-        "Ödemeleri düzenli sürdürün; ödememe, ayrı bir hukuki sorun doğurabilir.",
-        "Uzlaşma sağlanamazsa arabuluculuk ve dava yolu gündeme gelir; süreç ve süreler için hukuki destek almak gerekir.",
-      ] },
-      P("Kira artışı, iki tarafın da aynı veriye baktığında büyük ölçüde tartışmasız hâle gelen bir konudur. Anlaşmazlıkların çoğu farklı endeks serilerinin karıştırılmasından doğar."),
-    ],
-    hook: "Yıllık enflasyon değil, 12 aylık ortalama TÜFE esas alınır",
-    impact: {
-      lead: "Yenileme ayınızda geçerli olan on iki aylık ortalama TÜFE oranı, artışın üst sınırını belirler.",
-      points: [
-        "Yenileme ayınıza ait TÜİK verisini not edin; başka bir enflasyon serisini kullanmayın.",
-        "Yeni kirayı hesaplayıp yazılı olarak paylaşın.",
-        "Sözleşmenizde farklı bir madde varsa, yasal sınırın üzerindeki kısmın uygulanamayacağını bilin.",
-      ],
-    },
-  },
-  {
-    id: "a6", slug: "yatirim-fonu-baslangic-rehberi",
-    title: "Yeni başlayanlar için yatırım fonu: ne olduğu, nasıl fiyatlandığı ve nelere bakılacağı",
-    summary: "Fon nedir, pay fiyatı nasıl oluşur, toplam gider oranı neden önemlidir? Ürün önerisi yapmadan, karar vermeden önce bakılması gereken başlıkları listeliyoruz.",
-    category: "yatirim", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-01T12:00:00+03:00", updated_at: "2026-08-01T12:00:00+03:00",
-    read: 8, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
-    featured_image: { src: "/img/yatirim-fonu.jpg", alt: "Bilgisayar ekranında görünen yatırım fonu performans grafiği", credit: "Görsel: Unsplash" },
-    tags: ["fon", "yatırım", "portföy"],
-    source_name: "SPK / KAP",
-    source_urls: ["SPK — Yatırım fonlarına ilişkin mevzuat", "KAP — Fon bilgilendirme dokümanları ve içtüzükler", "TEFAS — Fon karşılaştırma platformu"],
-    seo_title: "Yatırım fonu nedir? Başlangıç rehberi | FinansIndex",
-    meta_description: "Yatırım fonlarının çalışma mantığı, pay fiyatı, gider oranı ve fon seçerken bakılması gereken başlıklar. Yatırım tavsiyesi içermez.",
-    body: [
-      P("Yatırım fonu, çok sayıda yatırımcının parasını bir havuzda toplayıp profesyonel bir portföy yönetimi şirketi aracılığıyla çeşitli varlıklara yatıran bir yapıdır. Siz fonun tamamının değil, fondaki payların sahibi olursunuz."),
-      H("Pay fiyatı nasıl oluşur?"),
-      P("Fonun sahip olduğu tüm varlıkların değeri toplanır, yükümlülükleri düşülür ve dolaşımdaki pay sayısına bölünür. Ortaya çıkan rakam pay fiyatıdır. Bu nedenle fon fiyatı bir arz-talep sonucu değil, portföyün değerinin doğrudan yansımasıdır."),
-      H("Nelere bakmak gerekir?"),
-      { type: "ul", items: [
-        "**Fon türü ve portföy dağılımı:** Fonun hangi varlık sınıflarına ne oranda yatırım yaptığı, riskin en belirleyici unsurudur.",
-        "**Toplam gider oranı:** Yönetim ücreti ve diğer masrafların yıllık toplamı. Uzun vadede getiriden düşülen bu oran, sonuç üzerinde belirgin etki yaratır.",
-        "**Alım-satım kuralları:** Emrin hangi saatte hangi fiyattan gerçekleşeceği ve paranın hesaba kaç iş gününde geçeceği fonun içtüzüğünde yazar.",
-        "**Fon bilgilendirme dokümanı:** Risk düzeyi, karşılaştırma ölçütü ve stratejinin yazılı olduğu asıl belgedir.",
-      ] },
-      { type: "quote", t: "Geçmiş dönem getirisi bir fonun gelecekteki performansının göstergesi değildir." },
-      H("Yaygın hatalar"),
-      P("En sık karşılaşılan hata, yalnızca geçmiş getiri sıralamasına bakarak seçim yapmaktır. İkinci hata, fonun risk düzeyini kendi vade ihtiyacıyla eşleştirmemektir. Üç ay sonra ihtiyaç duyacağınız parayı dalgalanması yüksek bir fonda tutmak, getiri değil zamanlama riski yaratır."),
-      P("Fon seçimi kişisel risk toleransı, vade ve vergi durumu ile birlikte değerlendirilmesi gereken bir karardır. Bu içerik genel bilgilendirme amaçlıdır."),
-    ],
-    impact: {
-      lead: "Fon seçiminde getiri sıralaması değil, gider oranı ve risk-vade uyumu belirleyicidir.",
-      points: [
-        "İlgilendiğiniz fonun bilgilendirme dokümanını ve toplam gider oranını okuyun.",
-        "Paraya ne zaman ihtiyaç duyacağınızı belirleyip fonun risk düzeyiyle eşleştirin.",
-        "Alım-satım saatlerini ve valör süresini önceden öğrenin.",
-      ],
-    },
-  },
-  {
-    id: "a7", slug: "bes-devlet-katkisi-nasil-calisir",
-    title: "BES devlet katkısı nasıl çalışır? Hak kazanma süreleri ve çıkış senaryoları",
-    summary: "2026'da devlet katkısı %20. Hak kazanma oranları 3 yılda %15, 6 yılda %35, 10 yılda %60. Oranları, kademeli takvimi ve 10 yılın neden tek başına emeklilik anlamına gelmediğini anlatıyoruz.",
-    category: "sigorta-ve-emeklilik", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-07-31T09:45:00+03:00", updated_at: "2026-07-31T09:45:00+03:00",
-    read: 7, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "general", related_tool: "mevduat",
-    featured_image: { src: "/img/bes-emeklilik.jpg", alt: "Emeklilik planı üzerine çalışan bir kişinin elleri ve belgeler", credit: "Görsel: Unsplash" },
-    tags: ["BES", "emeklilik", "devlet katkısı"],
-    source_name: "SPK / Emeklilik Gözetim Merkezi",
-    source_urls: [
-      "4632 sayılı Bireysel Emeklilik Tasarruf ve Yatırım Sistemi Kanunu",
-      "7 Ocak 2026 tarihli ve 10811 sayılı Cumhurbaşkanı Kararı (Resmî Gazete)",
-      { t: "Emeklilik Gözetim Merkezi — bilgilendirme sayfaları", u: "https://www.egm.org.tr" },
-    ],
-    oranNotu: "Devlet katkısı oranı (%20) ve hak kazanma kademeleri mevzuata bağlıdır ve Cumhurbaşkanı Kararı ile değişebilir. Sözleşme yapmadan önce oranı ve kendi hak kazanma sürenizi emeklilik şirketinizden veya Emeklilik Gözetim Merkezi'nin sayfasından teyit edin. Son kontrol: 7 Ekim 2026.",
-    seo_title: "BES devlet katkısı nasıl çalışır? | FinansIndex",
-    meta_description: "Bireysel emeklilik sisteminde devlet katkısı, hak kazanma süreleri ve sistemden ayrılmanın sonuçları sade bir dille anlatılıyor.",
-    body: [
-      P("Bireysel emeklilik sisteminin temel mantığı basittir: düzenli olarak katkı payı ödersiniz, bu tutar bir emeklilik yatırım fonunda değerlendirilir ve devlet belirli bir oranda katkı yapar. Sistemin ayırt edici tarafı, katkının doğrudan sizin hesabınıza ayrı bir alt hesapta işlenmesidir."),
-      H("Devlet katkısı oranı 2026'da ne kadar?"),
-      P("7 Ocak 2026 tarihli Cumhurbaşkanı Kararı ile Türk lirası cinsinden yapılan katkı payı ödemelerinde devlet katkısı oranı **%30'dan %20'ye indirildi.** Yeni oran 1 Ocak 2026'dan itibaren yatırılan katkı payları için geçerli."),
-      P("Yani sisteme yatırdığınız her 100 TL için devlet hesabınıza 20 TL ekliyor. Devlet katkısının yıllık bir üst sınırı var ve bu sınır brüt asgari ücrete göre belirleniyor."),
-      { type: "stats", items: [
-        { v: "%20", k: "2026 devlet katkısı oranı", sub: "TL cinsinden katkı payları için" },
-        { v: "%60", k: "10 yıl sonunda hak kazanılan oran", sub: "Emeklilik şartı ayrıca aranır" },
-        { v: "%100", k: "Emeklilik, vefat, maluliyette", sub: "Katkının tamamına hak kazanılır" },
-      ], caption: "Kaynak: Emeklilik Gözetim Merkezi ve 7 Ocak 2026 tarihli Cumhurbaşkanı Kararı. Son kontrol: 7 Ekim 2026." },
+const ARTICLES = CONTENT.articles;
 
-      H("Devlet katkısına nasıl hak kazanılır?"),
-      P("Burada iki ayrı kavramı karıştırmamak gerekiyor. **Devlet katkısı oranı**, hesabınıza ne kadar katkı yatırılacağını belirler. **Hak kazanma oranı** ise bu katkının ne kadarını alabileceğinizi belirler. İkisi farklı şeydir."),
-      P("Devlet katkısı hesaba işlense de tamamına anında sahip olmazsınız. Sistemde kalma süreniz arttıkça katkının size ait olan oranı kademeli yükselir."),
-      { type: "table", head: ["Sistemde kalma süresi", "Devlet katkısının hak kazanılan oranı"],
-        rows: [
-          ["3 yıldan az", "Hak kazanılmaz"],
-          ["En az 3 yıl", "%15"],
-          ["En az 6 yıl", "%35"],
-          ["En az 10 yıl", "%60"],
-          ["Emeklilik, vefat veya maluliyet", "%100"],
-        ] },
-      { type: "note", t: "Bu oranlar devlet katkısı hesabındaki tutara uygulanır, kendi yatırdığınız katkı paylarına değil. Kendi ödediğiniz tutar ve getirisi her durumda sizindir." },
-
-      H("10 yıl dolduğunda emekli mi olunur?"),
-      P("Hayır. Bu, sistemde en sık karıştırılan konulardan biri. **Sistemde 10 yıl kalmak tek başına emeklilik anlamına gelmez.**"),
-      P("10 yılı doldurmak, devlet katkısının %60'ına hak kazandırır. Katkının tamamına hak kazanmak ve bireysel emeklilik sisteminden emekli sayılmak için 10 yıl şartının yanında **yaş şartının da sağlanması** gerekir. Emeklilik şartlarınızı kendi sözleşmenize ve güncel mevzuata göre emeklilik şirketinizden teyit edin."),
-      P("Emeklilik hakkı kazanmanın bir sonucu daha var: sistemden çıkış sırasında uygulanan stopaj oranı, emeklilik hakkıyla çıkanlarda daha düşük uygulanır. Yani süre yalnızca katkıyı değil, vergi yükünü de etkiler."),
-      H("Katkı payınızı planlarken"),
-      { type: "ul", items: [
-        "Ödeme düzenliliği, sistemdeki en belirleyici unsurdur; ara verilen dönemler hem birikimi hem katkıyı etkiler.",
-        "Fon dağılımınızı emeklilik tarihinize kalan süreye göre gözden geçirin.",
-        "Kesintiler ve fon toplam gider oranları şirketten şirkete farklılaşır; sözleşme öncesi bilgilendirme formunda yer alır.",
-      ] },
-      P("BES uzun vadeli bir plandır. Kısa vadede paraya ihtiyaç duyma ihtimaliniz varsa, bu ihtiyacı sistemin dışında ayrı bir birikimle karşılamak daha uygun olur."),
-    ],
-    impact: {
-      lead: "2026'da devlet katkısı %20; bu katkının ne kadarını alabileceğiniz sistemde kalma sürenize bağlı.",
-      points: [
-        "Sözleşme başlangıç tarihinizi öğrenin; hak kazanma oranınız (%15, %35 veya %60) buna göre belirlenir.",
-        "Ödemeye ara vermeniz gerekirse, bunun katkı ve birikime etkisini şirketinizden yazılı olarak isteyin.",
-        "Kısa vadeli nakit ihtiyacınızı BES dışında planlayın.",
-      ],
-    },
-  },
-  {
-    id: "a8", slug: "altin-alirken-makas-araligi",
-    title: "Altın alırken makas aralığı neden getirinizden önce gelir?",
-    summary: "Alış ve satış fiyatı arasındaki fark, kısa vadeli altın işlemlerinde en görünmez maliyet kalemi. Makasın nasıl oluştuğunu ve ürün türüne göre nasıl değiştiğini anlatıyoruz.",
-    category: "yatirim", contentType: "Analiz", author: "finansindex",
-    published_at: "2026-07-30T13:20:00+03:00", updated_at: "2026-07-30T13:20:00+03:00",
-    read: 5, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
-    featured_image: { src: "/img/altin-makas.jpg", alt: "Üst üste dizilmiş külçe altınlar", credit: "Görsel: Unsplash" },
-    tags: ["altın", "maliyet", "yatırım"],
-    source_name: "Borsa İstanbul / Kuyumculuk sektörü",
-    source_urls: ["Borsa İstanbul — Kıymetli Madenler Piyasası verileri", "Darphane ve Damga Matbaası — Ürün bilgilendirmeleri"],
-    seo_title: "Altında makas aralığı nedir, neden önemlidir? | FinansIndex",
-    meta_description: "Altın alım satımında makas aralığının nasıl oluştuğu, ürün türüne göre farkı ve kısa vadeli işlemlerdeki maliyeti.",
-    body: [
-      P("Altın alırken ödediğiniz fiyat ile aynı anda satsanız alacağınız fiyat aynı değildir. Aradaki farka makas denir ve bu fark, işlemi yaptığınız anda oluşan bir maliyettir. Altının fiyatı hiç değişmese bile, alıp hemen sattığınızda zarar edersiniz."),
-      H("Makas neden oluşur?"),
-      P("Satıcı tarafında işçilik, saklama, sigorta ve stok riski gibi kalemler vardır. Bunlar alış ve satış kotasyonu arasına yerleşir. Ürün ne kadar işlenmişse makas genellikle o kadar geniş olur; külçe ve gram ürünlerde dar, ziynet ve tasarım ürünlerde belirgin şekilde geniştir."),
-      { type: "table", head: ["Ürün tipi", "Makas eğilimi", "Neden"],
-        rows: [["Külçe / gram", "Dar", "İşçilik payı düşük"], ["Ziynet (bilezik, kolye)", "Geniş", "İşçilik ve tasarım payı yüksek"], ["Banka altın hesabı", "Değişken", "Kurum kotasyonuna bağlı"]] },
-      H("Ne yapmak gerekir?"),
-      { type: "ul", items: [
-        "Alım öncesi aynı kurumun hem alış hem satış fiyatını not edin; aradaki yüzde farkı işlem maliyetinizdir.",
-        "Kısa vadeli alım satım düşünüyorsanız makas, fiyat beklentinizden daha belirleyici olabilir.",
-        "Farklı kurumların makas oranlarını aynı ürün üzerinden karşılaştırın.",
-      ] },
-      P("Altında maliyet yalnızca fiyat değil; makas, saklama biçimi ve ürün tipi de sonucun parçasıdır. Bu içerik genel bilgilendirme amaçlıdır."),
-    ],
-    impact: {
-      lead: "Altını alıp hemen sattığınızda, fiyat değişmese bile makas kadar kayıp oluşur.",
-      points: [
-        "Alış ve satış kotasyonu arasındaki yüzde farkı hesaplayın.",
-        "Ziynet ürünlerde işçilik payının geri dönmediğini göz önünde bulundurun.",
-        "Kısa vadeli plan yapıyorsanız makas oranı en dar ürünleri değerlendirin.",
-      ],
-    },
-  },
-  {
-    id: "a9", slug: "kobi-nakit-akisi-yonetimi",
-    title: "KOBİ'ler için nakit akışı yönetimi: kârlı görünüp neden nakit sıkışıklığı yaşanır?",
-    summary: "Kâr tablosu ile banka hesabı arasındaki fark, tahsilat ve ödeme vadelerinin uyumsuzluğundan doğar. Nakit döngüsünü ölçmenin ve kısaltmanın yolları.",
-    category: "is-ve-girisim", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-07-29T08:30:00+03:00", updated_at: "2026-07-29T08:30:00+03:00",
-    read: 7, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "general", related_tool: "kredi",
-    featured_image: { src: "/img/kobi-nakit.jpg", alt: "Küçük bir işletmenin tezgâhında duran defter ve hesap makinesi", credit: "Görsel: Unsplash" },
-    tags: ["KOBİ", "nakit akışı", "finansman"],
-    source_name: "FinansIndex editoryal",
-    source_urls: ["KOSGEB — İşletme finansmanı bilgilendirme kaynakları", "TCMB — Ticari krediler faiz oranları istatistikleri"],
-    seo_title: "KOBİ nakit akışı yönetimi rehberi | FinansIndex",
-    meta_description: "Nakit döngüsü nasıl hesaplanır, tahsilat ve ödeme vadeleri nasıl yönetilir, kârlı işletmeler neden nakit sıkışıklığı yaşar?",
-    body: [
-      P("Bir işletme kâğıt üzerinde kâr ederken banka hesabında para bulamayabilir. Bunun nedeni genellikle tek bir şeydir: satıştan tahsilat, alımdan ödemeye göre daha geç gerçekleşir."),
-      H("Nakit döngüsünü ölçmek"),
-      P("Üç süre önemlidir: stokta bekleme süresi, müşteriden tahsilat süresi ve tedarikçiye ödeme süresi. Nakit döngüsü, ilk ikisinin toplamından üçüncüsünün çıkarılmasıyla bulunur. Sonuç ne kadar uzunsa, işletmenin o kadar uzun süre kendi kaynağıyla dönmesi gerekir."),
-      { type: "table", head: ["Kalem", "Etkisi", "Müdahale alanı"],
-        rows: [["Stok süresi", "Uzadıkça nakit bağlanır", "Sipariş ve stok planlaması"], ["Tahsilat süresi", "Uzadıkça nakit gecikir", "Vade politikası, erken ödeme indirimi"], ["Ödeme süresi", "Uzadıkça nakit rahatlar", "Tedarikçi görüşmeleri"]] },
-      H("Uygulanabilir adımlar"),
-      { type: "ul", items: [
-        "Haftalık nakit takvimi tutun; aylık bakış, sıkışıklığı geç fark ettirir.",
-        "Büyük müşterilerde vadeyi kısaltmak yerine kademeli ödeme planı önerin.",
-        "Finansman ihtiyacınızı acil hâle gelmeden önce planlayın; acil ihtiyaç, pazarlık gücünü düşürür.",
-        "Sabit giderlerinizi ve asgari nakit tamponunuzu yazılı olarak belirleyin.",
-      ] },
-      P("Nakit akışı yönetimi, büyümeyi yavaşlatmak değil; büyümeyi sürdürülebilir hâle getirmektir."),
-    ],
-    impact: {
-      lead: "Kâr etmek nakit yaratmak anlamına gelmez; belirleyici olan tahsilat ve ödeme vadelerinin farkıdır.",
-      points: [
-        "Stok, tahsilat ve ödeme sürelerinizi hesaplayıp nakit döngünüzü ölçün.",
-        "Önümüzdeki 12 haftanın nakit takvimini çıkarın.",
-        "Finansman görüşmelerini nakit ihtiyacı doğmadan önce başlatın.",
-      ],
-    },
-  },
-  {
-    id: "a11", slug: "tasarruf-finansmani-nasil-calisir",
-    title: "Tasarruf finansmanı nasıl çalışır? Sözleşme imzalamadan önce bilmeniz gerekenler",
-    summary: "Faizsiz konut ve taşıt finansmanı modeli BDDK denetiminde. Sistemin işleyişini, organizasyon ücretinin toplam maliyete etkisini ve sözleşme öncesi sorulması gereken soruları anlatıyoruz.",
-    category: "kredi-ve-mevduat", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-16T10:00:00+03:00", updated_at: "2026-08-16T10:00:00+03:00",
-    read: 9, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "legal", related_tool: "karsilastir",
-    featured_image: { src: "/img/tasarruf-finansmani.jpg", alt: "İmzalanmak üzere masada duran finansman sözleşmesi", credit: "Görsel: Unsplash" },
-    tags: ["tasarruf finansmanı", "konut", "taşıt", "BDDK"],
-    source_name: "BDDK / Resmî Gazete",
-    source_urls: [
-      "6361 sayılı Finansal Kiralama, Faktoring, Finansman ve Tasarruf Finansman Şirketleri Kanunu",
-      "BDDK — Tasarruf Finansman Şirketlerinin Faaliyet Esasları Hakkında Yönetmelik",
-      "BDDK — Faaliyet izni bulunan kuruluşlar listesi",
-    ],
-    seo_title: "Tasarruf finansmanı nasıl çalışır? | FinansIndex",
-    meta_description: "Tasarruf finansmanı sisteminin işleyişi, organizasyon ücreti, teslimat sırası ve sözleşme öncesi kontrol edilmesi gerekenler. Yatırım tavsiyesi içermez.",
-    body: [
-      P("Tasarruf finansmanı, konut veya taşıt almak isteyen kişilerin bir sistem içinde biriktirme yaptıktan sonra sıraya göre finansman kullandığı bir modeldir. Faiz yerine **organizasyon ücreti** alınır. Model 2021'den bu yana BDDK denetimindedir ve yalnızca faaliyet izni bulunan şirketler bu işi yapabilir."),
-      P("Bu yazı sistemin nasıl işlediğini anlatır; herhangi bir şirketi önermez ve şirketler arasında sıralama yapmaz."),
-
-      H("Sistem nasıl işliyor?"),
-      P("İşleyiş üç aşamalıdır. **Birikim dönemi**nde sözleşmede belirlenen tutarı taksitler hâlinde ödersiniz. **Tahsis** aşamasında sözleşmedeki koşullar sağlandığında finansman kullanma hakkı doğar. **Geri ödeme dönemi**nde ise kullandığınız tutarı kalan takvim boyunca ödemeye devam edersiniz."),
-      P("Kritik nokta şudur: parayı hemen almazsınız. Ne zaman alacağınız sözleşmedeki teslimat planına bağlıdır ve bu plan şirketten şirkete, hatta aynı şirket içinde ürüne göre değişir."),
-
-      H("Organizasyon ücreti neyi değiştirir?"),
-      P("Sistemde faiz işlemez, ancak şirket hizmeti karşılığında organizasyon ücreti alır. Bu ücret sözleşme tutarı üzerinden hesaplanır ve **toplam maliyetin belirleyici kalemidir**. “Faizsiz” ifadesi tek başına “maliyetsiz” anlamına gelmez."),
-      P("Karşılaştırma yaparken bakmanız gereken rakam aylık taksit değil, **sözleşme süresi boyunca ödeyeceğiniz toplam tutardır.** Bu tutarı hesaplamak için üç veriye ihtiyacınız var: toplam ödeyeceğiniz taksitlerin tümü, organizasyon ücreti ve varsa diğer masraflar."),
-      { type: "note", t: "Organizasyon ücreti oranı şirkete ve sözleşmeye göre değişir. Bu yazıda örnek bir oran verilmemiştir; kendi teklifinizdeki oranı sözleşmenizden okuyun ve toplam tutarı kendiniz hesaplayın." },
-
-      H("Üç yöntemi neye göre karşılaştırmalı?"),
-      P("Konut veya taşıt alırken önünüzde genellikle üç yol var: peşin ödeme, banka kredisi, tasarruf finansmanı. Bunları tek bir rakamla karşılaştırmak yanıltıcı olur; her birinin farklı bir maliyet ve zaman profili vardır."),
-      { type: "table", head: ["Kriter", "Banka kredisi", "Tasarruf finansmanı"],
-        rows: [
-          ["Maliyet kalemi", "Faiz + vergiler (KKDF, BSMV) + masraflar", "Organizasyon ücreti + masraflar"],
-          ["Parayı ne zaman alırsınız", "Onay sonrası kısa sürede", "Sözleşmedeki teslimat sırasına göre"],
-          ["Ödeme öngörülebilirliği", "Sabit faizde taksit bellidir", "Taksit bellidir, teslimat zamanı sözleşmeye bağlıdır"],
-          ["Erken çıkış", "Erken kapama mümkün, kurallar mevzuatta", "Cayma ve fesih koşulları sözleşmede tanımlı"],
-          ["Denetim", "BDDK", "BDDK"],
-        ] },
-      P("Karar verirken sorulacak asıl soru şu: **paraya ne zaman ihtiyacınız var?** Yakın vadede taşınmanız gerekiyorsa teslimat sırası belirsizliği sizin için ciddi bir risktir. Beklemeye tahammülünüz varsa maliyet karşılaştırması öne çıkar."),
-
-      H("Sözleşme öncesi kontrol listesi"),
-      { type: "ul", items: [
-        "**Şirketin BDDK faaliyet izni var mı?** BDDK'nın internet sitesindeki güncel listeden kontrol edin. İzni olmayan bir kuruluşla sözleşme yapmayın.",
-        "**Toplam ödeme tutarı ne kadar?** Aylık taksit değil, sözleşme boyunca ödeyeceğiniz toplamı yazılı olarak isteyin.",
-        "**Organizasyon ücreti ne kadar ve ne zaman tahsil ediliyor?** Peşin mi, taksite mi yayılıyor?",
-        "**Teslimat sırası neye göre belirleniyor?** Kriterler sözleşmede açıkça yazıyor mu?",
-        "**Cayma hakkım ne kadar süre geçerli?** Cayma hâlinde hangi tutar iade edilir, hangisi kesilir?",
-        "**Fesih durumunda param ne zaman geri ödenir?** İade takvimi sözleşmede tanımlı mı?",
-        "**Ödemeye ara verirsem ne olur?** Sıramı kaybeder miyim?",
-        "**Sözleşme değişikliği hangi koşullarda yapılabilir?**",
-      ] },
-
-      H("Dikkat edilmesi gereken sinyaller"),
-      { type: "ul", items: [
-        "Kesin teslimat tarihi sözlü olarak vaat ediliyor ama sözleşmede yazmıyorsa, yazılı olmayan hiçbir vaat geçerli değildir.",
-        "“Faizsiz olduğu için daha ucuz” denip toplam maliyet karşılaştırması yapılmıyorsa, karşılaştırmayı kendiniz isteyin.",
-        "Sözleşmeyi okumanız için yeterli süre verilmiyorsa acele etmeyin.",
-        "Şirketin BDDK listesinde olmadığını fark ederseniz süreci durdurun.",
-      ] },
-      P("Tasarruf finansmanı, doğru koşullarda ve doğru beklentiyle bazı kişiler için uygun bir yöntem olabilir. Uygun olup olmadığını belirleyen şey sistemin kendisi değil, sizin nakit ihtiyacınızın zamanlaması ve sözleşmenin somut şartlarıdır."),
-    ],
-    hook: "“Faizsiz” maliyetsiz demek değil: organizasyon ücreti var",
-    impact: {
-      lead: "Tasarruf finansmanında belirleyici olan aylık taksit değil, toplam maliyet ve paraya ne zaman ulaşacağınızdır.",
-      points: [
-        "Şirketin BDDK faaliyet iznini resmî listeden kendiniz doğrulayın.",
-        "Sözleşme boyunca ödeyeceğiniz toplam tutarı yazılı olarak isteyin ve banka kredisi teklifiyle aynı tabloda karşılaştırın.",
-        "Teslimat sırasının nasıl belirlendiğinin sözleşmede yazılı olduğundan emin olun.",
-      ],
-    },
-  },
-  {
-    id: "a12", slug: "kredi-faizi-nasil-okunur-toplam-maliyet",
-    title: "Kredi teklifini doğru okumak: aylık faiz oranı size toplam maliyeti söylemez",
-    summary: "İki bankanın aynı faiz oranı, farklı toplam geri ödeme anlamına gelebilir. Vade, vergiler ve masrafların hesabı nasıl değiştirdiğini rakamlarla gösteriyoruz.",
-    category: "kredi-ve-mevduat", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-08-15T09:30:00+03:00", updated_at: "2026-08-15T09:30:00+03:00",
-    read: 6, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "general", related_tool: "kredi",
-    featured_image: { src: "/img/kredi-faizi.jpg", alt: "Kredi ödeme planı çıktısı ve hesap makinesi", credit: "Görsel: Unsplash" },
-    tags: ["kredi", "faiz", "maliyet"],
-    source_name: "TCMB / BDDK",
-    source_urls: [
-      { t: "7345 sayılı Cumhurbaşkanı Kararı — Tüketici kredilerinde BSMV %15 (RG 7.7.2023, sayı 32241)", u: "https://www.resmigazete.gov.tr/eskiler/2023/07/20230707-10.pdf" },
-      { t: "Gelir İdaresi Başkanlığı — BSMV nispetlerine ilişkin Bakanlar Kurulu Kararı", u: "https://gib.gov.tr/mevzuat/kanun/445/bkk/1849" },
-      { t: "TCMB — Bankalarca tüketici kredilerine uygulanan ağırlıklı ortalama faiz oranları", u: "https://evds2.tcmb.gov.tr/" },
-      { t: "BDDK — Tüketici kredisi sözleşmelerine ilişkin düzenlemeler", u: "https://www.bddk.org.tr/" },
-    ],
-    oranNotu: "Kullanılan oranlar: KKDF %15, BSMV %15 (yalnızca tüketici kredilerinde ve yalnızca faiz üzerinden). BSMV %15 oranı 7 Temmuz 2023'te yürürlüğe girdi. Son kontrol: 7 Ekim 2026.",
-    seo_title: "Kredi faizi ve toplam maliyet nasıl hesaplanır? | FinansIndex",
-    meta_description: "Aylık faiz oranı, vade, KKDF ve BSMV'nin toplam geri ödemeye etkisi. Kredi tekliflerini doğru karşılaştırmanın yolu.",
-    body: [
-      P("Kredi teklifi alırken en çok konuşulan rakam aylık faiz oranıdır. Oysa cebinizden çıkacak toplam para üç şeyin birlikte sonucudur: oran, vade ve vergiler. Bunlardan yalnızca birine bakmak, en pahalı teklifi en ucuz sanmanıza yol açabilir."),
-
-      H("Vade, oranı gölgede bırakır"),
-      P("Aynı faiz oranıyla, vadeyi uzattığınızda aylık taksit düşer ama toplam ödeme artar. Aradaki fark küçük değildir."),
-      { type: "chart", title: "100.000 TL kredi, aylık %2,50 faiz: vadeye göre toplam geri ödeme",
-        unit: "₺", highlight: 0,
-        rows: [
-          { k: "12 ay", sub: "Taksit ≈ 10.197 TL", v: 122361 },
-          { k: "24 ay", sub: "Taksit ≈ 6.065 TL", v: 145557 },
-          { k: "36 ay", sub: "Taksit ≈ 4.753 TL", v: 171102 },
-          { k: "48 ay", sub: "Taksit ≈ 4.142 TL", v: 198831 },
-        ],
-        note: "Vadeyi 12 aydan 48 aya çıkarmak aylık taksiti yaklaşık %59 düşürüyor, ancak toplam ödemeye yaklaşık 76.500 TL ekliyor.",
-        caption: "Örnek hesaplama. KKDF %15 ve BSMV %15 faiz üzerinden dahil edilmiştir; dosya masrafı, tahsis ücreti ve sigorta primi hariçtir. Kendi rakamlarınız için aşağıdaki hesaplama aracını kullanın. (Son kontrol: 7 Ekim 2026)" },
-
-      H("Vergiler oranı sessizce yükseltir"),
-      P("Tüketici kredilerinde faiz tutarı üzerinden **KKDF** ve **BSMV** alınır. Bu, bankanın söylediği oranın efektif olarak daha yüksek bir orana karşılık gelmesi anlamına gelir. Konut kredilerinde ve ticari kredilerde bu kalemler farklı uygulanır."),
-      { type: "stats", items: [
-        { v: "%2,50", k: "Bankanın söylediği aylık oran", sub: "Sözleşmede yazan nominal oran" },
-        { v: "%3,25", k: "Vergiler dahil efektif oran", sub: "KKDF %15 + BSMV %15 eklendikten sonra" },
-        { v: "%30", k: "Faiz maliyetindeki artış", sub: "Yalnızca vergilerden kaynaklanan" },
-      ], caption: "Örnek hesaplama. Oranlar mevzuatla değişebildiği için kendi sözleşmenizdeki güncel oranları esas alın." },
-
-      H("Karşılaştırmayı nasıl yapmalı?"),
-      P("İki teklifi karşılaştırırken oranları yan yana koymak yeterli değildir. Şu üç rakamı aynı tabloya yazın:"),
-      { type: "ul", items: [
-        "**Toplam geri ödeme:** taksit × vade sayısı.",
-        "**Toplam maliyet:** toplam geri ödeme eksi anapara.",
-        "**Masraflar:** dosya masrafı, tahsis ücreti, zorunlu sigorta varsa primi.",
-      ] },
-      P("Bankalar tüketici kredilerinde toplam maliyeti gösteren bir oran bildirmek zorundadır. Teklifi sözlü almayın; yazılı ödeme planını isteyin ve toplam rakamı orada görün."),
-
-      H("Sık yapılan hata"),
-      P("En yaygın hata, ödeyebileceğiniz aylık taksite göre vade seçmektir. Bu, bütçe açısından anlaşılır bir refleks ama uzun vadede pahalıya mal olur. Daha sağlıklı yaklaşım: ödeyebileceğiniz **en kısa vadeyi** seçmek ve gerekirse kredi tutarını düşürmektir."),
-    ],
-    hook: "Vadeyi 12'den 48 aya çıkarmak toplam ödemeye ~76.500 TL ekliyor",
-    keyStat: { v: "76,5", unit: "bin ₺", k: "Vadeyi 12 aydan 48 aya çıkarmanın toplam ödemeye eklediği tutar", sub: "100.000 TL kredi, aylık %2,50 · KKDF ve BSMV dahil · örnek hesaplama" },
-    inBrief: [
-      "Vade uzatmanın toplam maliyete etkisi",
-      "KKDF ve BSMV efektif oranı nasıl yükseltiyor",
-      "İki teklifi doğru karşılaştırmanın yolu",
-      "En sık yapılan hata: taksite göre vade seçmek",
-    ],
-    impact: {
-      lead: "Kredi tekliflerini aylık faiz oranıyla değil, toplam geri ödeme tutarıyla karşılaştırın.",
-      points: [
-        "Her bankadan yazılı ödeme planı isteyin ve toplam geri ödeme rakamını karşılaştırın.",
-        "Vadeyi uzatmanın toplam maliyete etkisini hesaplayıcıyla önceden görün.",
-        "Dosya masrafı, tahsis ücreti ve sigorta primlerini toplam maliyete ekleyin.",
-      ],
-    },
-  },
-  {
-    id: "a13", slug: "fon-tasfiyesi-yatirimci-ne-yapmali",
-    title: "Fon tasfiyesi sürecinde yatırımcı ne yapmalı? Adım adım kontrol listesi",
-    summary: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecine girdi. Tasfiye, işleme kapatma ve temerrüt üç ayrı durum; ara ödeme hakkı ise fonların tamamını kapsamıyor. Süreci ve kontrol etmeniz gerekenleri anlatıyoruz.",
-    category: "yatirim", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-10-05T09:00:00+03:00", updated_at: "2026-10-05T09:00:00+03:00",
-    read: 11, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "legal", related_tool: "enflasyon",
-    tags: ["fon", "SPK", "tasfiye", "yatırım", "TEFAS"],
-    source_name: "SPK / KAP",
-    source_urls: [
-      { t: "SPK — Tasfiyedeki fonlara ilişkin ara ödeme duyurusu (1 Ekim 2026)", u: "https://spk.gov.tr/duyurular/basin-duyurulari/2026/tasfiyedeki-fonlara-iliskin-ara-odeme-duyurusu" },
-      { t: "SPK — Basın duyuruları (tasfiye kararı, süre uzatımı, etkilenen yatırımcı sayısı)", u: "https://spk.gov.tr/duyurular/basin-duyurulari" },
-      { t: "SPK — Haftalık bültenler (2026/60, 2026/61, 2026/67)", u: "https://spk.gov.tr/duyurular/haftalik-bulten" },
-      { t: "SPK — Yatırım Fonlarına İlişkin Rehber", u: "https://spk.gov.tr/" },
-      { t: "KAP — Portföy yönetim şirketlerinin bildirimleri", u: "https://www.kap.org.tr/" },
-    ],
-    oranNotu: "Yazıdaki tarihli bilgiler 7 Ekim 2026 itibarıyla geçerlidir. Süreç haftalık SPK kararlarıyla ilerlemektedir; ara ödeme kapsamı ve takvim değişebilir. Son kontrol: 7 Ekim 2026.",
-    seo_title: "Fon tasfiyesinde yatırımcı ne yapmalı? Kontrol listesi | FinansIndex",
-    meta_description:
-      "SPK'nın tasfiye kararı sonrası yatırımcı hakları, ara ödeme mekanizması, tasfiye süresi ve kendi fonunuzda kontrol etmeniz gerekenler. Yatırım tavsiyesi içermez.",
-    featured_image: null,
-    hook: "131 fon tasfiyede, 455.758 yatırımcı etkilendi",
-    keyStat: { v: "455.758", unit: "yatırımcı", k: "SPK'nın tasfiye kararından etkilenen tekil yatırımcı sayısı", sub: "131 fon · 7 portföy yönetim şirketi" },
-    inBrief: [
-      "Tasfiye, işleme kapatma ve temerrüt arasındaki fark",
-      "Ara ödeme hangi fonları kapsıyor, kimler alabiliyor",
-      "Kapsamdaysanız: altı maddelik kontrol listesi",
-      "Kapsamda değilseniz: kendi fonunuzda neye bakmalı",
-    ],
-    body: [
-      P("Sermaye Piyasası Kurulu, 17 Eylül 2026 tarihli kararlarıyla yedi portföy yönetim şirketinin TEFAS'ta işlem gören fonlarında alım satımı durdurdu ve bu fonlardan 131'i için tasfiye süreci başlattı. Kurulun 23 Eylül'deki açıklamasına göre süreçten **455.758 tekil yatırımcı** etkileniyor."),
-      P("Bu yazı bir haber özeti değil. Amacı iki soruya cevap vermek: tasfiye kapsamındaysanız süreç nasıl işliyor, ve kapsamda olmasanız bile kendi fonunuzda neye bakmanız gerekiyor."),
-
-      { type: "stats", items: [
-        { v: "131", k: "Tasfiye sürecindeki fon sayısı", sub: "17 Eylül 2026 kararı" },
-        { v: "455.758", k: "Etkilenen tekil yatırımcı", sub: "SPK, 23 Eylül açıklaması" },
-        { v: "6 ay", k: "Azami tasfiye süresi", sub: "Başlangıçta 3 aydı, 20 Eylül'de uzatıldı" },
-      ], caption: "Rakamlar SPK'nın resmî bülten ve duyurularına dayanır." },
-
-      H("Üç farklı durum var, karıştırmayın"),
-      P("Haberlerde sıklıkla birbirinin yerine kullanılıyor ama bunlar ayrı hukuki durumlar ve her birinde hakkınız farklı işliyor. Önce hangisinde olduğunuzu belirleyin."),
-      { type: "table", head: ["Durum", "Ne demek", "Yatırımcıya etkisi"],
-        rows: [
-          ["Tasfiye", "Fon malvarlığı nakde çevrilip dağıtılıyor", "Tasfiye bakiyesinden pay oranında ödeme alırsınız"],
-          ["İşleme kapatma", "Alım satım durduruldu ama tasfiye kararı yok", "Pay alıp satamazsınız; süreç sonunda yeniden açılabilir"],
-          ["İade temerrüdü", "Fon ödeme yapamıyor", "Ödeme gecikir, alacak hakkınız doğar"],
-        ] },
-      P("Bir fon aynı anda birden fazla durumda olabilir. Kendi fonunuzun hangi kategoride olduğunu SPK'nın ilgili bülten listesinden ve kurucu şirketin KAP açıklamalarından teyit edin."),
-
-      H("Süreç nasıl başladı?"),
-      P("SPK'nın tespitlerine göre, fiili dolaşım oranı düşük bazı hisselerde şirketlerin temel finansal büyüklükleriyle açıklanamayacak fiyat hareketleri gözlendi. Bu hareketlerde bazı serbest yatırım fonları ve para piyasası fonlarının rol oynadığı değerlendirildi."),
-      P("Kurul, **28 Ağustos 2026** tarihinde Yatırım Fonlarına İlişkin Rehber'de değişiklik yaparak borsa dışı repo ve ters repo işlemlerine taraf bazlı sınırlamalar getirdi. Yeni kuralların devreye girmesinin ardından bazı fonlarda likidite sorunu ortaya çıktı; eylül ortasında katılma payı iade ödemelerinde temerrüt açıklamaları KAP üzerinden yapıldı."),
-      P("17 Eylül, sürecin dönüm noktası oldu. SPK aynı gün hem işleme kapatma hem tasfiye kararlarını açıkladı; tasfiye işlemlerini yürütmek üzere Türkiye İş Bankası ve Ziraat Bankası yetkilendirildi."),
-
-      H("Ara ödeme mekanizması nasıl işliyor?"),
-      P("SPK, 1 Ekim 2026 tarihli duyurusuyla nihai tasfiye beklenmeden ara ödeme yapılmasının önünü açtı. Ancak **bu duyuru tasfiyedeki fonların tamamını kapsamıyor.**"),
-      { type: "note", t: "Kapsam: 1 Ekim 2026 tarihli duyuru, Tera Portföy, Pusula Portföy, Atlas Portföy ve Hedef Portföy'ün kurucusu olduğu fonlar için geçerlidir. Tasfiye kararı verilen diğer fonlar bu duyurunun kapsamı dışındadır; onlar için ayrı bir duyuru yapılması gerekir. Kendi fonunuzun kapsamda olup olmadığını SPK'nın duyuru metnindeki listeden teyit edin." },
-      P("Kapsamdaki fonlar için işleyiş şöyle:"),
-      { type: "ul", items: [
-        "Ödeme, **mutabakat işlemleri tamamlanmış** katılma payı sahiplerine yapılır. Mutabakatı tamamlanmayan yatırımcı, kapsamdaki bir fonda olsa bile ödeme alamaz.",
-        "Tutar, Merkezi Kayıt Kuruluşu tarafından hesaplanan **net yatırım tutarı** esas alınarak belirlenir.",
-        "Kapsamdaki fonlarda her yatırımcıya, **her bir fon için ayrı ayrı**, en fazla **1 milyon TL** ödenir. İki ayrı kapsam fonunda payınız varsa sınır her biri için ayrı uygulanır.",
-        "Net yatırım tutarınız 1 milyon TL'nin altındaysa tamamı ödenir.",
-        "Uygulama **para piyasası fonlarından** başlar; diğer fon türleri için takvim ayrıca açıklanır.",
-        "Ara ödeme karşılığında katılma payı iadesi yapılmaz. Paylar nihai tasfiye ödemesi sırasında iade edilir.",
-        "**Ödenen tutar, tasfiye sonunda hak kazanacağınız nihai tutardan mahsup edilir.** Ara ödeme ek bir ödeme değil, nihai alacağınızın peşin ödenen kısmıdır.",
-      ] },
-      { type: "note", t: "Ara ödeme bir zarar tazmini değildir. Nihai tutar, fon varlıklarının tasfiye sonucunda ulaştığı değere göre belirlenir ve yatırdığınız tutarın altında kalabilir. Ara ödeme aldığınız tutar bu nihai hesaptan düşülür." },
-      P("Kapsam dışındaki fonlarda ne yapılacağı, SPK'nın sonraki duyurularıyla belirlenir. Süreç haftalık kararlarla ilerlediği için kapsamın genişlemiş olup olmadığını Kurul'un güncel duyurularından kontrol edin."),
-
-      H("Tasfiye kapsamındaysanız: kontrol listesi"),
-      { type: "ul", items: [
-        "**Hangi fonda olduğunuzu kesinleştirin.** Fon kodunu SPK'nın 17 Eylül tarihli bültenindeki listeyle karşılaştırın. Benzer adlı fonlar farklı kurucu şirketlere ait olabilir.",
-        "**Fonunuzun ara ödeme kapsamında olup olmadığını teyit edin.** 1 Ekim 2026 duyurusu yalnızca Tera, Pusula, Atlas ve Hedef Portföy fonlarını kapsıyor. Kapsamda değilseniz ara ödeme hakkınız henüz doğmamıştır.",
-        "**Mutabakat sürecini takip edin.** Kapsamdaki fonlarda ödeme yalnızca mutabakatı tamamlanmış yatırımcılara yapılıyor. Aracı kurumunuzdan veya kurucu şirketten mutabakat durumunuzu öğrenin.",
-        "**İşlem kayıtlarınızı saklayın.** 17 Eylül öncesinde verdiğiniz satış emirlerinin tarih ve saatleri, iptal edildiyse gerekçesi önem taşıyor. Ekran görüntüsü ve emir dekontlarını arşivleyin.",
-        "**Net yatırım tutarınızı not edin.** Hesaplama MKK verisine dayanıyor; kendi kaydınızla karşılaştırabilmek için yatırdığınız ve çektiğiniz tutarları çıkarın.",
-        "**SPK bültenlerini düzenli izleyin.** Süreç haftalık kararlarla ilerliyor; takvim ve kapsam değişebiliyor.",
-        "**Hukuki yol düşünüyorsanız süre işliyor.** Zamanaşımı ve başvuru süreleri konusunda avukata danışın. Bu yazı hukuki danışmanlık yerine geçmez.",
-      ] },
-
-      H("Kapsamda değilseniz: kendi fonunuzda neye bakmalısınız?"),
-      P("Asıl kalıcı ders burada. Bu kriz, fon seçerken genelde bakılmayan birkaç başlığın ne kadar belirleyici olduğunu gösterdi."),
-      { type: "ul", items: [
-        "**Kurucu portföy yönetim şirketi kim?** Fonun adı değil, arkasındaki şirket önemli. Aynı şirketin diğer fonlarında sorun varsa bu bir sinyaldir.",
-        "**Portföyde ne var?** Fon bilgilendirme dokümanında varlık dağılımı yazar. Fiili dolaşım oranı düşük hisselerde yoğunlaşma, likidite riskini artırır.",
-        "**Borsa dışı işlem var mı?** Repo ve ters repo gibi borsa dışı işlemler, portföyün görünenden farklı bir risk taşıdığına işaret edebilir.",
-        "**Fon büyüklüğü ve yatırımcı sayısı.** Çok küçük bir fonda tek bir büyük çıkış, kalan yatırımcıları etkileyebilir.",
-        "**Geçmiş getiri sıralaması ölçüt değildir.** Olağanüstü yüksek getiri, olağanüstü risk veya olağan dışı fiyatlama anlamına gelebilir.",
-        "**Likidite:** Paranızı ne kadar sürede çekebildiğinizi ve valör süresini önceden bilin. Kriz anında bu süre uzayabilir.",
-      ] },
-      { type: "quote", t: "Fonun geçmiş getirisi, gelecekteki performansının göstergesi değildir; portföyünün yapısı ise bugünkü riskinin göstergesidir." },
-
-      H("Borsa tarafında ne oldu?"),
-      P("Fonlardaki satış baskısı Borsa İstanbul'da sert fiyat hareketlerine yol açtı. SPK, 17 Eylül'de kredili sermaye piyasası işlemlerinde özkaynak oranının esnetilmesine ilişkin bir tedbir aldı ve bu tedbirin süresini 3 Ekim'de uzattı."),
-      P("Kredili işlem kullanıyorsanız, özkaynak oranı kurallarındaki değişiklikler teminat tamamlama çağrısı alıp almayacağınızı doğrudan etkiler. Aracı kurumunuzun güncel oranlarını kontrol edin."),
-
-      H("Nereden takip etmeli?"),
-      { type: "ul", items: [
-        "**SPK Bültenleri** — kararların resmî metni burada yayımlanır. Haber özeti yerine bülten numarasıyla takip edin.",
-        "**KAP** — kurucu portföy yönetim şirketlerinin açıklamaları, temerrüt ve süreç bildirimleri.",
-        "**TEFAS** — fonun işlem durumu ve geçmiş verileri.",
-        "**Aracı kurumunuz** — mutabakat ve ödeme süreciyle ilgili size özel bilgi yalnızca buradan gelir.",
-      ] },
-      P("Süreç devam ediyor ve kararlar haftalık olarak güncelleniyor. Bu yazıdaki tarihli bilgiler yayın tarihi itibarıyla geçerlidir; güncel durumu her zaman SPK'nın kendi duyurularından teyit edin."),
-    ],
-    impact: {
-      lead: "Ara ödeme hakkı yalnızca 1 Ekim duyurusu kapsamındaki fonlar için doğdu; tasfiyedeki her fon kapsamda değil.",
-      points: [
-        "Fon kodunuzu önce tasfiye listesiyle, sonra ara ödeme duyurusunun kapsam listesiyle ayrı ayrı karşılaştırın.",
-        "17 Eylül öncesi verdiğiniz emirlerin kayıtlarını ve ekran görüntülerini saklayın.",
-        "Kendi fonlarınızın bilgilendirme dokümanındaki varlık dağılımını ve kurucu şirketini bugün gözden geçirin.",
-      ],
-    },
-  },
-  {
-    id: "a14", slug: "borsa-manipulasyonu-nasil-korunulur",
-    title: "Borsada manipülasyon nasıl işler ve yatırımcı kendini nasıl korur?",
-    summary: "Fiili dolaşım oranı düşük hisselerde fiyat nasıl şişer, çıkış neden tıkanır? Mekanizmayı ve kendi portföyünüzde kontrol edebileceğiniz somut başlıkları anlatıyoruz. Ürün önerisi içermez.",
-    category: "yatirim", contentType: "Rehber", author: "finansindex",
-    published_at: "2026-10-05T11:00:00+03:00", updated_at: "2026-10-05T11:00:00+03:00",
-    read: 10, risk_level: "yuksek", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: false, disclaimer: "invest", related_tool: "enflasyon",
-    tags: ["borsa", "manipülasyon", "risk", "portföy", "likidite"],
-    source_name: "SPK / Borsa İstanbul",
-    source_urls: [
-      { t: "6362 sayılı Sermaye Piyasası Kanunu — piyasa dolandırıcılığı hükümleri", u: "https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6362.pdf" },
-      { t: "Borsa İstanbul — Volatilite Bazlı Tedbir Sistemi ve fiili dolaşım oranı", u: "https://www.borsaistanbul.com/" },
-      { t: "SPK — Mevzuat ve duyurular", u: "https://spk.gov.tr/" },
-      { t: "KAP — Şirket bildirimleri ve fon bilgilendirme dokümanları", u: "https://www.kap.org.tr/" },
-    ],
-    oranNotu: "Yazıdaki grafik, mekanizmayı göstermek için hazırlanmış örnek hesaplamadır; gerçek fiyat etkisi hisseye ve piyasa koşullarına göre değişir. Son kontrol: 7 Ekim 2026.",
-    seo_title: "Borsa manipülasyonu nasıl işler, nasıl korunulur? | FinansIndex",
-    meta_description:
-      "Fiili dolaşım oranı düşük hisselerde manipülasyon mekanizması, uyarı sinyalleri ve portföyünüzde kontrol edebileceğiniz başlıklar. Yatırım tavsiyesi niteliğinde değildir.",
-    featured_image: null,
-    hook: "Risksiz seçenek yok; size uyan riski seçmek var",
-    keyStat: { v: "%5", unit: "dolaşım", k: "Fiili dolaşım oranı bu seviyedeyken fiyatı hareket ettirmek en kolay, çıkmak en zordur", sub: "Risk yükselişte birikir, düşüşte görünür" },
-    inBrief: [
-      "Fiili dolaşım oranı neden belirleyici?",
-      "Kendiniz kontrol edebileceğiniz altı uyarı sinyali",
-      "“Güvenli liman” neden yanıltıcı bir çerçeve",
-      "Yapısal korunma: pozisyon, likidite, vade, tampon",
-    ],
-    body: [
-      P("Manipülasyon haberleri çıktığında ilk refleks genellikle şu oluyor: “Borsadan çıkıp güvenli bir yere geçeyim.” Bu refleks anlaşılır ama iki sorun taşıyor. Birincisi, **risksiz varlık diye bir şey yok**; her seçenek farklı bir riski taşır. İkincisi, paniğe dayalı kararlar genellikle en kötü anda verilir."),
-      P("Bu yazı size nereye yatırım yapacağınızı söylemez. Manipülasyonun nasıl işlediğini ve kendi portföyünüzde hangi başlıkları kontrol edebileceğinizi anlatır."),
-
-      H("Manipülasyon neden küçük hisselerde olur?"),
-      P("Belirleyici kavram **fiili dolaşım oranı**. Bir şirketin toplam paylarının ne kadarının borsada serbestçe alınıp satılabildiğini gösterir. Kalan kısım kurucu ortaklarda, bağlı şirketlerde veya uzun vadeli yatırımcılarda kilitli durur."),
-      P("Fiili dolaşımdaki pay miktarı küçükse, görece düşük bir alım bile fiyatı belirgin şekilde yukarı taşır. Aynı mekanizma ters yönde de çalışır: satışa geçildiğinde alıcı bulunamaz ve fiyat hızla düşer."),
-      { type: "chart", title: "Aynı büyüklükte alım, farklı dolaşım oranlarında fiyata etkisi",
-        unit: "%", dec: 0, highlight: 0,
-        rows: [
-          { k: "Dolaşım %5", sub: "Çok dar pazar", v: 60 },
-          { k: "Dolaşım %20", sub: "Dar pazar", v: 18 },
-          { k: "Dolaşım %50", sub: "Derin pazar", v: 6 },
-          { k: "Dolaşım %80", sub: "Çok derin pazar", v: 3 },
-        ],
-        note: "Dar pazarda fiyatı hareket ettirmek kolaydır; zor olan, pozisyondan çıkmaktır.",
-        caption: "Mekanizmayı göstermek için hazırlanmış örnek. Gerçek etki hisseye, işlem hacmine ve piyasa koşullarına göre değişir." },
-
-      H("Asıl risk yükselişte değil, çıkışta"),
-      P("Fiyatın yükselmesi yatırımcıyı rahatlatır, oysa risk tam o sırada birikir. Dar bir pazarda pozisyonunuz büyüdükçe, o pozisyondan çıkabilmek için gereken alıcı sayısı da büyür."),
-      P("Kâğıt üzerindeki kazanç ile gerçekleşen kazanç farklı şeylerdir. Ekranda görünen değer, **o fiyattan satabildiğiniz** sürece gerçektir. Satış emriniz karşılanmıyorsa o değer bir temenni olur."),
-      { type: "quote", t: "Dar pazarda fiyat sizi içeri davet eder; sorun dışarı çıkarken başlar." },
-
-      H("Kendi kontrol edebileceğiniz sinyaller"),
-      P("Aşağıdakiler kesin işaret değil, ama birkaçı bir arada görülüyorsa ek inceleme gerektirir. Hepsi kamuya açık kaynaklardan kontrol edilebilir."),
-      { type: "ul", items: [
-        "**Fiyat hareketi şirketin finansallarıyla açıklanamıyor.** Bilançoda, satışlarda veya kârlılıkta karşılığı olmayan sert yükselişler.",
-        "**Fiili dolaşım oranı düşük.** Borsa İstanbul bu oranı yayımlar; düşük oran, fiyatın az işlemle oynayabileceği anlamına gelir.",
-        "**İşlem hacmi dar ama fiyat çok hareketli.** Az alıcı-satıcıyla büyük fiyat değişimi, derinliğin zayıf olduğunu gösterir.",
-        "**Hikâye var, veri yok.** Sosyal medyada yoğun ilgi ama KAP'ta bunu destekleyen bir bildirim bulunmuyor.",
-        "**Tedbir listesine giriyor.** Borsanın volatilite bazlı tedbir uygulamasına alınan paylar, olağan dışı hareket sinyali taşır.",
-        "**Fonlarda yoğunlaşma.** Bir fonun portföyünde tek bir küçük hissenin ağırlığı yüksekse, o fonun likiditesi de o hisseye bağlanmıştır.",
-      ] },
-
-      H("“Güvenli liman” neden yanıltıcı bir çerçeve?"),
-      P("Risk ortadan kalkmaz, yalnızca biçim değiştirir. Soru “risksiz olan hangisi” değil, **“hangi riski taşıyabilirim”** olmalı."),
-      { type: "table", head: ["Varlık", "Azalan risk", "Devam eden risk"],
-        rows: [
-          ["Mevduat", "Fiyat dalgalanması yok", "Reel getiri enflasyonun altında kalabilir"],
-          ["Altın", "Tek şirkete bağlı değil", "Fiyat dalgalanması ve alış-satış makası"],
-          ["Döviz", "TL'ye bağlı değil", "Kur hareketi iki yönlü; reel getiri garanti değil"],
-          ["Geniş endeks fonu", "Tek hisse riski dağılır", "Piyasanın tamamı düşerse düşer"],
-          ["Tek hisse", "—", "Şirket riski, likidite riski, manipülasyon riski"],
-        ] },
-      P("Bu tablo bir sıralama değildir; hangisinin size uygun olduğu vade, nakit ihtiyacı ve dalgalanmaya tahammülünüzle belirlenir. Paraya altı ay sonra ihtiyacınız varsa, uzun vadede mantıklı olan bir araç sizin için uygun olmayabilir."),
-
-      H("Yapısal korunma: dört başlık"),
-      P("Hangi aracı seçerseniz seçin, zararı sınırlayan şey genellikle seçimin kendisi değil, portföyün kurulumudur."),
-      { type: "ul", items: [
-        "**Pozisyon büyüklüğü.** Tek bir varlık portföyünüzün büyük bölümünü oluşturuyorsa, o varlıkla ilgili her haber sizi doğrudan etkiler.",
-        "**Likidite planı.** Yakın vadede ihtiyacınız olacak parayı, satışı zaman alabilecek araçlarda tutmayın.",
-        "**Vade uyumu.** Yatırımın vadesi ile paraya ihtiyaç duyacağınız tarih örtüşmeli. Örtüşmediğinde en kötü anda satmak zorunda kalırsınız.",
-        "**Acil durum fonu.** Ayrı tutulan ve getiri hedefi gözetilmeyen bir nakit tamponu, diğer varlıkları zamansız satmanızı engeller.",
-      ] },
-
-      H("Düzenleme neyi korur, neyi korumaz?"),
-      P("Sermaye piyasası mevzuatı piyasa dolandırıcılığını suç olarak tanımlar ve SPK inceleme, işlem yasağı, faaliyet durdurma gibi yetkiler kullanır. Ancak düzenleme **zararı geri getirmeyi garanti etmez.**"),
-      P("Denetim çoğunlukla olaydan sonra devreye girer; soruşturma ve tasfiye süreçleri aylarca sürebilir. Yani mevzuatın varlığı, kendi kontrolünüzü yapmanızın yerine geçmez."),
-      P("Bu içerik genel bilgilendirme amaçlıdır. Hangi yatırım aracının sizin için uygun olduğu, kişisel durumunuza bağlıdır ve bu yazı yatırım tavsiyesi niteliği taşımaz."),
-    ],
-    impact: {
-      lead: "Manipülasyon riski en çok dar pazarlarda birikir; korunmanın yolu araç değiştirmek değil, pozisyon ve likidite planını kontrol etmektir.",
-      points: [
-        "İlgilendiğiniz hissenin fiili dolaşım oranını ve işlem hacmini kontrol edin.",
-        "Tek bir varlığın portföyünüzdeki ağırlığını kendiniz sınırlayın.",
-        "Yakın vadede ihtiyaç duyacağınız parayı satışı zaman alabilecek araçlarda tutmayın.",
-      ],
-    },
-  },
-  {
-    id: "a10", slug: "sponsorlu-dijital-bankacilik-alaskanliklari",
-    title: "Dijital bankacılık alışkanlıkları: işlemlerin çevrim içine taşınması bütçeyi nasıl değiştiriyor?",
-    summary: "Şube işlemlerinin dijitale kayması, masraf yapısından bildirim alışkanlıklarına kadar birçok kalemi etkiliyor. Bu içerik Örnek Banka iş birliğiyle hazırlanmıştır.",
-    category: "kredi-ve-mevduat", contentType: "Sponsorlu", author: "finansindex",
-    published_at: "2026-07-28T10:00:00+03:00", updated_at: "2026-07-28T10:00:00+03:00",
-    read: 4, risk_level: "orta", review_status: "yayimlandi", reviewed_by: "finansindex",
-    sponsored: true, sponsor_name: "Örnek Banka", disclaimer: "general", related_tool: "asgari",
-    featured_image: { src: "/img/dijital-bankacilik.jpg", alt: "Mobil bankacılık uygulaması açık bir telefon", credit: "Görsel: Unsplash" },
-    tags: ["dijital bankacılık", "masraf"],
-    source_name: "Sponsor bilgilendirmesi",
-    source_urls: ["BDDK — Dijital bankacılık istatistikleri", "Sponsor kurum bilgilendirme materyalleri"],
-    seo_title: "Dijital bankacılık alışkanlıkları ve bütçe etkisi | FinansIndex",
-    meta_description: "Bankacılık işlemlerinin dijitale taşınmasının masraf, takip ve bütçe yönetimi üzerindeki etkileri. Sponsorlu içerik.",
-    body: [
-      P("Bankacılık işlemlerinin büyük bölümü artık mobil uygulamalar üzerinden yapılıyor. Bu değişim yalnızca kolaylık değil, bütçe takibi açısından da farklı alışkanlıklar getiriyor."),
-      H("Takip alışkanlığı"),
-      P("Anlık bildirimler, harcamanın yapıldığı anda görünmesini sağlar. Ay sonunda ekstre okuyarak yapılan takip ile karşılaştırıldığında, harcama farkındalığı üzerinde belirgin bir etkisi olduğu genel olarak kabul edilir."),
-      H("Masraf kalemleri"),
-      { type: "ul", items: [
-        "İşlem ücretleri kanala göre farklılaşabilir; kendi bankanızın ücret tarifesini kontrol edin.",
-        "Otomatik ödeme talimatları gecikme faizini önler, ancak bakiye takibini zorunlu kılar.",
-        "Kart limitleri ve harcama uyarıları uygulama içinden ayarlanabilir.",
-      ] },
-      P("Bu içerik sponsor iş birliğiyle hazırlanmıştır. FinansIndex editoryal ekibi, sponsorlu içeriklerde de doğruluk kontrolü uygular ve ürün tavsiyesi yapmaz."),
-    ],
-    impact: {
-      lead: "Dijital kanallara geçiş, harcama takibinizi kolaylaştırabilir; ancak ücret tarifesini kontrol etmek gerekir.",
-      points: [
-        "Bankanızın güncel ücret ve komisyon tarifesini inceleyin.",
-        "Harcama bildirimlerini açın.",
-        "Otomatik ödeme talimatlarınız için bakiye hatırlatması kurun.",
-      ],
-    },
-  },
-];
 
 const byId = (id) => ARTICLES.find((a) => a.id === id);
 const bySlug = (s) => ARTICLES.find((a) => a.slug === s);
@@ -2254,46 +1453,46 @@ const LEDGER = [
     what: "SPK'nın 17 Eylül kararıyla 131 yatırım fonu tasfiye sürecinde; süreçten 455.758 tekil yatırımcı etkileniyor.",
     how: "Ara ödeme hakkı tasfiyedeki her fonu kapsamıyor: 1 Ekim duyurusu Tera, Pusula, Atlas ve Hedef Portföy fonları için geçerli. Kapsamdaki fonlarda mutabakatı tamamlanan yatırımcılara, her fon için ayrı olmak üzere en fazla 1 milyon TL ödeniyor ve bu tutar nihai tasfiye hesabından mahsup ediliyor.",
     tags: ["Fon", "SPK"], warn: true,
-    article: "a13", tool: "enflasyon",
+    article: "fon-tasfiyesi-yatirimci-ne-yapmali", tool: "enflasyon",
   },
   {
     what: "Manipülasyon riski en çok fiili dolaşım oranı düşük hisselerde birikiyor.",
     how: "Dar pazarda küçük bir alım fiyatı belirgin şekilde yukarı taşır; sorun satışa geçildiğinde alıcı bulunamamasıdır. Korunmanın yolu araç değiştirmek değil, tek varlığın portföydeki ağırlığını ve likidite planını kontrol etmektir.",
     tags: ["Borsa", "Risk"],
-    article: "a14", tool: "enflasyon",
+    article: "borsa-manipulasyonu-nasil-korunulur", tool: "enflasyon",
   },
   {
     what: "Kredi kartı borcunu yalnızca asgari tutarla çevirenler, borcu kapatmıyor; ödeme takvimini uzatıyor.",
     how: "Asgari ödeme sonrası kalan bakiyeye akdi faiz işler. 25.000 TL borçta, aylık %4 faizle sadece asgariyi ödemek borcu kapatmayı 47 aya çıkarır. Aylık 2.000 TL ek ödeme bu süreyi 8 aya indirir.",
     tags: ["Kredi kartı", "Borç"], warn: true,
-    article: "a2", tool: "asgari",
+    article: "kredi-karti-asgari-odeme-nasil-hesaplanir", tool: "asgari",
   },
   {
     what: "Kredi teklifinde aylık faiz oranı, ödeyeceğiniz toplam tutarı tek başına göstermez.",
     how: "Tüketici kredilerinde faiz üzerinden KKDF %15 ve BSMV %15 alınır; bu, faiz maliyetini yaklaşık üçte bir oranında artırır. Vadeyi uzatmak aylık taksiti düşürür ama toplam ödemeyi belirgin şekilde büyütür. Karşılaştırmayı toplam geri ödeme üzerinden yapın.",
     tags: ["Kredi", "Faiz"],
-    article: "a12", tool: "kredi",
+    article: "kredi-faizi-nasil-okunur-toplam-maliyet", tool: "kredi",
   },
   {
     what: "Tasarruf finansmanı sözleşmelerinde belirleyici olan taksit değil, organizasyon ücreti ve teslimat sırası.",
     how: "Sistemde faiz işlemez ama organizasyon ücreti alınır; “faizsiz” maliyetsiz demek değildir. Parayı ne zaman alacağınız sözleşmedeki teslimat planına bağlıdır. Şirketin BDDK faaliyet iznini resmî listeden kontrol edin.",
     tags: ["Tasarruf finansmanı", "Konut"], warn: true,
-    article: "a11", tool: "karsilastir",
+    article: "tasarruf-finansmani-nasil-calisir", tool: "karsilastir",
   },
   {
     what: "Vadeli mevduatta oran, hesabınız yenilendiği gün bankanın o günkü kotasyonuna göre belirlenir.",
     how: "Otomatik yenilemede karşılaştırma yapılmadan devam edilir. Vade bitiminden önce farklı bankaların aynı vadedeki oranlarını kontrol etmek, getiriyi tesadüfe bırakmamanızı sağlar.",
     tags: ["Mevduat", "Birikim"],
-    article: "a1", tool: "mevduat",
+    article: "politika-faizi-mevduat-getirisi-iliskisi", tool: "mevduat",
   },
 ];
 
 const GUIDES = [
-  { id: "a13", label: "Güncel rehber" },
-  { id: "a12", label: "Kredi rehberi" },
-  { id: "a11", label: "Sözleşme rehberi" },
-  { id: "a2", label: "Borç rehberi" },
-  { id: "a3", label: "Karar rehberi" },
+  { slug: "fon-tasfiyesi-yatirimci-ne-yapmali", label: "Güncel rehber" },
+  { slug: "kredi-faizi-nasil-okunur-toplam-maliyet", label: "Kredi rehberi" },
+  { slug: "tasarruf-finansmani-nasil-calisir", label: "Sözleşme rehberi" },
+  { slug: "kredi-karti-asgari-odeme-nasil-hesaplanir", label: "Borç rehberi" },
+  { slug: "borc-kapatma-hangi-krediden-baslanmali", label: "Karar rehberi" },
 ];
 
 const DOSSIER = {
@@ -3924,8 +3123,8 @@ function Home({ go, market, daily }) {
   const [filter, setFilter] = useState("hepsi");
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
-  const hero = byId("a13");
-  const side = ["a14", "a12", "a11"].map(byId);
+  const hero = bySlug("fon-tasfiyesi-yatirimci-ne-yapmali");
+  const side = ["borsa-manipulasyonu-nasil-korunulur", "kredi-faizi-nasil-okunur-toplam-maliyet", "tasarruf-finansmani-nasil-calisir"].map(bySlug);
   const feed = useMemo(() => {
     const list = ARTICLES.filter((a) => a.id !== hero.id);
     const all = daily ? [daily, ...list] : list;
@@ -4017,7 +3216,7 @@ function Home({ go, market, daily }) {
               <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
             </div>
             {LEDGER.map((l, i) => {
-              const a = byId(l.article); const tool = toolById(l.tool);
+              const a = bySlug(l.article); const tool = toolById(l.tool);
               return (
                 <div className="fi-le" key={i}>
                   <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
@@ -4122,9 +3321,9 @@ function Home({ go, market, daily }) {
                 <div style={{ marginTop: 26 }}>
                   <h3 className="fi-rail-h">Rehberler</h3>
                   {GUIDES.map((g) => {
-                    const a = byId(g.id);
+                    const a = bySlug(g.slug);
                     return (
-                      <A to={{ n: "article", slug: a.slug }} go={go} className="fi-rail-i" key={g.id}>
+                      <A to={{ n: "article", slug: a.slug }} go={go} className="fi-rail-i" key={g.slug}>
                         <div className="fi-meta"><span style={{ color: "var(--gold)" }}>{g.label}</span></div>
                         <p className="fi-rail-t">{a.title}</p>
                       </A>
