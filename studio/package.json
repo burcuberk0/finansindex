@@ -1,0 +1,16 @@
+{
+  "name": "finansindex-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "schema:deploy": "sanity schemas deploy --workspace default"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sanity": "^3.88.0",
+    "styled-components": "^6.1.11"
+  }
+}
