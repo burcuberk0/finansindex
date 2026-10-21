@@ -25,4 +25,5 @@ jobs:
         working-directory: studio
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
-        run: npx sanity schemas deploy --workspace default
+        run: npx sanity schema deploy --workspace default
+    
