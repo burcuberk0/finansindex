@@ -5,4 +5,5 @@ export default defineCliConfig({
     projectId: 'u13dxmis',
     dataset: 'production',
   },
+  studioHost: 'finansindex',
 })
