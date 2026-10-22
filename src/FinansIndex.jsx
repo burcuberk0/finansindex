@@ -95,7 +95,7 @@ const CSS = `
 
 /* --- büyük piyasa bandı (header altında) --- */
 .fi-band { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
-.fi-band-in { display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
+.fi-band-in { display:flex; flex-wrap:wrap; align-items:stretch; }
 .fi-band-in::-webkit-scrollbar { display:none; }
 .fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
 .fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
@@ -114,7 +114,7 @@ const CSS = `
 
 /* --- eski ince şerit (makale/kategori sayfalarında kullanılmıyor) --- */
 .fi-ticker { background:var(--ink); color:#fff; border-bottom:0; }
-.fi-ticker-in { display:flex; align-items:center; gap:0; overflow-x:auto; scrollbar-width:none; }
+.fi-ticker-in { display:flex; flex-wrap:wrap; align-items:center; gap:0; }
 .fi-ticker-in::-webkit-scrollbar { display:none; }
 .fi-tick { display:flex; align-items:baseline; gap:8px; padding:9px 16px 9px 0; margin-right:16px; border-right:1px solid rgba(255,255,255,.14); white-space:nowrap; flex:0 0 auto; }
 .fi-tick-k { font:500 11px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#9C948C; }
@@ -125,22 +125,22 @@ const CSS = `
 
 /* --- header --- */
 .fi-hd { background:var(--surface); border-bottom:0; position:relative; z-index:60; }
-.fi-hd-top { display:flex; align-items:center; gap:16px; padding:16px 0; }
+.fi-hd-top { display:flex; flex-wrap:wrap; align-items:center; gap:16px; padding:16px 0; }
 .fi-logo { display:flex; align-items:center; gap:9px; background:none; border:0; padding:0; }
 .fi-logo-m { width:30px; height:30px; flex:0 0 auto; }
 .fi-logo-t { font:700 23px/1 var(--serif); letter-spacing:-.045em; color:var(--ink); }
 .fi-logo-t em { font-style:normal; color:var(--petrol); }
 .fi-tag { font:500 10.5px/1.35 var(--mono); letter-spacing:.02em; color:var(--muted); border-left:1px solid var(--line-2); padding-left:14px; }
-.fi-hd-acts { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.fi-hd-acts { margin-left:auto; display:flex; flex-wrap:wrap; align-items:center; gap:8px; max-width:100%; }
 .fi-ico { width:42px; height:42px; display:grid; place-items:center; background:none; border:1px solid var(--line); border-radius:var(--r); color:var(--ink-2); }
 .fi-ico:hover { background:var(--bg); border-color:var(--line-2); }
 .fi-btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:0 18px; border-radius:var(--r); border:1px solid transparent; font-weight:600; font-size:14px; letter-spacing:.01em; }
-.fi-btn-p { background:var(--ink); color:#fff; } .fi-btn-p:hover { background:var(--navy-2); }
+.fi .fi-btn-p { background:var(--ink); color:#fff; } .fi-btn-p:hover { background:var(--navy-2); }
 .fi-btn-g { background:var(--ink); color:#fff; } .fi-btn-g:hover { background:var(--navy-2); }
 .fi-btn-o { background:transparent; color:var(--ink); border-color:var(--line-2); } .fi-btn-o:hover { background:var(--bg); }
 
 /* --- ana menü + açılır --- */
-.fi-nav { display:flex; gap:0; border-top:1px solid var(--line); overflow:visible; }
+.fi-nav { display:flex; flex-wrap:wrap; gap:0; border-top:1px solid var(--line); overflow:visible; }
 .fi-nav-i { position:relative; }
 .fi-nav-i > :is(button, a) { background:none; border:0; padding:15px 15px; font-size:14.5px; font-weight:500; color:var(--ink-2);
   white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; min-height:52px; }
@@ -656,7 +656,7 @@ const CSS = `
 }
 @media (max-width:760px) {
   .fi-nav { display:none; }
-  .fi-band-c { min-width:190px; padding-right:16px; margin-right:16px; }
+  .fi-band-c { min-width:0; max-width:100%; flex:1 1 190px; padding-right:16px; margin-right:0; }
   .fi-band-v { font-size:20px; }
   .fi-spark { width:74px; height:34px; }
   .fi-burger { display:grid; }
@@ -1971,7 +1971,7 @@ function ArticleCard({ a, go, source }) {
   };
   return (
     <article className="fi-card">
-      <button className="fi-a" onClick={open}>
+      <A to={{ n: "article", slug: a.slug }} go={open} className="fi-a">
         <Figure image={a.featured_image} ratio="16 / 9" showCredit={false} />
         <div className="fi-card-body">
           <div className="fi-meta">
@@ -1984,7 +1984,7 @@ function ArticleCard({ a, go, source }) {
           <h3 className="fi-ttl">{a.title}</h3>
           {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>}
         </div>
-      </button>
+      </A>
     </article>
   );
 }
