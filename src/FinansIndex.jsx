@@ -525,6 +525,7 @@ const CSS = `
 
 /* --- article --- */
 .fi-art { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:48px; padding:32px 0 0; }
+.fi-art > article { min-width:0; }
 .fi-bc { font:500 12px/1.5 var(--mono); color:var(--muted); margin-bottom:18px; display:flex; gap:8px; flex-wrap:wrap; }
 .fi-bc :is(button, a) { background:none; border:0; padding:0; color:var(--muted); }
 .fi-bc :is(button, a):hover { color:var(--navy); text-decoration:underline; }
@@ -680,6 +681,7 @@ const CSS = `
   .fi-lead-stat { flex-direction:column; gap:12px; padding:18px 16px; }
   .fi-lead-stat-v { font-size:42px; }
   .fi-art h1, .fi-page-hd h1, .fi-mk-hero h1 { font-size:29px; }
+  .fi-art h1 { line-height:1.35; }
   .fi-h2, .fi-ledger-hd h2, .fi-nl h2 { font-size:22px; }
   .fi-dossier-b h3 { font-size:24px; }
   .fi-dossier-b, .fi-mk-hero { padding:26px 20px; }
