@@ -94,13 +94,18 @@ const CSS = `
 .fi-a:hover .fi-ttl { text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:2px; }
 
 /* --- büyük piyasa bandı (header altında) --- */
-.fi-band { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
-.fi-band-in { display:flex; flex-wrap:wrap; align-items:stretch; }
+.fi-band { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); position:relative; }
+.fi-band::after { content:""; position:absolute; top:0; right:0; bottom:0; width:44px;
+  pointer-events:none; background:linear-gradient(to right, rgba(0,0,0,0), var(--ink)); }
+.fi-band-in { display:flex; flex-wrap:nowrap; align-items:stretch; overflow-x:auto;
+  scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none; -ms-overflow-style:none; }
 .fi-band-in::-webkit-scrollbar { display:none; }
 .fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
 .fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
   border-right:1px solid rgba(255,255,255,.1); flex:0 0 auto; min-width:240px; }
-.fi-band-c:last-child { border-right:0; margin-right:0; }
+.fi-band-c { scroll-snap-align:start; }
+.fi-band-c:last-child { border-right:0; margin-right:0; padding-right:44px; }
 .fi-band-txt { flex:1 1 auto; }
 .fi-band-k { display:flex; align-items:center; gap:6px; font:600 11px/1 var(--mono);
   letter-spacing:.11em; text-transform:uppercase; color:#fff; margin-bottom:9px; }
@@ -214,6 +219,7 @@ const CSS = `
 .fi-lead-brief li { font-size:14.5px; line-height:1.45; color:var(--ink-2); padding:8px 0 8px 22px; position:relative; border-bottom:1px solid var(--line); }
 .fi-lead-brief li:last-child { border-bottom:0; }
 .fi-lead-brief li::before { content:''; position:absolute; left:0; top:15px; width:9px; height:1px; background:var(--petrol); }
+.fi-art-brief { margin:26px 0 30px; }
 .fi-lead-acts { display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 0; }
 
 .fi-lead-side { padding:38px 0 34px 34px; display:flex; flex-direction:column; }
@@ -356,6 +362,32 @@ const CSS = `
 .fi-fig-w { width:100%; background:var(--line); border-radius:var(--r); overflow:hidden; }
 .fi-fig-w img { width:100%; height:100%; object-fit:cover; display:block; color:transparent; font-size:0; }
 .fi-fig-c { font-size:11.5px; line-height:1.4; color:var(--muted); margin:7px 0 0; }
+
+/* --- veri kartı: öne çıkan görsel yoksa yazının kendi rakamından üretilir --- */
+/* Ölçüler kutunun GENİŞLİĞİNE değil YÜKSEKLİĞİNE (cqh) bağlı: kart 21/9
+   manşette, 16/9 ızgarada ve 4/3 yan listede aynı dosyadan çıkıyor; genişliğe
+   bağlanınca basık oranlarda içerik kutuyu taşırıp üstten kırpılıyordu.
+   max(px, cqh) tabanı da küçük kartlarda puntonun okunmaz hâle gelmesini
+   engelliyor. */
+.fi-dcard { width:100%; height:100%; container-type:size;
+  background:var(--ink); position:relative; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end; }
+.fi-dcard::before { content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:100% 14cqh; }
+.fi-dcard::after { content:""; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--petrol); }
+.fi-dcard-in { position:relative; padding:7cqh 5.5cqh; width:100%; }
+.fi-dcard-cat { display:block; font:600 max(10px, 4.2cqh)/1 var(--mono); letter-spacing:.15em;
+  text-transform:uppercase; color:#C8A64B; margin-bottom:4cqh; }
+.fi-dcard-v { display:flex; align-items:baseline; gap:2cqh; flex-wrap:wrap;
+  font:600 max(34px, 29cqh)/.9 var(--mono); letter-spacing:-.035em; color:#fff;
+  font-variant-numeric:tabular-nums; }
+.fi-dcard-u { font-size:max(13px, 9cqh); letter-spacing:0; color:#B4ADA5; }
+.fi-dcard-k { font:500 max(13px, 8cqh)/1.35 var(--sans); color:#EDE8E0; margin:5cqh 0 0; max-width:88%; }
+.fi-dcard-s { font:500 max(9.5px, 5.4cqh)/1.3 var(--mono); letter-spacing:.07em; text-transform:uppercase;
+  color:#8F8880; margin:3.4cqh 0 0; }
+.fi-dcard-t { font:600 max(17px, 13cqh)/1.2 var(--serif); color:#fff; margin:0; max-width:92%; }
 .fi-card { background:var(--surface); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
 .fi-card .fi-a { padding:0; }
 .fi-card-body { padding:15px 16px 17px; }
@@ -531,6 +563,10 @@ const CSS = `
 .fi-bc :is(button, a):hover { color:var(--navy); text-decoration:underline; }
 .fi-art h1 { font:700 42px/1.06 var(--serif); letter-spacing:-.042em; color:var(--ink); margin:14px 0 18px; }
 .fi-spot { font:400 18.5px/1.6 var(--sans); color:var(--ink-2); margin:0 0 24px; max-width:60ch; }
+.fi-leadline { font:400 17px/1.6 var(--sans); color:var(--ink); margin:0 0 26px;
+  max-width:62ch; border-left:3px solid var(--petrol); padding:2px 0 2px 16px; }
+.fi-leadline span { display:block; font:600 10.5px/1 var(--mono); letter-spacing:.13em;
+  text-transform:uppercase; color:var(--petrol); margin-bottom:9px; }
 .fi-byline { display:flex; align-items:center; gap:13px; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); flex-wrap:wrap; }
 .fi-av { width:42px; height:42px; border-radius:50%; background:var(--green-soft); color:var(--green); display:grid; place-items:center; font:600 14px var(--sans); flex:0 0 auto; }
 .fi-byline-n { font-weight:600; font-size:14.5px; color:var(--navy); }
@@ -657,7 +693,9 @@ const CSS = `
 }
 @media (max-width:760px) {
   .fi-nav { display:none; }
-  .fi-band-c { min-width:0; max-width:100%; flex:1 1 190px; padding-right:16px; margin-right:0; }
+  /* Veri kartı 21/9'da mobilde basıklaşıyor, metin sığmıyor. */
+  .fi-lead-fig .fi-fig-w { aspect-ratio:16 / 9 !important; }
+  .fi-band-c { min-width:0; max-width:none; flex:0 0 auto; padding-right:16px; margin-right:16px; }
   .fi-band-v { font-size:20px; }
   .fi-spark { width:74px; height:34px; }
   .fi-burger { display:grid; }
@@ -1581,7 +1619,38 @@ const DISCLAIMERS = {
  *  - loading="lazy" ve decoding="async" ile ilk yükleme hızı korunur.
  *    Manşet görselinde priority=true verilir; o görsel ekranın üstünde.
  */
-function Figure({ image, ratio = "16 / 9", className = "", priority = false, showCredit = true }) {
+/**
+ * Veri kartı — öne çıkan görsel olmayan yazılarda görsel yerine geçer.
+ * Stok fotoğraf yerine yazının kendi manşet rakamını gösterir: telif sorunu
+ * yok, her yazıda farklı, ve rakam zaten yazının konusu olduğu için
+ * dekoratif değil bilgilendirici. Rakamı olmayan yazıda başlığa düşer.
+ * aria-hidden: içerdiği metin sayfada zaten başlık ve manşet rakamı olarak
+ * okunuyor, ekran okuyucuda iki kez duyulmasın.
+ */
+function DataCard({ stat, cat, title }) {
+  const hasStat = stat && stat.v;
+  return (
+    <div className="fi-dcard" aria-hidden="true">
+      <div className="fi-dcard-in">
+        {cat && <span className="fi-dcard-cat">{catName(cat)}</span>}
+        {hasStat ? (
+          <>
+            <div className="fi-dcard-v">
+              {stat.v}
+              {stat.unit && <span className="fi-dcard-u">{stat.unit}</span>}
+            </div>
+            {stat.k && <p className="fi-dcard-k">{stat.k}</p>}
+            {stat.sub && <p className="fi-dcard-s">{stat.sub}</p>}
+          </>
+        ) : (
+          title && <p className="fi-dcard-t">{title}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Figure({ image, ratio = "16 / 9", className = "", priority = false, showCredit = true, stat, cat, title }) {
   /* Dosya sunucuda yoksa (henüz yüklenmemişse) tarayıcı kırık görsel ve alt
      metni gösterir. Bu, boş bir alandan çok daha kötü görünür. onError ile
      tüm figure'ü DOM'dan kaldırıyoruz — görsel yüklenene kadar sayfa,
@@ -1590,7 +1659,17 @@ function Figure({ image, ratio = "16 / 9", className = "", priority = false, sho
 
   useEffect(() => { setFailed(false); }, [image && image.src]);
 
-  if (!image || !image.src || failed) return null;
+  if (!image || !image.src || failed) {
+    /* Yeni proplar verilmediyse (reklam görselleri gibi) eski davranış korunur. */
+    if (!stat && !cat && !title) return null;
+    return (
+      <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
+        <div className="fi-fig-w" style={{ aspectRatio: ratio }}>
+          <DataCard stat={stat} cat={cat} title={title} />
+        </div>
+      </figure>
+    );
+  }
 
   return (
     <figure className={`fi-fig ${className}`} style={{ margin: 0 }}>
@@ -1974,7 +2053,8 @@ function ArticleCard({ a, go, source }) {
   return (
     <article className="fi-card">
       <A to={{ n: "article", slug: a.slug }} go={open} className="fi-a">
-        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false} />
+        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false}
+          stat={a.keyStat} cat={a.category} title={a.title} />
         <div className="fi-card-body">
           <div className="fi-meta">
             <span className="fi-cat">{catName(a.category)}</span>
@@ -3145,7 +3225,8 @@ function Home({ go, market, daily }) {
             <section className="fi-lead" aria-label="Manşet">
               <div className="fi-lead-main">
                 <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-a">
-                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig" />
+                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig"
+                    stat={hero.keyStat} cat={hero.category} title={hero.title} />
                   <div className="fi-meta">
                     <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
                     <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
@@ -3490,6 +3571,17 @@ function Article({ slug, go, daily }) {
             <h1>{a.title}</h1>
             <p className="fi-spot">{a.summary}</p>
 
+            {/* Yayının tek vaadi "bu gelişme cebimi nasıl etkiliyor" sorusu.
+                Cevabın tamamı yazının en sonundaydı, 20+ blok ve iki reklam
+                alanının ardında. Tek cümlelik özeti yukarı alındı; somut
+                adımlar sonda kaldı, orada tekrar edilmiyor. */}
+            {a.impact && a.impact.lead && (
+              <p className="fi-leadline">
+                <span>Senin için önemi</span>
+                {a.impact.lead}
+              </p>
+            )}
+
             <div className="fi-byline">
               <div className="fi-av" aria-hidden="true">FI</div>
               <div>
@@ -3518,11 +3610,23 @@ function Article({ slug, go, daily }) {
             </div>
 
 
-            {a.featured_image && (
-              <Figure image={a.featured_image} ratio="16 / 9" priority className="fi-art-fig" />
+            {(
+              <Figure image={a.featured_image} ratio="16 / 9" priority className="fi-art-fig"
+                stat={a.keyStat} cat={a.category} title={a.title} />
             )}
 
-            {heads.length > 1 && (
+            {a.inBrief && a.inBrief.length > 0 && (
+              <div className="fi-lead-brief fi-art-brief">
+                <h2>Yazıda ne var?</h2>
+                <ul>{a.inBrief.map((x) => <li key={x}>{x}</li>)}</ul>
+              </div>
+            )}
+
+            {/* İçindekiler, "Yazıda ne var?" ile aynı işi gören ikinci bir
+                liste. İkisi arka arkaya gelince yazı daha başlamadan okuyucu
+                iki liste geçiyor. Kısa yazıda içindekiler gizleniyor; uzun
+                rehberlerde (6+ ara başlık) gezinme değeri taşıdığı için kalıyor. */}
+            {heads.length > 1 && (!a.inBrief || !a.inBrief.length || heads.length >= 6) && (
               <nav className="fi-toc" aria-label="İçindekiler">
                 <h2>İçindekiler</h2>
                 <ol>
@@ -3555,8 +3659,7 @@ function Article({ slug, go, daily }) {
               ))}
 
               <div className="fi-impact">
-                <h3>Bu gelişme seni nasıl etkiliyor?</h3>
-                <p>{a.impact.lead}</p>
+                <h3>Ne yapmalısınız?</h3>
                 <ul>{a.impact.points.map((p, i) => <li key={i}>{p}</li>)}</ul>
               </div>
 
