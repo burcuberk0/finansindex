@@ -40,7 +40,13 @@ const QUERY = `{
   "categories": *[_type == "category" && !(_id in path("drafts.**"))] | order(order asc) {
     "slug": slug.current, "name": title, "desc": description
   },
-  "articles": *[_type == "article" && !(_id in path("drafts.**")) && defined(slug.current)]
+  /* reviewStatus filtresi: Content Lake'te yayımlanmış olmak tek başına
+     yeterli değil, editör onayı da gerekiyor. Bu filtre olmadan Studio'da
+     yayına alınan ama reviewStatus'u "taslak" kalan yazı siteye düşüyordu.
+     Alanı hiç olmayan eski yazılar dışarıda kalmasın diye !defined() de
+     kabul ediliyor -- mapArticle zaten bunları "yayimlandi" sayıyor. */
+  "articles": *[_type == "article" && !(_id in path("drafts.**")) && defined(slug.current)
+    && (!defined(reviewStatus) || reviewStatus == "yayimlandi")]
     | order(publishedAt desc) {
     _id, title, "slug": slug.current, summary, contentType,
     "category": category->slug.current,
