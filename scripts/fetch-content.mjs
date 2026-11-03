@@ -35,16 +35,23 @@ const DATASET = process.env.SANITY_DATASET || "production";
 const API = "2026-02-01";
 
 /* Yalnızca yayımlanmış dokümanlar. Taslaklar (drafts.*) hariç tutulur:
-   editör onayından geçmemiş içerik siteye çıkmamalı. */
+ * editör onayından geçmemiş içerik siteye çıkmamalı.
+ *
+ * reviewStatus filtresi: Content Lake'te yayımlanmış olmak tek başına
+ * yeterli değil, editör onayı da gerekiyor. Bu filtre olmadan Studio'da
+ * yayına alınan ama reviewStatus'u "taslak" kalan yazı siteye düşüyordu.
+ * Alanı hiç olmayan eski yazılar dışarıda kalmasın diye !defined() de
+ * kabul ediliyor -- mapArticle zaten bunları "yayimlandi" sayıyor.
+ *
+ * DİKKAT: aşağıdaki şablon dizesinin içi GROQ'tur, JavaScript değil.
+ * GROQ, eğik çizgi-yıldız ile açılan blok yorumunu kabul etmiyor; sorgunun
+ * içine yazılan bir açıklama Sanity'den 400 döndürür. Sorguya açıklama
+ * eklemek gerekiyorsa buraya, şablon dizesinin dışına yazılır.
+ */
 const QUERY = `{
   "categories": *[_type == "category" && !(_id in path("drafts.**"))] | order(order asc) {
     "slug": slug.current, "name": title, "desc": description
   },
-  /* reviewStatus filtresi: Content Lake'te yayımlanmış olmak tek başına
-     yeterli değil, editör onayı da gerekiyor. Bu filtre olmadan Studio'da
-     yayına alınan ama reviewStatus'u "taslak" kalan yazı siteye düşüyordu.
-     Alanı hiç olmayan eski yazılar dışarıda kalmasın diye !defined() de
-     kabul ediliyor -- mapArticle zaten bunları "yayimlandi" sayıyor. */
   "articles": *[_type == "article" && !(_id in path("drafts.**")) && defined(slug.current)
     && (!defined(reviewStatus) || reviewStatus == "yayimlandi")]
     | order(publishedAt desc) {
@@ -191,6 +198,18 @@ const url =
   `https://${PROJECT}.apicdn.sanity.io/v${API}/data/query/${DATASET}` +
   `?query=${encodeURIComponent(QUERY)}`;
 
+/* 4xx bizim sorgumuzun bozuk olduğunu gösterir; bu durumda derleme
+   DURDURULUR. Sessizce eski kopyayla yayımlanmak en kötü sonuçtur: site
+   günlerce bayat içerik gösterir ve derleme yeşil göründüğü için kimse
+   fark etmez. 5xx ve ağ kesintisi ise geçicidir, orada yayında kalmak
+   doğru olan — o yol keepExisting'de. */
+function failBuild(reason, detay) {
+  console.error(`[icerik] ${reason}. Derleme durduruldu.`);
+  if (detay) console.error(`[icerik] Sanity yanıtı: ${String(detay).slice(0, 1000)}`);
+  writeStatus("hata", `${reason}. Derleme durduruldu.`);
+  process.exit(1);
+}
+
 function keepExisting(reason) {
   if (fs.existsSync(OUT)) {
     const n = JSON.parse(fs.readFileSync(OUT, "utf8")).articles.length;
@@ -204,6 +223,10 @@ function keepExisting(reason) {
 
 try {
   const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (res.status >= 400 && res.status < 500) {
+    const detay = await res.text().catch(() => "");
+    failBuild(`Sanity ${res.status} döndürdü — sorgu hatalı görünüyor`, detay);
+  }
   if (!res.ok) keepExisting(`Sanity ${res.status} döndürdü`);
 
   const { result } = await res.json();
