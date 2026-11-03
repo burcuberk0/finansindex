@@ -1481,7 +1481,27 @@ const AI_NOTE = {
 const P = (t) => ({ type: "p", t });
 const H = (t) => ({ type: "h2", t, id: t.toLowerCase().replace(/[^a-zçğıöşü0-9]+/g, "-").replace(/^-|-$/g, "") });
 
-const ARTICLES = CONTENT.articles;
+/* Yazılar güncelden eskiye sıralanır. Sıralama Sanity sorgusunda da
+   yapılıyor (order(publishedAt desc)); burada bir daha yapılması bilinçli:
+   content.json elle düzenlenir ya da sorgu değişirse ana sayfanın akışı
+   sessizce bozulmasın.
+
+   Yayın tarihi geleceğe düşen yazı akıştan çıkarılır. Aksi hâlde yanlışlıkla
+   ileri tarih yazılmış bir yazı manşete oturup henüz yayımlanmamış içeriği
+   öne çıkarır. Süzgeç her şeyi elerse (örneğin sunucu saati şaşarsa) ham
+   liste kullanılır — site boş kalmasın. */
+const SIRALI = [...CONTENT.articles]
+  .filter((a) => !a.published_at || new Date(a.published_at).getTime() <= Date.now())
+  .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
+const ARTICLES = SIRALI.length ? SIRALI : [...CONTENT.articles];
+
+/* Ana sayfanın manşeti ve "Öne çıkanlar" sütunu artık elle seçilmiyor:
+   manşet en güncel yazı, yanındaki üç yazı onu takip edenler. Daha önce
+   buradaki slug'lar sabitti, bu yüzden yeni yazılar yayımlandıkça ana
+   sayfa Ekim başındaki yazılarda donup kalıyordu. */
+const HERO = ARTICLES[0];
+const SIDE = ARTICLES.slice(1, 4);
 
 
 const byId = (id) => ARTICLES.find((a) => a.id === id);
@@ -3205,13 +3225,20 @@ function Home({ go, market, daily }) {
   const [filter, setFilter] = useState("hepsi");
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
-  const hero = bySlug("fon-tasfiyesi-yatirimci-ne-yapmali");
-  const side = ["borsa-manipulasyonu-nasil-korunulur", "kredi-faizi-nasil-okunur-toplam-maliyet", "tasarruf-finansmani-nasil-calisir"].map(bySlug);
+  const hero = HERO;
+  const side = SIDE;
   const feed = useMemo(() => {
-    const list = ARTICLES.filter((a) => a.id !== hero.id);
+    /* Manşet ve "Öne çıkanlar" zaten sayfanın tepesinde duruyor; akışın
+       ilk satırlarında bir daha görünmesinler. Kategori süzgeci açıkken
+       yalnızca manşet çıkarılır: yoksa o kategoride gösterilecek yazı
+       sayısı gereksiz yere azalıyor. */
+    const ustte = filter === "hepsi"
+      ? new Set([hero.id, ...side.map((a) => a.id)])
+      : new Set([hero.id]);
+    const list = ARTICLES.filter((a) => !ustte.has(a.id));
     const all = daily ? [daily, ...list] : list;
     return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
-  }, [filter, hero.id, daily]);
+  }, [filter, hero.id, side, daily]);
 
   return (
     <main id="icerik">
