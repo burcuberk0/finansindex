@@ -790,7 +790,7 @@ function useEventLog() {
 
 const SITE = { name: "FinansIndex", url: "https://finansindex.com", promise: "Finansı anlamanın en kolay yolu." };
 
-function useSeo({ title, description, path, jsonLd }) {
+function useSeo({ title, description, path, jsonLd, image }) {
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.title = title;
@@ -810,6 +810,11 @@ function useSeo({ title, description, path, jsonLd }) {
     set('meta[property="og:type"]', { property: "og:type", content: jsonLd ? "article" : "website" });
     set('meta[property="og:site_name"]', { property: "og:site_name", content: SITE.name });
     set('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
+    /* Paylaşım görseli: yazıda varsa yazının kapağı, yoksa genel site görseli.
+       Kapaklar derlemede scripts/kapak-uret.mjs ile üretilir. */
+    const img = image ? (/^https?:\/\//.test(image) ? image : SITE.url + image) : SITE.url + "/img/kapak/site.png";
+    set('meta[property="og:image"]', { property: "og:image", content: img });
+    set('meta[name="twitter:image"]', { name: "twitter:image", content: img });
 
     let s = document.getElementById("fi-jsonld");
     if (!s) { s = document.createElement("script"); s.id = "fi-jsonld"; s.type = "application/ld+json"; document.head.appendChild(s); }
@@ -817,7 +822,7 @@ function useSeo({ title, description, path, jsonLd }) {
       "@context": "https://schema.org", "@type": "Organization",
       name: SITE.name, url: SITE.url, slogan: SITE.promise,
     });
-  }, [title, description, path, jsonLd]);
+  }, [title, description, path, jsonLd, image]);
 }
 
 /* ------------------------------------------------------- 4. PİYASA VERİ KAYNAĞI */
@@ -3527,6 +3532,7 @@ function Article({ slug, go, daily }) {
     title: a?.seo_title || "FinansIndex",
     description: a?.meta_description || "",
     path: `/${a?.category}/${slug}`,
+    image: a ? ((a.featured_image && a.featured_image.src) || a.og_image || null) : null,
     jsonLd: a ? {
       "@context": "https://schema.org", "@type": "Article",
       headline: a.title, description: a.summary,
@@ -3537,6 +3543,10 @@ function Article({ slug, go, daily }) {
       publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
       articleSection: catName(a.category), keywords: a.tags.join(", "),
       isAccessibleForFree: true,
+      mainEntityOfPage: `${SITE.url}/${a.category}/${slug}`,
+      ...(((a.featured_image && a.featured_image.src) || a.og_image)
+        ? { image: [(() => { const u = (a.featured_image && a.featured_image.src) || a.og_image; return /^https?:\/\//.test(u) ? u : SITE.url + u; })()] }
+        : {}),
     } : null,
   });
 
