@@ -7,15 +7,22 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "prebuild": "node scripts/fetch-content.mjs",
-    "icerik": "node scripts/fetch-content.mjs"
+    "prebuild": "node scripts/fetch-content.mjs && node scripts/kapak-uret.mjs",
+    "icerik": "node scripts/fetch-content.mjs",
+    "postbuild": "node scripts/prerender-meta.mjs",
+    "kapak": "node scripts/kapak-uret.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@fontsource/inter": "^5.1.1",
+    "@fontsource/jetbrains-mono": "^5.1.1",
+    "@fontsource/space-grotesk": "^5.1.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@vitejs/plugin-react": "^4.3.1",
+    "satori": "^0.12.1",
     "vite": "^5.4.0"
   }
 }
