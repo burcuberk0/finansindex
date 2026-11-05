@@ -96,16 +96,26 @@ const CSS = `
 /* --- büyük piyasa bandı (header altında) --- */
 .fi-band { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); position:relative; }
 .fi-band::after { content:""; position:absolute; top:0; right:0; bottom:0; width:44px;
-  pointer-events:none; background:linear-gradient(to right, rgba(0,0,0,0), var(--ink)); }
+  pointer-events:none; background:linear-gradient(to right, rgba(0,0,0,0), var(--ink)); display:none; }
+@media (max-width:1100px) {
+  .fi-band::after { display:block; }
+  .fi-band-c { flex:0 0 auto; padding-right:24px; margin-right:24px; }
+}
 .fi-band-in { display:flex; flex-wrap:nowrap; align-items:stretch; overflow-x:auto;
   scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
   scrollbar-width:none; -ms-overflow-style:none; }
 .fi-band-in::-webkit-scrollbar { display:none; }
 .fi-band-msg { padding:20px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#8F8880; }
-.fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 24px 14px 0; margin-right:24px;
-  border-right:1px solid rgba(255,255,255,.1); flex:0 0 auto; min-width:240px; }
+/* Masaüstünde altı gösterge eşit genişlikte yan yana sığar; kaydırma yok.
+   Eskiden her kutu en az 240px'ti: 6 x 240 içerik alanını aşıyor, son kutu
+   kenarda kesiliyordu ("ÇEYREK ALTI"). Dar ekranda (1100px altı) kaydırmalı
+   düzene ve sağ kenardaki geçiş gölgesine dönülür. */
+.fi-band-c { display:flex; align-items:center; gap:14px; padding:14px 16px 14px 0; margin-right:16px;
+  border-right:1px solid rgba(255,255,255,.1); flex:1 1 0; min-width:0; }
+.fi-band-k, .fi-band-row { white-space:nowrap; }
 .fi-band-c { scroll-snap-align:start; }
-.fi-band-c:last-child { border-right:0; margin-right:0; padding-right:44px; }
+.fi-band-c:last-child { border-right:0; margin-right:0; padding-right:0; }
+@media (max-width:1100px) { .fi-band-c:last-child { padding-right:44px; } }
 .fi-band-txt { flex:1 1 auto; }
 .fi-band-k { display:flex; align-items:center; gap:6px; font:600 11px/1 var(--mono);
   letter-spacing:.11em; text-transform:uppercase; color:#fff; margin-bottom:9px; }
