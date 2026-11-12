@@ -748,6 +748,42 @@ const CSS = `
   .fi-side-i { grid-template-columns:1fr 76px; }
   .fi-side-th { width:76px; height:58px; }
 }
+/* ===== Görsel ağırlıklı ana sayfa ===== */
+.fi-side-i { grid-template-columns:1fr 112px; }
+.fi-side-fig { width:112px; }
+.fi-lead-s { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+
+.fi-le-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); }
+.fi-le-grid .fi-le { display:flex; flex-direction:column; grid-template-columns:none; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.fi-le-grid .fi-le:nth-child(3n+1) { border-left:0; }
+.fi-le-grid .fi-le:nth-child(-n+3) { border-top:0; }
+.fi-le-fig { display:block; }
+.fi-le-fig .fi-fig-w { border-radius:0; }
+.fi-le-grid .fi-le-b { padding:18px 22px 20px; display:flex; flex-direction:column; flex:1; }
+.fi-le-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.fi-le-grid .fi-le-n { padding:0; font-size:22px; font-weight:600; letter-spacing:-.04em; }
+.fi-le-grid .fi-le-tags { margin:0; justify-content:flex-end; }
+.fi-le-grid .fi-le-what { font-size:17px; line-height:1.36; margin:0 0 14px; }
+.fi-le-more { margin:auto 0 0; border-top:1px dashed var(--line-2); padding-top:10px; }
+.fi-le-more summary { cursor:pointer; list-style:none; font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--petrol); display:flex; justify-content:space-between; align-items:center; min-height:32px; }
+.fi-le-more summary::-webkit-details-marker { display:none; }
+.fi-le-more summary::after { content:"+"; font-size:16px; }
+.fi-le-more[open] summary::after { content:"–"; }
+.fi-le-grid .fi-le-how { font-size:14.5px; margin:8px 0 14px; }
+@media (max-width:1000px) {
+  .fi-le-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .fi-le-grid .fi-le:nth-child(3n+1) { border-left:1px solid var(--line); }
+  .fi-le-grid .fi-le:nth-child(2n+1) { border-left:0; }
+  .fi-le-grid .fi-le:nth-child(3) { border-top:1px solid var(--line); }
+}
+@media (max-width:640px) {
+  .fi-le-grid { grid-template-columns:1fr; }
+  .fi-le-grid .fi-le { border-left:0 !important; border-top:1px solid var(--line) !important; }
+  .fi-le-grid .fi-le:first-child { border-top:0 !important; }
+  .fi-side-i { grid-template-columns:1fr 92px; }
+  .fi-side-fig { width:92px; }
+}
+
 @media (prefers-reduced-motion:reduce) {
   .fi *, .fi *::before, .fi *::after { animation:none !important; transition:none !important; }
 }
@@ -2099,7 +2135,7 @@ function ArticleCard({ a, go, source }) {
             {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
           </div>
           <h3 className="fi-ttl">{a.title}</h3>
-          {a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>}
+          {!a.featured_image && (a.hook ? <p className="fi-card-hook">{a.hook}</p> : <p className="fi-exc">{a.summary.slice(0, 110)}…</p>)}
         </div>
       </A>
     </article>
@@ -3267,7 +3303,7 @@ function Home({ go, market, daily }) {
             <section className="fi-lead" aria-label="Manşet">
               <div className="fi-lead-main">
                 <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-a">
-                  <Figure image={hero.featured_image} ratio="21 / 9" priority className="fi-lead-fig"
+                  <Figure image={hero.featured_image} ratio="16 / 9" priority className="fi-lead-fig"
                     stat={hero.keyStat} cat={hero.category} title={hero.title} />
                   <div className="fi-meta">
                     <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
@@ -3278,7 +3314,7 @@ function Home({ go, market, daily }) {
                   <p className="fi-lead-s">{hero.summary}</p>
                 </A>
 
-                {hero.keyStat && (
+                {hero.keyStat && hero.featured_image && (
                   <div className="fi-lead-stat">
                     <div className="fi-lead-stat-v">{hero.keyStat.v}<span>{hero.keyStat.unit}</span></div>
                     <div className="fi-lead-stat-b">
@@ -3287,13 +3323,6 @@ function Home({ go, market, daily }) {
                     </div>
                   </div>
                 )}
-
-                {hero.inBrief && (
-              <div className="fi-lead-brief">
-                <h2>Yazıda ne var?</h2>
-                <ul>{hero.inBrief.map((x) => <li key={x}>{x}</li>)}</ul>
-              </div>
-            )}
 
             <div className="fi-lead-acts">
                   <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-btn fi-btn-p">Yazıyı oku</A>
@@ -3312,9 +3341,9 @@ function Home({ go, market, daily }) {
                     <div className="fi-side-txt">
                       <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
                       <h3 className="fi-side-t fi-ttl">{a.title}</h3>
-                      {a.hook && <p className="fi-side-hook">{a.hook}</p>}
                     </div>
-                    {a.featured_image && <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false} />}
+                    <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false}
+                      cat={a.category} title={catName(a.category)} />
                   </A>
                 ))}
               </div>
@@ -3340,27 +3369,41 @@ function Home({ go, market, daily }) {
               </div>
               <div className="fi-ledger-date">{dateTR(new Date().toISOString())}</div>
             </div>
+            {/* Kart ızgarası: her madde ilgili yazının görseliyle açılır.
+                "Seni nasıl etkiler?" metni istenince açılır; sayfa metin duvarı olmaz. */}
+            <div className="fi-le-grid">
             {LEDGER.map((l, i) => {
               const a = bySlug(l.article); const tool = toolById(l.tool);
               return (
                 <div className="fi-le" key={i}>
-                  <div className="fi-le-n">{String(i + 1).padStart(2, "0")}</div>
+                  {a && (
+                    <A to={{ n: "article", slug: a.slug }} go={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}
+                      className="fi-a fi-le-fig" aria-label={a.title}>
+                      <Figure image={a.featured_image} ratio="16 / 9" showCredit={false}
+                        stat={a.keyStat} cat={a.category} title={a.title} />
+                    </A>
+                  )}
                   <div className="fi-le-b">
-                    <div className="fi-le-tags">
-                      {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
+                    <div className="fi-le-head">
+                      <span className="fi-le-n">{String(i + 1).padStart(2, "0")}</span>
+                      <div className="fi-le-tags">
+                        {l.tags.map((t) => <span className={`fi-le-tag ${l.warn ? "warn" : ""}`} key={t}>{t}</span>)}
+                      </div>
                     </div>
-                    <p className="fi-le-q">Ne oldu?</p>
                     <p className="fi-le-what">{l.what}</p>
-                    <p className="fi-le-q">Seni nasıl etkileyebilir?</p>
-                    <p className="fi-le-how">{l.how}</p>
-                    <div className="fi-le-acts">
-                      <button className="fi-le-lnk" onClick={() => { track("related_article_click", { article_id: a.id, traffic_source: "cep_etkisi" }); go({ n: "article", slug: a.slug }); }}>Detayları oku</button>
-                      {tool && <A to={{ n: "tools", tool: tool.id }} go={go} className="fi-le-lnk calc">{tool.short} hesapla →</A>}
-                    </div>
+                    <details className="fi-le-more" onToggle={(e) => { if (e.currentTarget.open && a) track("ledger_expand", { article_id: a.id }); }}>
+                      <summary>Seni nasıl etkiler?</summary>
+                      <p className="fi-le-how">{l.how}</p>
+                      <div className="fi-le-acts">
+                        {a && <A to={{ n: "article", slug: a.slug }} go={go} className="fi-le-lnk">Detayları oku</A>}
+                        {tool && <A to={{ n: "tools", tool: tool.id }} go={go} className="fi-le-lnk calc">{tool.short} hesapla →</A>}
+                      </div>
+                    </details>
                   </div>
                 </div>
               );
             })}
+            </div>
             <AdSlot placementId="ledger_native" pageType="home" className="fi-le-ad" />
           </div>
         </section>
