@@ -1415,17 +1415,11 @@ function GamSlot({ placementId, pageType }) {
  *   home_native_01 / ledger_native .......... metin kreatif önerilir
  */
 const AD_INVENTORY = {
-  /* ÖRNEK KREATİF — üst banner, görsel tipi.
-     Gerçek reklamveren geldiğinde image, alt, href ve sponsor güncellenir.
-     Görsel `public/img/reklam/` klasörüne yüklenir.
-     Kaldırmak için bu bloğu tekrar `null` yap. */
-  home_top_banner: {
-    sponsor: "Örnek Banka",
-    image: "/img/reklam/ornek-banner-970x250.png",
-    alt: "Örnek Banka konut kredisi kampanyası görseli",
-    href: null,
-    ratio: "970 / 250",
-  },
+  /* Üst banner. Gerçek reklamveren geldiğinde nesne olarak doldurulur:
+     { sponsor, image: "/img/reklam/...", alt, href, ratio: "970 / 250" }
+     (Örnek Banka demo kreatifi AdSense incelemesi süresince kaldırıldı;
+     görseli public/img/reklam/ klasöründe duruyor.) */
+  home_top_banner: null,
   home_native_01: null,
   desktop_sidebar_sticky: null,
   article_inline_01: null,
@@ -1435,19 +1429,10 @@ const AD_INVENTORY = {
      Bu alan araç bazında ayrı satılabilir (kredi → banka, mevduat → banka,
      kira → emlak, asgari → borç yapılandırma). */
   calculator_result: null,
-  /* ÖRNEK KREATİF — kategori sponsorluğu.
-     Kredi ve Mevduat kategorisi bankalara satılabilecek en doğal alandır.
-     Görsel banner yerine metin kreatif kullanılıyor: kategori başlığının
-     hemen altında durduğu için sitenin tipografisiyle uyumlu olması,
-     yabancı bir banner blokundan daha iyi çalışır.
-     Gerçek reklamveren geldiğinde sponsor, title ve href güncellenir. */
-  category_sponsor: {
-    type: "display",
-    sponsor: "Örnek Banka",
-    title: "Kredi ve Mevduat kategorisi Örnek Banka katkılarıyla sunuluyor",
-    cta: "Kampanyayı gör",
-    href: null,
-  },
+  /* Kategori sponsorluğu — metin kreatif. Gerçek reklamveren geldiğinde:
+     { type: "display", sponsor, title, cta, href }
+     (Örnek Banka demo kreatifi AdSense incelemesi süresince kaldırıldı.) */
+  category_sponsor: null,
   newsletter_sponsor: null,
   /* Cep Etkisi Defteri içinde tek native blok. Sınırlı envanter olduğu için
      yüksek fiyatlanabilir; okuma akışını bozmadığından performansı iyi olur. */
