@@ -869,14 +869,33 @@ const CSS_X = `
 .fx-st-t { font:600 19px/1.32 var(--sans); letter-spacing:-.012em; color:var(--ink); margin:0; }
 
 /* --- manşet --- */
-.fx-lead { display:grid; grid-template-columns:minmax(0, 2fr) minmax(300px, 1fr); gap:32px; padding-top:30px; border-top:1px solid var(--line); }
-.fx-lead-m .fi-fig-w img { width:100%; height:100%; object-fit:cover; }
-.fx-lead-b { padding-top:16px; }
-.fx-lead-t { font:700 36px/1.14 var(--sans); letter-spacing:-.025em; color:var(--ink); margin:10px 0 12px; }
-.fx-lead-s { font-size:17px; line-height:1.55; color:var(--ink-2); margin:0; max-width:62ch; }
-.fi a.fx-lead-tool, .fx-lead-tool { display:inline-block; margin-top:16px; font:600 14.5px/1 var(--sans); color:var(--petrol); text-decoration:none; }
-.fx-lead-tool:hover { text-decoration:underline; text-underline-offset:4px; }
-.fx-lead-side { display:flex; flex-direction:column; gap:22px; }
+.fx-lead { display:grid; grid-template-columns:minmax(0, 2fr) minmax(300px, 1fr); gap:28px; align-items:stretch;
+  padding-top:30px; border-top:1px solid var(--line); }
+.fx-lead-side { display:flex; flex-direction:column; gap:22px; min-width:0; }
+.fx-lead-side .fi-log-panel { flex:1 1 auto; }
+
+/* --- manşet slider'ı --- */
+.fx-sl { display:flex; flex-direction:column; min-width:0; }
+.fx-sl-view { position:relative; flex:1 1 auto; min-height:420px; background:var(--ink); overflow:hidden; }
+.fx-sl-s { position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .45s ease, visibility .45s; }
+.fx-sl-s.on { opacity:1; visibility:visible; }
+.fi a.fx-sl-a, .fx-sl-a { position:absolute; inset:0; display:block; text-decoration:none; }
+.fx-sl-a img { width:100%; height:100%; object-fit:cover; }
+.fx-sl-cap { position:absolute; left:0; right:0; bottom:0; padding:90px 30px 26px;
+  background:linear-gradient(to top, rgba(10,8,7,.92) 0%, rgba(10,8,7,.72) 45%, rgba(10,8,7,0) 100%); }
+.fx-sl-cat { display:inline-block; background:var(--petrol); color:#fff; font:600 11px/1 var(--mono);
+  letter-spacing:.1em; text-transform:uppercase; padding:6px 8px; margin-bottom:12px; }
+.fx-sl-t { font:700 32px/1.16 var(--sans); letter-spacing:-.022em; color:#fff; margin:0; max-width:30ch; text-wrap:balance; }
+.fx-sl-a:hover .fx-sl-t { text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:5px; }
+.fx-sl-ar { position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; display:grid; place-items:center;
+  background:rgba(255,255,255,.92); color:var(--ink); border:0; border-radius:2px; opacity:0; transition:opacity .15s ease; }
+.fx-sl-ar.prev { left:14px; } .fx-sl-ar.next { right:14px; }
+.fx-sl:hover .fx-sl-ar, .fx-sl-ar:focus-visible { opacity:1; }
+.fx-sl-nums { display:flex; background:var(--ink); }
+.fx-sl-nums button { flex:1 1 0; background:none; border:0; border-top:3px solid transparent; color:#9C948C;
+  font:600 15px/1 var(--mono); padding:13px 0; min-height:44px; }
+.fx-sl-nums button:hover { color:#fff; }
+.fx-sl-nums button[aria-current="true"] { color:#fff; border-top-color:var(--petrol); background:#2A2624; }
 
 /* --- rehber kutuları --- */
 .fx-tiles { display:grid; grid-template-columns:repeat(4, 1fr); gap:24px 28px; }
@@ -894,6 +913,7 @@ const CSS_X = `
 @media (max-width:1000px) {
   .fx-top4, .fx-grid4, .fx-tiles { grid-template-columns:repeat(2, 1fr); }
   .fx-lead { grid-template-columns:1fr; }
+  .fx-sl-view { min-height:0; aspect-ratio:16 / 9; flex:0 0 auto; }
 }
 @media (max-width:760px) {
   .fx-mast { grid-template-columns:auto 1fr auto; padding:14px 0; gap:10px; }
@@ -907,7 +927,10 @@ const CSS_X = `
   .fx-nav .fi-drop { display:none; }
   .fx-top4 { gap:22px 16px; margin:20px 0 28px; }
   .fx-st-t { font-size:16px; }
-  .fx-lead-t { font-size:27px; }
+  .fx-sl-view { min-height:0; aspect-ratio:4 / 3; flex:0 0 auto; }
+  .fx-sl-cap { padding:60px 16px 16px; }
+  .fx-sl-t { font-size:21px; }
+  .fx-sl-ar { display:none; }
   .fx-sh h2 { font-size:18px; }
   .fx-tiles { gap:12px; }
   .fi a.fx-tile, .fx-tile { padding:16px; min-height:0; }
@@ -3454,6 +3477,67 @@ function StoryCard({ a, go, source }) {
   );
 }
 
+/* Manşet slider'ı. Görselin üzerine başlık bindirilir; altında numaralı
+   geçiş düğmeleri. 6 saniyede bir ilerler; fare üzerindeyken, klavyeyle
+   odaklanıldığında ya da sistemde "hareketi azalt" açıksa durur. */
+function HeroSlider({ slides, go }) {
+  const [i, setI] = useState(0);
+  const [hold, setHold] = useState(false);
+  const n = slides.length;
+  const reduce = typeof window !== "undefined" && window.matchMedia
+    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (n < 2 || hold || reduce) return;
+    const t = setTimeout(() => setI((x) => (x + 1) % n), 6000);
+    return () => clearTimeout(t);
+  }, [i, n, hold, reduce]);
+
+  if (!n) return null;
+  const pick = (k) => { setI(((k % n) + n) % n); };
+
+  return (
+    <section className="fx-sl" aria-roledescription="carousel" aria-label="Manşet"
+      onMouseEnter={() => setHold(true)} onMouseLeave={() => setHold(false)}
+      onFocusCapture={() => setHold(true)} onBlurCapture={() => setHold(false)}>
+      <div className="fx-sl-view">
+        {slides.map((a, k) => (
+          <div className={`fx-sl-s ${k === i ? "on" : ""}`} key={a.id} aria-hidden={k !== i}
+            role="group" aria-roledescription="slide" aria-label={`${k + 1} / ${n}`}>
+            <A to={{ n: "article", slug: a.slug }} tabIndex={k === i ? 0 : -1}
+              go={() => { track("related_article_click", { article_id: a.id, article_category: a.category, traffic_source: "home_slider", position: k + 1 }); go({ n: "article", slug: a.slug }); }}
+              className="fi-a fx-sl-a">
+              <img src={a.featured_image.src} alt={a.featured_image.alt || ""} loading={k === 0 ? "eager" : "lazy"} decoding="async" />
+              <div className="fx-sl-cap">
+                <span className="fx-sl-cat">{catName(a.category)}</span>
+                {k === 0 ? <h1 className="fx-sl-t">{a.title}</h1> : <h2 className="fx-sl-t">{a.title}</h2>}
+              </div>
+            </A>
+          </div>
+        ))}
+        {n > 1 && (
+          <>
+            <button className="fx-sl-ar prev" onClick={() => pick(i - 1)} aria-label="Önceki manşet">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M10 3L5 8l5 5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+            <button className="fx-sl-ar next" onClick={() => pick(i + 1)} aria-label="Sonraki manşet">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+          </>
+        )}
+      </div>
+      {n > 1 && (
+        <div className="fx-sl-nums" role="group" aria-label="Manşet seçimi">
+          {slides.map((a, k) => (
+            <button key={a.id} onClick={() => pick(k)} aria-current={k === i ? "true" : undefined}
+              aria-label={`${k + 1}. manşet: ${a.title}`}>{k + 1}</button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 /* Bölüm başlığı: büyük harf, sağa uzanan ince çizgi. */
 function SecHead({ id, title, more }) {
   return (
@@ -3477,26 +3561,32 @@ function Home({ go, market, daily }) {
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
   const hero = HERO;
+  /* Manşet slider'ı: görseli olan en yeni beş içerik. Görselsiz içerik
+     (ör. otomatik günlük kur yazısı) slider'a girmez, üst dörtlüde durur. */
+  const slides = useMemo(() => {
+    const withImg = ARTICLES.filter((a) => a.featured_image && a.featured_image.src);
+    const list = withImg.some((a) => a.id === hero.id) ? [hero, ...withImg.filter((a) => a.id !== hero.id)] : withImg;
+    return list.slice(0, 5);
+  }, [hero]);
+
+  /* Üst dörtlü: slider'da olmayan en yeni içerikler. */
+  const top4 = useMemo(() => {
+    const ids = new Set(slides.map((a) => a.id));
+    const list = ARTICLES.filter((a) => !ids.has(a.id)).slice(0, 4);
+    return daily ? [daily, ...list].slice(0, 4) : list;
+  }, [slides, daily]);
+
   const feed = useMemo(() => {
-    /* Manşet ve "Öne çıkanlar" zaten sayfanın tepesinde duruyor; akışın
-       ilk satırlarında bir daha görünmesinler. Kategori süzgeci açıkken
-       yalnızca manşet çıkarılır: yoksa o kategoride gösterilecek yazı
-       sayısı gereksiz yere azalıyor. */
+    /* Slider ve üst dörtlüdekiler akışta tekrar görünmesin. Kategori
+       süzgeci açıkken hiçbiri çıkarılmaz: yoksa o kategoride gösterilecek
+       yazı sayısı gereksiz yere azalıyor. */
     const ustte = filter === "hepsi"
-      ? new Set([hero.id, ...ARTICLES.filter((a) => a.id !== hero.id).slice(0, daily ? 3 : 4).map((a) => a.id)])
-      : new Set([hero.id]);
+      ? new Set([...slides, ...top4].map((a) => a.id))
+      : new Set();
     const list = ARTICLES.filter((a) => !ustte.has(a.id));
-    /* Günlük otomatik içerik "hepsi" görünümünde zaten üst dörtlüde. */
     const all = daily && filter !== "hepsi" ? [daily, ...list] : list;
     return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
-  }, [filter, hero.id, daily]);
-
-  /* Üst dörtlü: manşetten sonraki en yeni dört içerik. Manşet ikinci
-     sırada büyük görselle durur; sağında canlı veri akışı. */
-  const top4 = useMemo(() => {
-    const list = ARTICLES.filter((a) => a.id !== hero.id).slice(0, 4);
-    return daily ? [daily, ...list].slice(0, 4) : list;
-  }, [hero.id, daily]);
+  }, [filter, slides, top4, daily]);
 
   return (
     <main id="icerik">
@@ -3508,30 +3598,11 @@ function Home({ go, market, daily }) {
           {top4.map((a) => <StoryCard a={a} go={go} source="home_top4" key={a.id} />)}
         </section>
 
-        {/* MANŞET: büyük görsel solda, canlı veri akışı sağda */}
+        {/* MANŞET: numaralı slider solda, canlı veri akışı sağda */}
         <div className="fx-lead">
-          <section className="fx-lead-m" aria-label="Manşet">
-            <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-a">
-              <Figure image={hero.featured_image} ratio="16 / 9" priority className="fx-lead-fig"
-                stat={hero.keyStat} cat={hero.category} title={hero.title} />
-              <div className="fx-lead-b">
-                <div className="fi-meta">
-                  <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
-                  <span>{dateTR(hero.published_at)}</span><span className="fi-dot" /><span>{hero.read} dk</span>
-                </div>
-                <h1 className="fx-lead-t fi-ttl">{hero.title}</h1>
-                <p className="fx-lead-s">{hero.summary}</p>
-              </div>
-            </A>
-            {hero.related_tool && (
-              <A to={{ n: "tools", tool: hero.related_tool }} go={go} className="fx-lead-tool">
-                {toolById(hero.related_tool)?.short} hesapla →
-              </A>
-            )}
-          </section>
+          <HeroSlider slides={slides} go={go} />
           <aside className="fx-lead-side">
             <MarketLog market={market} go={go} />
-            <QuickTools go={go} />
           </aside>
         </div>
       </div>
@@ -3631,7 +3702,7 @@ function Home({ go, market, daily }) {
           <SecHead id="guide-h" title="Rehberler" />
           <div className="fx-tiles">
             {GUIDES.map((g) => bySlug(g.slug)).filter(Boolean).concat(
-              ARTICLES.filter((a) => !GUIDES.some((g) => g.slug === a.slug) && a.id !== hero.id && !top4.some((t) => t.id === a.id))
+              ARTICLES.filter((a) => !GUIDES.some((g) => g.slug === a.slug) && !slides.some((t) => t.id === a.id) && !top4.some((t) => t.id === a.id))
             ).slice(0, 8).map((a) => (
               <A to={{ n: "article", slug: a.slug }} go={go} className="fi-a fx-tile" key={a.id}>
                 <span className="fx-tile-c">{GUIDES.find((g) => g.slug === a.slug)?.label || catName(a.category)}</span>
