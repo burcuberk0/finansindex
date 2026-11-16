@@ -948,6 +948,26 @@ const CSS_X = `
 @media (max-width:600px) {
   .fx-top4, .fx-grid4, .fx-tiles { grid-template-columns:1fr; }
 }
+/* --- ana sayfa piyasa paneli: sade sans yazı, rozetli değişim --- */
+.fx-mkt .fi-mkt-grid { gap:16px; background:none; border:0; overflow:visible; }
+.fx-mkt .fi-mkt-card { border:1px solid var(--line); border-radius:4px; padding:20px 22px 18px; min-height:0; }
+.fx-mkt .fi-mkt-k { font:600 14px/1.2 var(--sans); letter-spacing:0; text-transform:none; color:var(--ink-2); margin-bottom:10px; }
+.fx-mkt .fi-mkt-v { font:700 30px/1.1 var(--sans); letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.fx-mkt .fi-mkt-u { font-size:17px; font-weight:500; margin-left:4px; }
+.fx-mkt .fi-mkt-d { align-self:flex-start; font:600 13px/1 var(--sans); padding:5px 8px; border-radius:3px; margin-top:10px; }
+.fx-mkt .fi-mkt-d.up { background:#E7F3EC; }
+.fx-mkt .fi-mkt-d.down { background:#FBEAE6; }
+.fx-mkt .fi-mkt-d span[aria-hidden] { font-size:8px; }
+.fx-mkt .fi-mkt-s { font:400 13px/1.4 var(--sans); color:var(--muted); padding-top:14px; margin-top:14px; border-top:1px solid var(--line); }
+.fx-mkt .fi-mkt-note { margin-top:18px; padding:16px 20px; background:var(--surface); border:1px solid var(--line); border-radius:4px; }
+.fx-mkt .fi-mkt-note p { font-size:13px; line-height:1.6; margin:0 0 6px; }
+.fx-mkt .fi-mkt-time { font-family:var(--sans); font-size:12.5px !important; color:var(--muted); padding-top:10px; margin-top:10px !important; }
+@media (max-width:760px) {
+  .fx-mkt .fi-mkt-grid { gap:10px; }
+  .fx-mkt .fi-mkt-card { padding:14px; }
+  .fx-mkt .fi-mkt-v { font-size:22px; }
+  .fx-mkt .fi-mkt-s { display:block; font-size:12px; }
+}
 `;
 
 /* ------------------------------------------------------- 2. ÖLÇÜMLEME KATMANI */
@@ -3672,8 +3692,13 @@ function Home({ go, market, daily }) {
         <AdSlot placementId="home_mid_banner" pageType="home" className="fi-sec" />
       </div>
 
-      {/* Döviz/maden kart paneli kaldırıldı: aynı veri üst şeritte duruyor. */}
+      {/* Piyasa paneli */}
       <div className="fi-wrap">
+        <section className="fi-sec fx-mkt" aria-labelledby="mkt-h">
+          <SecHead id="mkt-h" title="Döviz ve kıymetli maden" />
+          <MarketPanel market={market} />
+        </section>
+
         <GostergePanel go={go} />
 
         {/* HESAPLAYICILAR — sayfanın üst sırasında, çalışır hâlde */}
