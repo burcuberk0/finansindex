@@ -835,7 +835,14 @@ const CSS_X = `
 .fx-nb { background:var(--ink); position:sticky; top:0; z-index:70; }
 .fi-nav.fx-nav { border-top:0; flex-wrap:nowrap; overflow-x:auto; overflow-y:visible; scrollbar-width:none; }
 .fx-nav::-webkit-scrollbar { display:none; }
-@media (min-width:1001px) { .fi-nav.fx-nav { overflow:visible; flex-wrap:wrap; justify-content:space-between; } }
+@media (min-width:1240px) { .fi-nav.fx-nav { overflow:visible; flex-wrap:nowrap; justify-content:space-between; } }
+/* 1240px altında menü tek satırda kalır, yana kaydırılır; alt menüler
+   kaydırma alanında kırpılacağı için gizlenir (kategori bağlantıları çalışır). */
+@media (max-width:1239px) {
+  .fx-nav .fi-nav-ch, .fx-nav .fi-drop { display:none; }
+  .fx-nb::after { content:""; position:absolute; top:0; right:0; bottom:0; width:36px; pointer-events:none;
+    background:linear-gradient(to right, rgba(20,16,14,0), var(--ink)); }
+}
 .fx-nav .fi-nav-i > :is(button, a) { color:#fff; font-size:14px; font-weight:600; padding:16px 9px; gap:5px; white-space:nowrap;
   border-bottom:3px solid transparent; }
 .fx-nav .fi-nav-i:first-child > :is(button, a) { padding-left:0; }
