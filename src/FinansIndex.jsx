@@ -843,7 +843,7 @@ const CSS_X = `
   .fx-nb::after { content:""; position:absolute; top:0; right:0; bottom:0; width:36px; pointer-events:none;
     background:linear-gradient(to right, rgba(20,16,14,0), var(--ink)); }
 }
-.fx-nav .fi-nav-i > :is(button, a) { color:#fff; font-size:14px; font-weight:600; padding:16px 9px; gap:5px; white-space:nowrap;
+.fx-nav .fi-nav-i > :is(button, a) { color:#fff; font-size:16px; font-weight:600; padding:18px 10px; gap:6px; white-space:nowrap;
   border-bottom:3px solid transparent; }
 .fx-nav .fi-nav-i:first-child > :is(button, a) { padding-left:0; }
 .fx-nav .fi-nav-i:last-child > :is(button, a) { padding-right:0; }
@@ -902,7 +902,7 @@ const CSS_X = `
   .fx-mast-tag { display:none; }
   .fx-hd .fi-logo-t { font-size:27px; } .fx-hd .fi-logo-m { width:30px; height:30px; }
   .fx-nb .fi-nav.fx-nav { display:flex; }
-  .fx-nav .fi-nav-i > :is(button, a) { font-size:14px; padding:13px 10px; }
+  .fx-nav .fi-nav-i > :is(button, a) { font-size:15px; padding:14px 10px; }
   .fx-nav .fi-nav-ch { display:none; }
   .fx-nav .fi-drop { display:none; }
   .fx-top4 { gap:22px 16px; margin:20px 0 28px; }
@@ -3038,6 +3038,11 @@ function Logo({ go }) {
  * Her göstergede ad, değer ve yön (ok + işaret + renk) birlikte verilir;
  * renk tek başına anlam taşımaz.
  */
+/* Menüde gösterilen kategoriler. "FinansIndex Dosya" menüden çıkarıldı;
+   kategori sayfası ve içerikleri yerinde duruyor. */
+const NAV_HIDDEN = new Set(["finansindex-dosya"]);
+const NAV_CATEGORIES = CATEGORIES.filter((c) => !NAV_HIDDEN.has(c.slug));
+
 function TopTicker({ market, go }) {
   const { status, items } = market;
   return (
@@ -3120,7 +3125,7 @@ function Header({ route, go, onSearch, market }) {
       <div className="fx-nb">
         <div className="fi-wrap">
           <nav className="fi-nav fx-nav" aria-label="Kategoriler">
-            {CATEGORIES.map((c) => {
+            {NAV_CATEGORIES.map((c) => {
               const subs = SUBNAV[c.slug];
               const isOpen = drop === c.slug;
               return (
@@ -3167,7 +3172,7 @@ function Header({ route, go, onSearch, market }) {
             </button>
           </div>
           <A to={{ n: "home" }} go={(r) => { go(r); close(); }} className="fi-dl">Anasayfa</A>
-          {CATEGORIES.map((c) => (
+          {NAV_CATEGORIES.map((c) => (
             <A to={{ n: "category", slug: c.slug }} go={(r) => nav(r, c.name)} className="fi-dl" key={c.slug}>{c.name}</A>
           ))}
           <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} className="fi-dl">Finansal Araçlar</A>
