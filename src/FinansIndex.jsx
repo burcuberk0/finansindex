@@ -3672,13 +3672,8 @@ function Home({ go, market, daily }) {
         <AdSlot placementId="home_mid_banner" pageType="home" className="fi-sec" />
       </div>
 
-      {/* Piyasa paneli */}
+      {/* Döviz/maden kart paneli kaldırıldı: aynı veri üst şeritte duruyor. */}
       <div className="fi-wrap">
-        <section className="fi-sec" aria-labelledby="mkt-h">
-          <SecHead id="mkt-h" title="Döviz ve kıymetli maden" />
-          <MarketPanel market={market} />
-        </section>
-
         <GostergePanel go={go} />
 
         {/* HESAPLAYICILAR — sayfanın üst sırasında, çalışır hâlde */}
