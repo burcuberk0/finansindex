@@ -16,7 +16,7 @@ import CONTENT from "./content.json";
 /* ---------------------------------------------------------------- 1. TOKENS */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .fi *, .fi *::before, .fi *::after { box-sizing: border-box; }
 .fi {
@@ -34,9 +34,11 @@ const CSS = `
   /* --serif değişken adı korundu (çok yerde kullanılıyor) ama artık
      geometrik grotesk taşıyor. Serif tipografi "klasik gazete" hissi
      veriyordu; modern finans yayını için display sans daha doğru. */
-  --serif:'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --serif:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Kasım 2026: site genelinde tek yazı tipi (Inter). Değişken adları
+     korunuyor; rakamlar tabular-nums ile hizalı kalıyor. */
+  --mono:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --wrap:1180px; --r:2px;
   font-family: var(--sans);
   background: var(--bg); color: var(--ink);
