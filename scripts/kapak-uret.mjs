@@ -52,10 +52,9 @@ function loadFonts() {
   };
   add("Inter", "@fontsource/inter", "inter", 500);
   add("Inter", "@fontsource/inter", "inter", 600);
-  add("Space Grotesk", "@fontsource/space-grotesk", "space-grotesk", 600);
-  add("Space Grotesk", "@fontsource/space-grotesk", "space-grotesk", 700);
-  add("JetBrains Mono", "@fontsource/jetbrains-mono", "jetbrains-mono", 500);
-  add("JetBrains Mono", "@fontsource/jetbrains-mono", "jetbrains-mono", 600);
+  /* Kasım 2026: kapaklar da sitedeki gibi yalnızca Inter kullanır. */
+  add("Inter", "@fontsource/inter", "inter", 700);
+  add("Inter", "@fontsource/inter", "inter", 800);
   return list;
 }
 
@@ -72,8 +71,8 @@ const clip = (s, n) => (s && s.length > n ? s.slice(0, n - 1).trimEnd() + "…" 
 function card(a, catName) {
   const stat = a.keyStat && a.keyStat.v ? a.keyStat : null;
   const head = h({ justifyContent: "space-between", alignItems: "center", width: "100%" }, [
-    h({ fontFamily: "Space Grotesk, Space Grotesk Ext, Inter Ext", fontWeight: 700, fontSize: 34, color: C.text, letterSpacing: -1.4 }, "FinansIndex"),
-    h({ fontFamily: "JetBrains Mono, JetBrains Mono Ext, Inter Ext", fontWeight: 600, fontSize: 20, color: C.gold, letterSpacing: 3, textTransform: "uppercase" },
+    h({ fontFamily: "Inter, Inter Ext", fontWeight: 700, fontSize: 34, color: C.text, letterSpacing: -1.4 }, "FinansIndex"),
+    h({ fontFamily: "Inter, Inter Ext", fontWeight: 700, fontSize: 20, color: C.gold, letterSpacing: 2.5, textTransform: "uppercase" },
       catName.toLocaleUpperCase("tr-TR")),
   ]);
 
@@ -83,23 +82,23 @@ function card(a, catName) {
     const vSize = v.length <= 4 ? 200 : v.length <= 7 ? 168 : 132;
     main = h({ flexDirection: "column" }, [
       h({ alignItems: "baseline" }, [
-        h({ fontFamily: "JetBrains Mono, JetBrains Mono Ext, Inter Ext", fontWeight: 600, fontSize: vSize, color: C.text, letterSpacing: -6, lineHeight: 0.9 }, v),
-        stat.unit ? h({ fontFamily: "JetBrains Mono, JetBrains Mono Ext, Inter Ext", fontWeight: 500, fontSize: 52, color: C.unit, marginLeft: 22 }, stat.unit) : null,
+        h({ fontFamily: "Inter, Inter Ext", fontWeight: 800, fontSize: vSize, color: C.text, letterSpacing: -4, lineHeight: 0.9 }, v),
+        stat.unit ? h({ fontFamily: "Inter, Inter Ext", fontWeight: 500, fontSize: 52, color: C.unit, marginLeft: 22 }, stat.unit) : null,
       ].filter(Boolean)),
-      stat.k ? h({ fontFamily: "Inter, Inter Ext, Inter Ext", fontWeight: 500, fontSize: 36, color: C.soft, lineHeight: 1.3, marginTop: 30, maxWidth: 960 }, clip(stat.k, 110)) : null,
+      stat.k ? h({ fontFamily: "Inter, Inter Ext", fontWeight: 500, fontSize: 36, color: C.soft, lineHeight: 1.3, marginTop: 30, maxWidth: 960 }, clip(stat.k, 110)) : null,
     ].filter(Boolean));
   } else {
     main = h({ flexDirection: "column" }, [
-      h({ fontFamily: "Space Grotesk, Space Grotesk Ext, Inter Ext", fontWeight: 600, fontSize: a.title.length > 80 ? 54 : 64, color: C.text, lineHeight: 1.15, letterSpacing: -1.5, maxWidth: 1000 },
+      h({ fontFamily: "Inter, Inter Ext", fontWeight: 700, fontSize: a.title.length > 80 ? 54 : 64, color: C.text, lineHeight: 1.15, letterSpacing: -1.5, maxWidth: 1000 },
         clip(a.title, 120)),
-      a.hook ? h({ fontFamily: "Inter, Inter Ext, Inter Ext", fontWeight: 500, fontSize: 32, color: C.soft, lineHeight: 1.3, marginTop: 28, maxWidth: 960 }, clip(a.hook, 100)) : null,
+      a.hook ? h({ fontFamily: "Inter, Inter Ext", fontWeight: 500, fontSize: 32, color: C.soft, lineHeight: 1.3, marginTop: 28, maxWidth: 960 }, clip(a.hook, 100)) : null,
     ].filter(Boolean));
   }
 
   const foot = h({ justifyContent: "space-between", alignItems: "flex-end", width: "100%", borderTop: "1px solid rgba(255,255,255,.14)", paddingTop: 26 }, [
-    h({ fontFamily: "Inter, Inter Ext, Inter Ext", fontWeight: 600, fontSize: 24, color: C.soft, maxWidth: 820, lineHeight: 1.3 },
+    h({ fontFamily: "Inter, Inter Ext", fontWeight: 600, fontSize: 24, color: C.soft, maxWidth: 820, lineHeight: 1.3 },
       stat ? clip(a.title, 90) : (stat === null && a.keyStat && a.keyStat.sub) ? a.keyStat.sub : "Finansı anlamanın en kolay yolu"),
-    h({ fontFamily: "JetBrains Mono, JetBrains Mono Ext, Inter Ext", fontWeight: 500, fontSize: 20, color: C.muted, letterSpacing: 1 }, "finansindex.com"),
+    h({ fontFamily: "Inter, Inter Ext", fontWeight: 500, fontSize: 20, color: C.muted, letterSpacing: 1 }, "finansindex.com"),
   ]);
 
   return h(

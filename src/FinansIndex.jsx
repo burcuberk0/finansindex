@@ -816,6 +816,15 @@ const CSS_X = `
 .fx-tk-cta { flex:0 0 auto; background:var(--petrol); color:#fff; border:0; padding:9px 14px; font:600 13.5px/1 var(--sans); border-radius:2px; min-height:38px; }
 .fx-tk-cta:hover { background:#A3243D; }
 
+.fx-tk-src { display:flex; align-items:center; gap:14px; margin:0; padding:6px 0 7px; border-top:1px solid rgba(255,255,255,.08);
+  font:400 11.5px/1.4 var(--sans); color:#A29A92; }
+.fx-tk-src-l { flex:1 1 auto; min-width:0; }
+.fx-tk-src-s { display:none; flex:1 1 auto; }
+.fx-tk-src button { flex:0 0 auto; background:none; border:0; padding:0; color:#E7C9CF; font:600 11.5px/1.4 var(--sans); white-space:nowrap; }
+.fx-tk-src button:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
+.fx-tk-warn { background:#FBEAE6; color:#7A2414; border-bottom:1px solid #F0C9BF; font-size:13.5px; line-height:1.5; padding:9px 0; }
+.fx-tk-warn strong { font-weight:700; }
+@media (max-width:1000px) { .fx-tk-src-l { display:none; } .fx-tk-src-s { display:block; } }
 /* --- logo bandı --- */
 .fx-hd { background:var(--surface); border-bottom:0; }
 .fx-mast { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:20px; padding:26px 0 24px; }
@@ -3098,8 +3107,16 @@ const NAV_HIDDEN = new Set(["finansindex-dosya"]);
 const NAV_CATEGORIES = CATEGORIES.filter((c) => !NAV_HIDDEN.has(c.slug));
 
 function TopTicker({ market, go }) {
-  const { status, items } = market;
+  const { status, items, updatedAt, tcmbDate } = market;
+  /* Ana sayfadaki piyasa paneliyle aynı kural: çekim saatinden bu yana
+     6 saatten fazla geçtiyse rakamlar önbellekten geliyor olabilir. */
+  const bayat = !!updatedAt && (Date.now() - new Date(updatedAt).getTime()) > 6 * 60 * 60 * 1000;
+  const saat = updatedAt
+    ? new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt))
+    : null;
+  const notlar = () => go({ n: "home", hash: "mkt-h" });
   return (
+    <>
     <div className="fx-tk">
       <div className="fi-wrap fx-tk-w">
         <div className="fx-tk-in" role="region" aria-label="Piyasa göstergeleri">
@@ -3129,7 +3146,29 @@ function TopTicker({ market, go }) {
         </div>
         <button className="fx-tk-cta" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
       </div>
+      {status === "ready" && items.length > 0 && (
+        <div className="fi-wrap">
+          <p className="fx-tk-src">
+            <span className="fx-tk-src-l">
+              Döviz: TCMB gösterge kuru, döviz satış{tcmbDate ? ` (${tcmbDate})` : ""}; banka kuru değildir.
+              {" "}Altın ve gümüş: serbest piyasa, TL; kuyumcu fiyatı farklıdır.
+              {saat ? ` Son çekim: ${saat}.` : ""}
+            </span>
+            <span className="fx-tk-src-s">Kaynak: TCMB · serbest piyasa</span>
+            <button onClick={notlar}>Kaynak ve notlar →</button>
+          </p>
+        </div>
+      )}
     </div>
+    {bayat && (
+      <div className="fx-tk-warn" role="status">
+        <div className="fi-wrap">
+          <strong>Piyasa verileri güncel olmayabilir.</strong>{" "}
+          Rakamlar son çekimden ({saat}) bu yana 6 saatten uzun süredir yenilenmedi; işlem yapmadan önce TCMB ve kurum sayfalarından teyit edin.
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
