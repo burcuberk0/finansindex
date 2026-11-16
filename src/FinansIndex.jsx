@@ -860,7 +860,11 @@ const CSS_X = `
 
 /* --- üst dörtlü + haber kartı --- */
 .fx-top4 { display:grid; grid-template-columns:repeat(4, 1fr); gap:28px; margin:28px 0 36px; }
-.fx-grid4 { display:grid; grid-template-columns:repeat(4, 1fr); gap:32px 28px; }
+.fx-grid4 { display:grid; grid-template-columns:repeat(auto-fill, minmax(225px, 1fr)); gap:32px 28px; }
+.fx-feedwrap { display:flex; gap:28px; align-items:flex-start; }
+.fx-feedwrap > .fx-grid4 { flex:1 1 auto; min-width:0; }
+.fx-feed-ad { flex:0 0 300px; }
+.fx-feed-ad:not(:has(.fi-sticky > *)) { display:none; }
 .fx-grid4-ad { grid-column:1 / -1; }
 .fx-grid4-ad:empty { display:none; }
 .fx-st .fi-fig-w { background:var(--line); }
@@ -916,6 +920,7 @@ const CSS_X = `
 }
 @media (max-width:1000px) {
   .fx-top4, .fx-grid4, .fx-tiles { grid-template-columns:repeat(2, 1fr); }
+  .fx-feed-ad { display:none; }
   .fx-lead { grid-template-columns:1fr; }
   .fx-lead-side { height:auto; min-height:0; }
 }
@@ -3726,20 +3731,25 @@ function Home({ go, market, daily }) {
                 onClick={() => { setFilter(c.slug); track("category_click", { article_category: c.name, traffic_source: "home_filter" }); }}>{c.name}</button>
             ))}
           </div>
-          <div className="fx-grid4">
-            {feed.length === 0 && (
-              <div className="fi-empty" style={{ gridColumn: "1/-1" }}>
-                <h2>Bu kategoride henüz içerik yok</h2>
-                <p>Filtreyi temizleyerek tüm içeriklere dönebilirsiniz.</p>
-                <button className="fi-btn fi-btn-p" onClick={() => setFilter("hepsi")}>Filtreyi temizle</button>
-              </div>
-            )}
-            {feed.map((a, i) => (
-              <React.Fragment key={a.id}>
-                <StoryCard a={a} go={go} source="home_feed" />
-                {i === 3 && <div className="fx-grid4-ad"><AdSlot placementId="home_native_01" pageType="home" /></div>}
-              </React.Fragment>
-            ))}
+          <div className="fx-feedwrap">
+            <div className="fx-grid4">
+              {feed.length === 0 && (
+                <div className="fi-empty" style={{ gridColumn: "1/-1" }}>
+                  <h2>Bu kategoride henüz içerik yok</h2>
+                  <p>Filtreyi temizleyerek tüm içeriklere dönebilirsiniz.</p>
+                  <button className="fi-btn fi-btn-p" onClick={() => setFilter("hepsi")}>Filtreyi temizle</button>
+                </div>
+              )}
+              {feed.map((a, i) => (
+                <React.Fragment key={a.id}>
+                  <StoryCard a={a} go={go} source="home_feed" />
+                  {i === 3 && <div className="fx-grid4-ad"><AdSlot placementId="home_native_01" pageType="home" /></div>}
+                </React.Fragment>
+              ))}
+            </div>
+            {/* Sağ sütun reklam alanı: kapalıyken boş kalır ve yer kaplamaz,
+                ızgara dört sütuna yayılır. Açılınca ızgara üç sütuna iner. */}
+            <aside className="fx-feed-ad"><div className="fi-sticky"><AdSlot placementId="desktop_sidebar_sticky" pageType="home" /></div></aside>
           </div>
         </section>
 
