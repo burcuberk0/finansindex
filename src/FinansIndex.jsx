@@ -16,7 +16,7 @@ import CONTENT from "./content.json";
 /* ---------------------------------------------------------------- 1. TOKENS */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .fi *, .fi *::before, .fi *::after { box-sizing: border-box; }
 .fi {
@@ -34,9 +34,11 @@ const CSS = `
   /* --serif değişken adı korundu (çok yerde kullanılıyor) ama artık
      geometrik grotesk taşıyor. Serif tipografi "klasik gazete" hissi
      veriyordu; modern finans yayını için display sans daha doğru. */
-  --serif:'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --serif:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Kasım 2026: site genelinde tek yazı tipi (Inter). Değişken adları
+     korunuyor; rakamlar tabular-nums ile hizalı kalıyor. */
+  --mono:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --wrap:1180px; --r:2px;
   font-family: var(--sans);
   background: var(--bg); color: var(--ink);
@@ -786,6 +788,187 @@ const CSS = `
 
 @media (prefers-reduced-motion:reduce) {
   .fi *, .fi *::before, .fi *::after { animation:none !important; transition:none !important; }
+}
+`;
+
+/* ============================================================
+   ŞABLON v2 — gazete düzeni (Kasım 2026)
+   Koyu piyasa şeridi → ortalanmış logo → koyu menü bandı →
+   yoğun dörtlü ızgaralar. Renkler değişmedi: mürekkep, krem,
+   şarap kırmızısı yalnızca vurgu.
+   ============================================================ */
+const CSS_X = `
+/* --- üst piyasa şeridi --- */
+.fx-tk { background:#1A1A1A; color:#fff; }
+.fx-tk-w { display:flex; align-items:center; gap:20px; }
+.fx-tk-in { flex:1 1 auto; min-width:0; display:flex; gap:0; overflow-x:auto; scrollbar-width:none; }
+.fx-tk-in::-webkit-scrollbar { display:none; }
+.fx-tk-msg { padding:16px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#9C948C; }
+.fx-tk-c { flex:1 0 auto; padding:10px 18px 10px 0; margin-right:18px; border-right:1px solid rgba(255,255,255,.1); }
+.fx-tk-c:last-child { border-right:0; margin-right:0; }
+.fx-tk-k { font:700 12.5px/1 var(--sans); letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; margin-bottom:7px; }
+.fx-tk-row { display:flex; align-items:center; gap:8px; }
+.fx-tk-ar { font-size:15px; line-height:1; }
+.fx-tk-ar.up { color:#4ECB8D; } .fx-tk-ar.down { color:#F06A5A; } .fx-tk-ar.flat { color:#6E6A66; font-size:9px; }
+.fx-tk-v { font:500 13.5px/1.2 var(--mono); color:#EDE8E2; white-space:nowrap; }
+.fx-tk-d { font:500 12px/1.2 var(--mono); color:#9C948C; white-space:nowrap; }
+.fx-tk-d.up { color:#7FCFA6; } .fx-tk-d.down { color:#F09A88; }
+.fx-tk-cta { flex:0 0 auto; background:var(--petrol); color:#fff; border:0; padding:9px 14px; font:600 13.5px/1 var(--sans); border-radius:2px; min-height:38px; }
+.fx-tk-cta:hover { background:#A3243D; }
+
+/* --- logo bandı --- */
+.fx-hd { background:var(--surface); border-bottom:0; }
+.fx-mast { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:20px; padding:26px 0 24px; }
+.fx-mast-l { display:flex; align-items:center; gap:18px; }
+.fx-mast-c { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.fx-mast-r { display:flex; justify-content:flex-end; align-items:center; gap:6px; }
+.fx-hd .fi-logo { gap:12px; }
+.fx-hd .fi-logo-m { width:46px; height:46px; }
+.fx-hd .fi-logo-t { font-size:46px; letter-spacing:-.05em; }
+.fx-mast-tag { font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.fi a.fx-pill, .fx-pill { background:var(--ink); color:#fff; border:0; padding:9px 13px; font:600 14px/1 var(--sans); border-radius:4px; min-height:0; }
+.fx-pill:hover { background:var(--petrol); }
+.fx-txtlink { background:none; border:0; padding:0; font:600 14.5px/1 var(--sans); color:var(--petrol); }
+.fx-txtlink:hover { text-decoration:underline; text-underline-offset:4px; }
+.fx-icbtn { width:44px; height:44px; display:grid; place-items:center; background:none; border:0; color:var(--ink); border-radius:3px; }
+.fx-icbtn:hover { background:var(--bg); }
+
+/* --- menü bandı: koyu, yapışkan --- */
+.fx-nb { background:var(--ink); position:sticky; top:0; z-index:70; }
+.fi-nav.fx-nav { border-top:0; flex-wrap:nowrap; overflow-x:auto; overflow-y:visible; scrollbar-width:none; }
+.fx-nav::-webkit-scrollbar { display:none; }
+@media (min-width:1240px) { .fi-nav.fx-nav { overflow:visible; flex-wrap:nowrap; justify-content:space-between; } }
+/* 1240px altında menü tek satırda kalır, yana kaydırılır; alt menüler
+   kaydırma alanında kırpılacağı için gizlenir (kategori bağlantıları çalışır). */
+@media (max-width:1239px) {
+  .fx-nav .fi-nav-ch, .fx-nav .fi-drop { display:none; }
+  .fx-nb::after { content:""; position:absolute; top:0; right:0; bottom:0; width:36px; pointer-events:none;
+    background:linear-gradient(to right, rgba(20,16,14,0), var(--ink)); }
+}
+.fx-nav .fi-nav-i > :is(button, a) { color:#fff; font-size:16px; font-weight:600; padding:18px 10px; gap:6px; white-space:nowrap;
+  border-bottom:3px solid transparent; }
+.fx-nav .fi-nav-i:first-child > :is(button, a) { padding-left:0; }
+.fx-nav .fi-nav-i:last-child > :is(button, a) { padding-right:0; }
+.fx-nav .fi-nav-i > :is(button, a):hover,
+.fx-nav .fi-nav-i > :is(button, a)[aria-expanded="true"] { color:#fff; border-bottom-color:rgba(255,255,255,.35); }
+.fx-nav .fi-nav-i > :is(button, a)[aria-current="page"] { color:#fff; border-bottom-color:var(--petrol); }
+.fx-nav .fi-nav-ch { opacity:.8; }
+.fx-nav .fi-drop { color:var(--ink); }
+
+/* --- bölüm başlığı --- */
+.fx-sh { display:flex; align-items:center; gap:18px; margin:0 0 22px; }
+.fx-sh h2 { font:700 21px/1.1 var(--sans); letter-spacing:.01em; text-transform:uppercase; color:var(--ink); margin:0; white-space:nowrap; }
+.fx-sh-l { flex:1 1 auto; height:1px; background:var(--line-2); }
+
+/* --- üst dörtlü + haber kartı --- */
+.fx-top4 { display:grid; grid-template-columns:repeat(4, 1fr); gap:28px; margin:28px 0 36px; }
+.fx-grid4 { display:grid; grid-template-columns:repeat(auto-fill, minmax(225px, 1fr)); gap:32px 28px; }
+.fx-feedwrap { display:flex; gap:28px; align-items:flex-start; }
+.fx-feedwrap > .fx-grid4 { flex:1 1 auto; min-width:0; }
+.fx-feed-ad { flex:0 0 300px; }
+.fx-feed-ad:not(:has(.fi-sticky > *)) { display:none; }
+.fx-grid4-ad { grid-column:1 / -1; }
+.fx-grid4-ad:empty { display:none; }
+.fx-st .fi-fig-w { background:var(--line); }
+.fx-st .fi-fig-w img { width:100%; height:100%; object-fit:cover; }
+.fx-st-m { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0 6px; }
+.fx-st-t { font:600 19px/1.32 var(--sans); letter-spacing:-.012em; color:var(--ink); margin:0; }
+
+/* --- manşet --- */
+.fx-lead { display:grid; grid-template-columns:minmax(0, 2fr) minmax(300px, 1fr); gap:28px; align-items:stretch;
+  padding-top:30px; border-top:1px solid var(--line); }
+/* Sağ sütun satır yüksekliğini belirlemez: slider ne kadar yüksekse o
+   kadar yer kaplar, veri akışı kendi içinde kayar. */
+.fx-lead-side { display:flex; flex-direction:column; min-width:0; height:0; min-height:100%; }
+.fx-lead-side .fi-log-panel { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+.fx-lead-side .fi-log-list { flex:1 1 auto; min-height:0; overflow-y:auto; scrollbar-width:thin; }
+.fi a.fi-log-more, .fx-lead-side .fi-log-more { display:block; flex:0 0 auto; text-decoration:none; }
+
+/* --- manşet slider'ı --- */
+.fx-sl { display:flex; flex-direction:column; min-width:0; }
+.fx-sl-view { position:relative; aspect-ratio:16 / 9; background:var(--ink); overflow:hidden; }
+.fx-sl-s { position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .45s ease, visibility .45s; }
+.fx-sl-s.on { opacity:1; visibility:visible; }
+.fi a.fx-sl-a, .fx-sl-a { position:absolute; inset:0; display:block; text-decoration:none; }
+.fx-sl-a img { width:100%; height:100%; object-fit:cover; }
+.fx-sl-cap { position:absolute; left:0; right:0; bottom:0; padding:90px 30px 26px;
+  background:linear-gradient(to top, rgba(10,8,7,.92) 0%, rgba(10,8,7,.72) 45%, rgba(10,8,7,0) 100%); }
+.fx-sl-cat { display:inline-block; background:var(--petrol); color:#fff; font:600 11px/1 var(--mono);
+  letter-spacing:.1em; text-transform:uppercase; padding:6px 8px; margin-bottom:12px; }
+.fx-sl-t { font:700 30px/1.16 var(--sans); letter-spacing:-.022em; color:#fff; margin:0; max-width:30ch; text-wrap:balance; }
+.fx-sl-a:hover .fx-sl-t { text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:5px; }
+.fx-sl-ar { position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; display:grid; place-items:center;
+  background:rgba(255,255,255,.92); color:var(--ink); border:0; border-radius:2px; opacity:0; transition:opacity .15s ease; }
+.fx-sl-ar.prev { left:14px; } .fx-sl-ar.next { right:14px; }
+.fx-sl:hover .fx-sl-ar, .fx-sl-ar:focus-visible { opacity:1; }
+.fx-sl-nums { display:flex; background:var(--ink); }
+.fx-sl-nums button { flex:1 1 0; background:none; border:0; border-top:3px solid transparent; color:#9C948C;
+  font:600 15px/1 var(--mono); padding:13px 0; min-height:44px; }
+.fx-sl-nums button:hover { color:#fff; }
+.fx-sl-nums button[aria-current="true"] { color:#fff; border-top-color:var(--petrol); background:#2A2624; }
+
+/* --- rehber kutuları --- */
+.fx-tiles { display:grid; grid-template-columns:repeat(4, 1fr); gap:24px 28px; }
+.fi a.fx-tile, .fx-tile { display:flex; flex-direction:column; gap:10px; background:#EEEBE5; padding:22px 24px; min-height:128px;
+  text-decoration:none; transition:background .12s ease; }
+.fx-tile:hover { background:#E6E1D8; }
+.fx-tile-c { font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--petrol); }
+.fx-tile-t { font:600 18px/1.36 var(--sans); color:var(--ink); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* --- duyarlı --- */
+@media (max-width:1100px) {
+  .fx-tk-cta { display:none; }
+  .fx-hd .fi-logo-t { font-size:38px; } .fx-hd .fi-logo-m { width:38px; height:38px; }
+}
+@media (max-width:1000px) {
+  .fx-top4, .fx-grid4, .fx-tiles { grid-template-columns:repeat(2, 1fr); }
+  .fx-feed-ad { display:none; }
+  .fx-lead { grid-template-columns:1fr; }
+  .fx-lead-side { height:auto; min-height:0; }
+}
+@media (max-width:760px) {
+  .fx-mast { grid-template-columns:auto 1fr auto; padding:14px 0; gap:10px; }
+  .fx-mast-l { display:none; }
+  .fx-mast-c { align-items:flex-start; grid-column:1 / 3; }
+  .fx-mast-tag { display:none; }
+  .fx-hd .fi-logo-t { font-size:27px; } .fx-hd .fi-logo-m { width:30px; height:30px; }
+  .fx-nb .fi-nav.fx-nav { display:flex; }
+  .fx-nav .fi-nav-i > :is(button, a) { font-size:15px; padding:14px 10px; }
+  .fx-nav .fi-nav-ch { display:none; }
+  .fx-nav .fi-drop { display:none; }
+  .fx-top4 { gap:22px 16px; margin:20px 0 28px; }
+  .fx-st-t { font-size:16px; }
+  .fx-sl-view { aspect-ratio:4 / 3; }
+  .fx-sl-cap { padding:60px 16px 16px; }
+  .fx-sl-t { font-size:21px; }
+  .fx-sl-ar { display:none; }
+  .fx-sh h2 { font-size:18px; }
+  .fx-tiles { gap:12px; }
+  .fi a.fx-tile, .fx-tile { padding:16px; min-height:0; }
+  .fx-tile-t { font-size:16px; }
+}
+@media (max-width:600px) {
+  .fx-top4, .fx-grid4, .fx-tiles { grid-template-columns:1fr; }
+}
+/* --- ana sayfa piyasa paneli: sade sans yazı, rozetli değişim --- */
+.fx-mkt .fi-mkt-grid { gap:16px; background:none; border:0; overflow:visible; }
+.fx-mkt .fi-mkt-card { border:1px solid var(--line); border-radius:4px; padding:20px 22px 18px; min-height:0; }
+.fx-mkt .fi-mkt-k { font:600 14px/1.2 var(--sans); letter-spacing:0; text-transform:none; color:var(--ink-2); margin-bottom:10px; }
+.fx-mkt .fi-mkt-v { font:700 30px/1.1 var(--sans); letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.fx-mkt .fi-mkt-u { font-size:17px; font-weight:500; margin-left:4px; }
+.fx-mkt .fi-mkt-d { align-self:flex-start; font:600 13px/1 var(--sans); padding:5px 8px; border-radius:3px; margin-top:10px; }
+.fx-mkt .fi-mkt-d.up { background:#E7F3EC; }
+.fx-mkt .fi-mkt-d.down { background:#FBEAE6; }
+.fx-mkt .fi-mkt-d span[aria-hidden] { font-size:8px; }
+.fx-mkt .fi-mkt-s { font:400 13px/1.4 var(--sans); color:var(--muted); padding-top:14px; margin-top:14px; border-top:1px solid var(--line); }
+.fx-mkt .fi-mkt-note { margin-top:18px; padding:16px 20px; background:var(--surface); border:1px solid var(--line); border-radius:4px; }
+.fx-mkt .fi-mkt-note p { font-size:13px; line-height:1.6; margin:0 0 6px; }
+.fx-mkt .fi-mkt-time { font-family:var(--sans); font-size:12.5px !important; color:var(--muted); padding-top:10px; margin-top:10px !important; }
+@media (max-width:760px) {
+  .fx-mkt .fi-mkt-grid { gap:10px; }
+  .fx-mkt .fi-mkt-card { padding:14px; }
+  .fx-mkt .fi-mkt-v { font-size:22px; }
+  .fx-mkt .fi-mkt-s { display:block; font-size:12px; }
 }
 `;
 
@@ -2904,6 +3087,52 @@ function Logo({ go }) {
   );
 }
 
+/**
+ * Üst şerit: koyu zeminde kompakt piyasa göstergeleri.
+ * Her göstergede ad, değer ve yön (ok + işaret + renk) birlikte verilir;
+ * renk tek başına anlam taşımaz.
+ */
+/* Menüde gösterilen kategoriler. "FinansIndex Dosya" menüden çıkarıldı;
+   kategori sayfası ve içerikleri yerinde duruyor. */
+const NAV_HIDDEN = new Set(["finansindex-dosya"]);
+const NAV_CATEGORIES = CATEGORIES.filter((c) => !NAV_HIDDEN.has(c.slug));
+
+function TopTicker({ market, go }) {
+  const { status, items } = market;
+  return (
+    <div className="fx-tk">
+      <div className="fi-wrap fx-tk-w">
+        <div className="fx-tk-in" role="region" aria-label="Piyasa göstergeleri">
+          {status === "loading" && <span className="fx-tk-msg">Piyasa verileri yükleniyor…</span>}
+          {(status === "error" || (status !== "loading" && !items.length)) && <span className="fx-tk-msg">Piyasa verisi şu an alınamıyor</span>}
+          {status !== "loading" && items.map((d) => {
+            const has = d.d != null && Math.abs(d.d) >= 0.005;
+            const up = has && d.d >= 0;
+            return (
+              <div className="fx-tk-c" key={d.k}>
+                <div className="fx-tk-k">{d.k}</div>
+                <div className="fx-tk-row">
+                  {has
+                    ? <span className={`fx-tk-ar ${up ? "up" : "down"}`} aria-hidden="true">{up ? "▲" : "▼"}</span>
+                    : <span className="fx-tk-ar flat" aria-hidden="true">●</span>}
+                  <div>
+                    <div className="fx-tk-v">{num(d.v, d.v >= 1000 ? 0 : 2)}</div>
+                    <div className={`fx-tk-d ${has ? (up ? "up" : "down") : ""}`}>
+                      {has ? `${up ? "+" : "−"}%${num(Math.abs(d.d), 2)}` : "%0,00"}
+                      {has && <span className="fi-hidden">{up ? " yükseliş" : " düşüş"}</span>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <button className="fx-tk-cta" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
+      </div>
+    </div>
+  );
+}
+
 function Header({ route, go, onSearch, market }) {
   const [open, setOpen] = useState(false);
   const [drop, setDrop] = useState(null);
@@ -2922,25 +3151,35 @@ function Header({ route, go, onSearch, market }) {
 
   return (
     <>
-      <header className="fi-hd">
+      <TopTicker market={market} go={go} />
+
+      <header className="fi-hd fx-hd">
         <div className="fi-wrap">
-          <div className="fi-hd-top">
-            <button className="fi-ico fi-burger" onClick={() => setOpen(true)} aria-label="Menüyü aç" aria-expanded={open}>
-              <svg width="20" height="20" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" strokeLinecap="round" /></svg>
-            </button>
-            <Logo go={go} />
-            <span className="fi-tag">Finansı anlamanın<br />en kolay yolu</span>
-            <div className="fi-hd-acts">
-              <button className="fi-ico" onClick={onSearch} aria-label="Sitede ara">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6" /><path d="m13.5 13.5 4 4" strokeLinecap="round" /></svg>
+          <div className="fx-mast">
+            <div className="fx-mast-l">
+              <A to={{ n: "tools" }} go={go} className="fi-btn fx-pill">Hesaplama araçları</A>
+              <button className="fx-txtlink" onClick={() => go({ n: "home", hash: "ledger-h" })}>Cep Etkisi Defteri</button>
+            </div>
+            <div className="fx-mast-c">
+              <Logo go={go} />
+              <span className="fx-mast-tag">Finansı anlamanın en kolay yolu</span>
+            </div>
+            <div className="fx-mast-r">
+              <button className="fx-icbtn" onClick={onSearch} aria-label="Sitede ara">
+                <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6" /><path d="m13.5 13.5 4 4" strokeLinecap="round" /></svg>
               </button>
-              <A to={{ n: "tools" }} go={go} className="fi-btn fi-btn-o">Araçlar</A>
-              <button className="fi-btn fi-btn-g" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
+              <button className="fx-icbtn" onClick={() => setOpen(true)} aria-label="Menüyü aç" aria-expanded={open}>
+                <svg width="24" height="24" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" strokeLinecap="round" /></svg>
+              </button>
             </div>
           </div>
+        </div>
+      </header>
 
-          <nav className="fi-nav" aria-label="Kategoriler">
-            {CATEGORIES.map((c) => {
+      <div className="fx-nb">
+        <div className="fi-wrap">
+          <nav className="fi-nav fx-nav" aria-label="Kategoriler">
+            {NAV_CATEGORIES.map((c) => {
               const subs = SUBNAV[c.slug];
               const isOpen = drop === c.slug;
               return (
@@ -2953,7 +3192,7 @@ function Header({ route, go, onSearch, market }) {
                     aria-expanded={subs ? isOpen : undefined}
                     onFocus={() => subs && enter(c.slug)}>
                     {c.name}
-                    {subs && <svg className="fi-nav-ch" width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                    {subs && <svg className="fi-nav-ch" width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" /></svg>}
                   </A>
                   {subs && isOpen && (
                     <div className="fi-drop" onMouseEnter={() => enter(c.slug)} onMouseLeave={leave}>
@@ -2973,14 +3212,9 @@ function Header({ route, go, onSearch, market }) {
                 </div>
               );
             })}
-            <div className="fi-nav-i">
-              <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} aria-current={route.n === "tools" ? "page" : undefined}>Finansal Araçlar</A>
-            </div>
           </nav>
         </div>
-      </header>
-
-      <MarketBand market={market} />
+      </div>
 
       <div className={`fi-drawer ${open ? "on" : ""}`} role="dialog" aria-modal="true" aria-label="Menü" hidden={!open}>
         <div className="fi-drawer-bg" onClick={close} />
@@ -2991,7 +3225,8 @@ function Header({ route, go, onSearch, market }) {
               <svg width="18" height="18" viewBox="0 0 20 20" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" /></svg>
             </button>
           </div>
-          {CATEGORIES.map((c) => (
+          <A to={{ n: "home" }} go={(r) => { go(r); close(); }} className="fi-dl">Anasayfa</A>
+          {NAV_CATEGORIES.map((c) => (
             <A to={{ n: "category", slug: c.slug }} go={(r) => nav(r, c.name)} className="fi-dl" key={c.slug}>{c.name}</A>
           ))}
           <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} className="fi-dl">Finansal Araçlar</A>
@@ -3250,6 +3485,101 @@ function Footer({ go }) {
 
 /* ------------------------------------------------------------- 13. ANA SAYFA */
 
+/* ekonomim tarzı haber kartı: görsel üstte, altında kalın başlık.
+   Özet metni yok; yoğun ızgarada başlık tek başına okunur. */
+function StoryCard({ a, go, source }) {
+  const open = () => {
+    track("related_article_click", { article_id: a.id, article_category: a.category, content_type: a.contentType, traffic_source: source });
+    go({ n: "article", slug: a.slug });
+  };
+  return (
+    <article className="fx-st">
+      <A to={{ n: "article", slug: a.slug }} go={open} className="fi-a">
+        <Figure image={a.featured_image} ratio="16 / 9" showCredit={false}
+          stat={a.keyStat} cat={a.category} title={a.title} />
+        <div className="fx-st-m">
+          <span className="fi-cat">{catName(a.category)}</span>
+          {a.auto && <span className="fi-badge fi-b-auto">Otomatik · Resmî veri</span>}
+          {a.sponsored && <span className="fi-badge fi-b-spon">Sponsorlu</span>}
+        </div>
+        <h3 className="fx-st-t fi-ttl">{a.title}</h3>
+      </A>
+    </article>
+  );
+}
+
+/* Manşet slider'ı. Görselin üzerine başlık bindirilir; altında numaralı
+   geçiş düğmeleri. 6 saniyede bir ilerler; fare üzerindeyken, klavyeyle
+   odaklanıldığında ya da sistemde "hareketi azalt" açıksa durur. */
+function HeroSlider({ slides, go }) {
+  const [i, setI] = useState(0);
+  const [hold, setHold] = useState(false);
+  const n = slides.length;
+  const reduce = typeof window !== "undefined" && window.matchMedia
+    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (n < 2 || hold || reduce) return;
+    const t = setTimeout(() => setI((x) => (x + 1) % n), 6000);
+    return () => clearTimeout(t);
+  }, [i, n, hold, reduce]);
+
+  if (!n) return null;
+  const pick = (k) => { setI(((k % n) + n) % n); };
+
+  return (
+    <section className="fx-sl" aria-roledescription="carousel" aria-label="Manşet"
+      onMouseEnter={() => setHold(true)} onMouseLeave={() => setHold(false)}
+      onFocusCapture={() => setHold(true)} onBlurCapture={() => setHold(false)}>
+      <div className="fx-sl-view">
+        {slides.map((a, k) => (
+          <div className={`fx-sl-s ${k === i ? "on" : ""}`} key={a.id} aria-hidden={k !== i}
+            role="group" aria-roledescription="slide" aria-label={`${k + 1} / ${n}`}>
+            <A to={{ n: "article", slug: a.slug }} tabIndex={k === i ? 0 : -1}
+              go={() => { track("related_article_click", { article_id: a.id, article_category: a.category, traffic_source: "home_slider", position: k + 1 }); go({ n: "article", slug: a.slug }); }}
+              className="fi-a fx-sl-a">
+              <img src={a.featured_image.src} alt={a.featured_image.alt || ""} loading={k === 0 ? "eager" : "lazy"} decoding="async" />
+              <div className="fx-sl-cap">
+                <span className="fx-sl-cat">{catName(a.category)}</span>
+                {k === 0 ? <h1 className="fx-sl-t">{a.title}</h1> : <h2 className="fx-sl-t">{a.title}</h2>}
+              </div>
+            </A>
+          </div>
+        ))}
+        {n > 1 && (
+          <>
+            <button className="fx-sl-ar prev" onClick={() => pick(i - 1)} aria-label="Önceki manşet">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M10 3L5 8l5 5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+            <button className="fx-sl-ar next" onClick={() => pick(i + 1)} aria-label="Sonraki manşet">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+          </>
+        )}
+      </div>
+      {n > 1 && (
+        <div className="fx-sl-nums" role="group" aria-label="Manşet seçimi">
+          {slides.map((a, k) => (
+            <button key={a.id} onClick={() => pick(k)} aria-current={k === i ? "true" : undefined}
+              aria-label={`${k + 1}. manşet: ${a.title}`}>{k + 1}</button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* Bölüm başlığı: büyük harf, sağa uzanan ince çizgi. */
+function SecHead({ id, title, more }) {
+  return (
+    <div className="fx-sh">
+      <h2 id={id}>{title}</h2>
+      <span className="fx-sh-l" aria-hidden="true" />
+      {more}
+    </div>
+  );
+}
+
 function Home({ go, market, daily }) {
   useSeo({
     title: "FinansIndex — Finansı anlamanın en kolay yolu",
@@ -3262,82 +3592,48 @@ function Home({ go, market, daily }) {
   const [homeCalc, setHomeCalc] = useState("kredi");
   const activeCalc = toolById(homeCalc);
   const hero = HERO;
-  const side = SIDE;
+  /* Manşet slider'ı: görseli olan en yeni beş içerik. Görselsiz içerik
+     (ör. otomatik günlük kur yazısı) slider'a girmez, üst dörtlüde durur. */
+  const slides = useMemo(() => {
+    const withImg = ARTICLES.filter((a) => a.featured_image && a.featured_image.src);
+    const list = withImg.some((a) => a.id === hero.id) ? [hero, ...withImg.filter((a) => a.id !== hero.id)] : withImg;
+    return list.slice(0, 5);
+  }, [hero]);
+
+  /* Üst dörtlü: slider'da olmayan en yeni içerikler. */
+  const top4 = useMemo(() => {
+    const ids = new Set(slides.map((a) => a.id));
+    const list = ARTICLES.filter((a) => !ids.has(a.id)).slice(0, 4);
+    return daily ? [daily, ...list].slice(0, 4) : list;
+  }, [slides, daily]);
+
   const feed = useMemo(() => {
-    /* Manşet ve "Öne çıkanlar" zaten sayfanın tepesinde duruyor; akışın
-       ilk satırlarında bir daha görünmesinler. Kategori süzgeci açıkken
-       yalnızca manşet çıkarılır: yoksa o kategoride gösterilecek yazı
-       sayısı gereksiz yere azalıyor. */
+    /* Slider ve üst dörtlüdekiler akışta tekrar görünmesin. Kategori
+       süzgeci açıkken hiçbiri çıkarılmaz: yoksa o kategoride gösterilecek
+       yazı sayısı gereksiz yere azalıyor. */
     const ustte = filter === "hepsi"
-      ? new Set([hero.id, ...side.map((a) => a.id)])
-      : new Set([hero.id]);
+      ? new Set([...slides, ...top4].map((a) => a.id))
+      : new Set();
     const list = ARTICLES.filter((a) => !ustte.has(a.id));
-    const all = daily ? [daily, ...list] : list;
+    const all = daily && filter !== "hepsi" ? [daily, ...list] : list;
     return filter === "hepsi" ? all : all.filter((a) => a.category === filter);
-  }, [filter, hero.id, side, daily]);
+  }, [filter, slides, top4, daily]);
 
   return (
     <main id="icerik">
       <div className="fi-wrap">
         <AdSlot placementId="home_top_banner" pageType="home" className="fi-sec" />
 
-        {/* ÜST IZGARA: manşet + son güncellemeler yan yana */}
-        <div className="fi-topgrid">
-          <div className="fi-topgrid-main">
-            {/* Manşet — dekoratif görsel yok. Editoryal hiyerarşi tipografiyle kurulur. */}
-            <section className="fi-lead" aria-label="Manşet">
-              <div className="fi-lead-main">
-                <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-a">
-                  <Figure image={hero.featured_image} ratio="16 / 9" priority className="fi-lead-fig"
-                    stat={hero.keyStat} cat={hero.category} title={hero.title} />
-                  <div className="fi-meta">
-                    <span className="fi-cat">{catName(hero.category)}</span><span className="fi-dot" />
-                    <span className="fi-badge fi-b-type">{hero.contentType}</span><span className="fi-dot" />
-                    <span>{dateTR(hero.published_at)}</span><span className="fi-dot" /><span>{hero.read} dk</span>
-                  </div>
-                  <h1 className="fi-lead-t fi-ttl">{hero.title}</h1>
-                  <p className="fi-lead-s">{hero.summary}</p>
-                </A>
+        {/* ÜST DÖRTLÜ: görsel + kalın başlık, özet yok */}
+        <section className="fx-top4" aria-label="Öne çıkanlar">
+          {top4.map((a) => <StoryCard a={a} go={go} source="home_top4" key={a.id} />)}
+        </section>
 
-                {hero.keyStat && hero.featured_image && (
-                  <div className="fi-lead-stat">
-                    <div className="fi-lead-stat-v">{hero.keyStat.v}<span>{hero.keyStat.unit}</span></div>
-                    <div className="fi-lead-stat-b">
-                      <p>{hero.keyStat.k}</p>
-                      {hero.keyStat.sub && <span>{hero.keyStat.sub}</span>}
-                    </div>
-                  </div>
-                )}
-
-            <div className="fi-lead-acts">
-                  <A to={{ n: "article", slug: hero.slug }} go={go} className="fi-btn fi-btn-p">Yazıyı oku</A>
-                  {hero.related_tool && (
-                    <A to={{ n: "tools", tool: hero.related_tool }} go={go} className="fi-btn fi-btn-o">
-                      {toolById(hero.related_tool)?.short} hesapla →
-                    </A>
-                  )}
-                </div>
-              </div>
-
-              <div className="fi-lead-side">
-                <h2 className="fi-side-h">Öne çıkanlar</h2>
-                {side.map((a) => (
-                  <A to={{ n: "article", slug: a.slug }} go={go} className="fi-a fi-side-i" key={a.id}>
-                    <div className="fi-side-txt">
-                      <div className="fi-meta"><span className="fi-cat">{catName(a.category)}</span></div>
-                      <h3 className="fi-side-t fi-ttl">{a.title}</h3>
-                    </div>
-                    <Figure image={a.featured_image} ratio="4 / 3" className="fi-side-fig" showCredit={false}
-                      cat={a.category} title={catName(a.category)} />
-                  </A>
-                ))}
-              </div>
-            </section>
-          </div>
-          <aside className="fi-topgrid-side">
+        {/* MANŞET: numaralı slider solda, canlı veri akışı sağda */}
+        <div className="fx-lead">
+          <HeroSlider slides={slides} go={go} />
+          <aside className="fx-lead-side">
             <MarketLog market={market} go={go} />
-            <QuickTools go={go} />
-            <AdSlot placementId="desktop_sidebar_sticky" pageType="home" />
           </aside>
         </div>
       </div>
@@ -3400,13 +3696,8 @@ function Home({ go, market, daily }) {
 
       {/* Piyasa paneli */}
       <div className="fi-wrap">
-        <section className="fi-sec" aria-labelledby="mkt-h">
-          <div className="fi-sh">
-            <div>
-              <div className="fi-eyebrow">Piyasa göstergeleri</div>
-              <h2 className="fi-h2" id="mkt-h">Döviz ve kıymetli maden<span className="fi-count">{market.items.length || "—"}</span></h2>
-            </div>
-          </div>
+        <section className="fi-sec fx-mkt" aria-labelledby="mkt-h">
+          <SecHead id="mkt-h" title="Döviz ve kıymetli maden" />
           <MarketPanel market={market} />
         </section>
 
@@ -3437,14 +3728,24 @@ function Home({ go, market, daily }) {
       </div>
 
       <div className="fi-wrap">
-        {/* Güncel içerikler + sağ sütun */}
-        <section className="fi-sec" aria-labelledby="feed-h">
-          <div className="fi-sh">
-            <div>
-              <div className="fi-eyebrow">Güncel</div>
-              <h2 className="fi-h2" id="feed-h">Son içerikler<span className="fi-count">{feed.length}</span></h2>
-            </div>
+        {/* REHBERLER: gri zeminli metin kutuları, dörtlü ızgara */}
+        <section className="fi-sec" aria-labelledby="guide-h">
+          <SecHead id="guide-h" title="Rehberler" />
+          <div className="fx-tiles">
+            {GUIDES.map((g) => bySlug(g.slug)).filter(Boolean).concat(
+              ARTICLES.filter((a) => !GUIDES.some((g) => g.slug === a.slug) && !slides.some((t) => t.id === a.id) && !top4.some((t) => t.id === a.id))
+            ).slice(0, 8).map((a) => (
+              <A to={{ n: "article", slug: a.slug }} go={go} className="fi-a fx-tile" key={a.id}>
+                <span className="fx-tile-c">{GUIDES.find((g) => g.slug === a.slug)?.label || catName(a.category)}</span>
+                <span className="fx-tile-t">{a.title}</span>
+              </A>
+            ))}
           </div>
+        </section>
+
+        {/* SON İÇERİKLER: dörtlü kart ızgarası, kategori süzgeci */}
+        <section className="fi-sec" aria-labelledby="feed-h">
+          <SecHead id="feed-h" title="Son içerikler" />
           <div className="fi-filters" role="group" aria-label="Kategori filtresi">
             <button className="fi-chip" aria-pressed={filter === "hepsi"} onClick={() => setFilter("hepsi")}>Hepsi</button>
             {CATEGORIES.slice(0, 6).map((c) => (
@@ -3452,8 +3753,8 @@ function Home({ go, market, daily }) {
                 onClick={() => { setFilter(c.slug); track("category_click", { article_category: c.name, traffic_source: "home_filter" }); }}>{c.name}</button>
             ))}
           </div>
-          <div className="fi-2col">
-            <div className="fi-grid fi-g3" style={{ alignContent: "start" }}>
+          <div className="fx-feedwrap">
+            <div className="fx-grid4">
               {feed.length === 0 && (
                 <div className="fi-empty" style={{ gridColumn: "1/-1" }}>
                   <h2>Bu kategoride henüz içerik yok</h2>
@@ -3463,28 +3764,14 @@ function Home({ go, market, daily }) {
               )}
               {feed.map((a, i) => (
                 <React.Fragment key={a.id}>
-                  <ArticleCard a={a} go={go} source="home_feed" />
-                  {i === 2 && <AdSlot placementId="home_native_01" pageType="home" />}
+                  <StoryCard a={a} go={go} source="home_feed" />
+                  {i === 3 && <div className="fx-grid4-ad"><AdSlot placementId="home_native_01" pageType="home" /></div>}
                 </React.Fragment>
               ))}
             </div>
-            <aside>
-              <div className="fi-sticky">
-                <AdSlot placementId="desktop_sidebar_sticky" pageType="home" />
-                <div style={{ marginTop: 26 }}>
-                  <h3 className="fi-rail-h">Rehberler</h3>
-                  {GUIDES.map((g) => {
-                    const a = bySlug(g.slug);
-                    return (
-                      <A to={{ n: "article", slug: a.slug }} go={go} className="fi-rail-i" key={g.slug}>
-                        <div className="fi-meta"><span style={{ color: "var(--gold)" }}>{g.label}</span></div>
-                        <p className="fi-rail-t">{a.title}</p>
-                      </A>
-                    );
-                  })}
-                </div>
-              </div>
-            </aside>
+            {/* Sağ sütun reklam alanı: kapalıyken boş kalır ve yer kaplamaz,
+                ızgara dört sütuna yayılır. Açılınca ızgara üç sütuna iner. */}
+            <aside className="fx-feed-ad"><div className="fi-sticky"><AdSlot placementId="desktop_sidebar_sticky" pageType="home" /></div></aside>
           </div>
         </section>
 
@@ -4305,7 +4592,7 @@ export default function FinansIndex() {
 
   return (
     <div className={`fi ${AD_INVENTORY.mobile_sticky_footer ? "fi-has-sticky-ad" : ""}`}>
-      <style>{CSS}</style>
+      <style>{CSS + CSS_X}</style>
       <a href="#icerik" className="fi-hidden fi-skip">İçeriğe geç</a>
       <Header route={route} go={go} onSearch={() => setSearch(true)} market={market} />
       {page}
