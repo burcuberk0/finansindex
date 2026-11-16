@@ -816,6 +816,8 @@ const CSS_X = `
 .fx-tk-cta { flex:0 0 auto; background:var(--petrol); color:#fff; border:0; padding:9px 14px; font:600 13.5px/1 var(--sans); border-radius:2px; min-height:38px; }
 .fx-tk-cta:hover { background:#A3243D; }
 
+.fx-tk-warn { background:#FBEAE6; color:#7A2414; border-bottom:1px solid #F0C9BF; font-size:13.5px; line-height:1.5; padding:9px 0; }
+.fx-tk-warn strong { font-weight:700; }
 /* --- logo bandı --- */
 .fx-hd { background:var(--surface); border-bottom:0; }
 .fx-mast { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:20px; padding:26px 0 24px; }
@@ -3098,8 +3100,15 @@ const NAV_HIDDEN = new Set(["finansindex-dosya"]);
 const NAV_CATEGORIES = CATEGORIES.filter((c) => !NAV_HIDDEN.has(c.slug));
 
 function TopTicker({ market, go }) {
-  const { status, items } = market;
+  const { status, items, updatedAt, tcmbDate } = market;
+  /* Ana sayfadaki piyasa paneliyle aynı kural: çekim saatinden bu yana
+     6 saatten fazla geçtiyse rakamlar önbellekten geliyor olabilir. */
+  const bayat = !!updatedAt && (Date.now() - new Date(updatedAt).getTime()) > 6 * 60 * 60 * 1000;
+  const saat = updatedAt
+    ? new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt))
+    : null;
   return (
+    <>
     <div className="fx-tk">
       <div className="fi-wrap fx-tk-w">
         <div className="fx-tk-in" role="region" aria-label="Piyasa göstergeleri">
@@ -3130,6 +3139,15 @@ function TopTicker({ market, go }) {
         <button className="fx-tk-cta" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
       </div>
     </div>
+    {bayat && (
+      <div className="fx-tk-warn" role="status">
+        <div className="fi-wrap">
+          <strong>Piyasa verileri güncel olmayabilir.</strong>{" "}
+          Rakamlar son çekimden ({saat}) bu yana 6 saatten uzun süredir yenilenmedi; işlem yapmadan önce TCMB ve kurum sayfalarından teyit edin.
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
