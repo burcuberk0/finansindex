@@ -861,6 +861,23 @@ const CSS_X = `
 .fx-nav .fi-nav-ch { opacity:.8; }
 .fx-nav .fi-drop { color:var(--ink); }
 
+
+/* --- açılır alt menü: tek sütun, sabit genişlik, düzenli satırlar --- */
+.fx-nav .fi-drop { width:290px; min-width:0; padding:0; border:1px solid var(--line); border-top:3px solid var(--petrol);
+  border-radius:0 0 4px 4px; box-shadow:0 14px 32px rgba(20,16,14,.16); overflow:hidden; }
+.fx-nav .fi-nav-i:nth-last-child(-n+2) .fi-drop { left:auto; right:0; }
+.fx-nav .fi-drop-d { margin:0; padding:14px 18px 13px; font-size:13px; line-height:1.5; color:var(--muted);
+  background:#F7F4EF; border-bottom:1px solid var(--line); }
+.fx-nav .fi-drop ul { display:block; padding:6px 0; }
+.fx-nav .fi-drop ul li + li { border-top:1px solid #F0ECE6; }
+.fx-nav .fi-drop ul :is(button, a) { display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:11px 18px; min-height:0; border-radius:0; font:500 14.5px/1.3 var(--sans); color:var(--ink); }
+.fx-nav .fi-drop ul :is(button, a)::after { content:"›"; font-size:18px; line-height:1; color:#B8B0A6; transition:transform .12s ease, color .12s ease; }
+.fx-nav .fi-drop ul :is(button, a):hover { background:#F7F4EF; color:var(--petrol); }
+.fx-nav .fi-drop ul :is(button, a):hover::after { color:var(--petrol); transform:translateX(2px); }
+.fi .fx-nav a.fi-drop-all, .fx-nav .fi-drop-all { display:block; margin:0; padding:13px 18px; border-top:1px solid var(--line);
+  font:600 13.5px/1.3 var(--sans); color:#fff; background:var(--ink); white-space:nowrap; }
+.fx-nav .fi-drop-all:hover { background:var(--petrol); }
 /* --- bölüm başlığı --- */
 .fx-sh { display:flex; align-items:center; gap:18px; margin:0 0 22px; }
 .fx-sh h2 { font:700 21px/1.1 var(--sans); letter-spacing:.01em; text-transform:uppercase; color:var(--ink); margin:0; white-space:nowrap; }
