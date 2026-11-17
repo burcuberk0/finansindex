@@ -934,7 +934,7 @@ const CSS_X = `
   .fx-mast-c { align-items:flex-start; grid-column:1 / 3; }
   .fx-mast-tag { display:none; }
   .fx-hd .fi-logo-t { font-size:27px; } .fx-hd .fi-logo-m { width:30px; height:30px; }
-  .fx-nb .fi-nav.fx-nav { display:flex; }
+  .fx-nb { display:none; }
   .fx-nav .fi-nav-i > :is(button, a) { font-size:15px; padding:14px 10px; }
   .fx-nav .fi-nav-ch { display:none; }
   .fx-nav .fi-drop { display:none; }
