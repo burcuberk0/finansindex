@@ -937,10 +937,10 @@ const CSS_X = `
   .fx-mast { display:flex; justify-content:center; position:relative; padding:12px 0 11px; }
   .fx-mast-l { display:none; }
   .fx-mast-c { gap:5px; }
-  .fx-mast-tag { display:block; font-size:8px; letter-spacing:.11em; white-space:nowrap; }
-  .fx-mast-r { position:absolute; right:-6px; top:50%; transform:translateY(-50%); gap:0; }
-  .fx-mast-r .fx-icbtn { width:38px; height:40px; }
-  .fx-hd .fi-logo-t { font-size:22px; } .fx-hd .fi-logo-m { width:25px; height:25px; } .fx-hd .fi-logo { gap:8px; }
+  .fx-mast-tag { display:block; font-size:8.5px; letter-spacing:.12em; white-space:nowrap; }
+  .fx-mast-r { position:absolute; right:-10px; top:50%; transform:translateY(-50%); gap:0; }
+  .fx-mast-r .fx-icbtn { width:36px; height:40px; }
+  .fx-hd .fi-logo-t { font-size:25px; } .fx-hd .fi-logo-m { width:28px; height:28px; } .fx-hd .fi-logo { gap:8px; }
   .fx-nb { display:none; }
   .fx-nav .fi-nav-i > :is(button, a) { font-size:15px; padding:14px 10px; }
   .fx-nav .fi-nav-ch { display:none; }
