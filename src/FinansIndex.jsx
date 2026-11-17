@@ -3434,7 +3434,12 @@ const STATIC_PAGES = {
     lead: "Bize nasıl ulaşabilirsiniz?",
     body: [
       ["Editoryal", "Haber ihbarı, düzeltme talebi ve içerik önerileri için editoryal iletişim adresini kullanın."],
-      ["Reklam ve iş birlikleri", "Medya planı ve fiyat listesi talepleri için Reklam ve İş Birlikleri sayfasındaki formu doldurabilirsiniz."],
+      ["Reklam ve iş birlikleri", <>
+        Medya planı, fiyat listesi ve iş birliği talepleri için{" "}
+        <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a> adresine yazabilir
+        {" "}ya da Reklam ve İş Birlikleri sayfasındaki formu doldurabilirsiniz.
+        {" "}Web: <a href="https://arsdigitalmedia.com" target="_blank" rel="noopener">arsdigitalmedia.com</a>
+      </>],
       ["KVKK", "Kişisel veri başvuruları için ayrı bir başvuru kanalı kullanılır."],
     ],
   },
