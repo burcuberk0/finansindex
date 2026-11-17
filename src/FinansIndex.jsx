@@ -89,7 +89,7 @@ const CSS = `
   text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px;
   text-decoration-color:var(--petrol); }
 
-.fi-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.fi-hidden { position:absolute; top:0; left:0; width:1px; height:1px; margin:-1px; padding:0; border:0; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
 
 /* --- link/button reset --- */
 .fi-a { background:none; border:0; padding:0; text-align:left; color:inherit; text-decoration:none; display:block; width:100%; }
@@ -801,7 +801,11 @@ const CSS_X = `
 /* --- üst piyasa şeridi --- */
 .fx-tk { background:#1A1A1A; color:#fff; }
 .fx-tk-w { display:flex; align-items:center; gap:20px; }
-.fx-tk-in { flex:1 1 auto; min-width:0; display:flex; gap:0; overflow-x:auto; scrollbar-width:none; }
+.fx-tk-in { position:relative; flex:1 1 auto; min-width:0; display:flex; gap:0; overflow-x:auto; scrollbar-width:none; }
+/* iOS Safari: kaydırma alanlarındaki gizli metinler sayfayı yana
+   genişletmesin. overflow-x:clip, yapışkan menüyü bozmaz. */
+.fi { overflow-x:clip; }
+.fx-tk-c { position:relative; }
 .fx-tk-in::-webkit-scrollbar { display:none; }
 .fx-tk-msg { padding:16px 0; font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#9C948C; }
 .fx-tk-c { flex:1 0 auto; padding:10px 18px 10px 0; margin-right:18px; border-right:1px solid rgba(255,255,255,.1); }
