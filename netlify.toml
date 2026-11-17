@@ -24,6 +24,13 @@
   force = true
 
 # SPA yönlendirmesi: kalan tüm yollar index.html'e döner
+# Medya kiti sayfası kaldırıldı (Kasım 2026): eski bağlantılar kalıcı olarak iletişime.
+[[redirects]]
+  from = "/reklam-ve-is-birlikleri"
+  to = "/iletisim"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

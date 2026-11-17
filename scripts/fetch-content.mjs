@@ -162,7 +162,7 @@ function mapArticle(a) {
    kaynaktan, her derlemede yeniden üretiliyor. Adresler routeToPath ile
    aynı şemayı izler. */
 const STATIC_PATHS = [
-  "", "finansal-araclar", "reklam-ve-is-birlikleri", "hakkimizda", "kunye",
+  "", "finansal-araclar", "hakkimizda", "kunye",
   "editoryal-ilkeler", "duzeltme-politikasi", "reklam-politikasi", "kvkk",
   "cerez-politikasi", "kullanim-kosullari", "iletisim",
 ];

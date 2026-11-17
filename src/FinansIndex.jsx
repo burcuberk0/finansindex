@@ -3255,7 +3255,6 @@ function Header({ route, go, onSearch, market }) {
             <A to={{ n: "category", slug: c.slug }} go={(r) => nav(r, c.name)} className="fi-dl" key={c.slug}>{c.name}</A>
           ))}
           <A to={{ n: "tools" }} go={(r) => nav(r, "Finansal Araçlar")} className="fi-dl">Finansal Araçlar</A>
-          <A to={{ n: "mediakit" }} go={(r) => { go(r); close(); }} className="fi-dl">Reklam ve İş Birlikleri</A>
           <button className="fi-btn fi-btn-g" style={{ marginTop: 16 }} onClick={() => { go({ n: "home", hash: "bulten" }); close(); }}>Bültene katıl</button>
         </div>
       </div>
@@ -3468,7 +3467,6 @@ function Footer({ go }) {
               {link("Hakkımızda", { n: "static", slug: "hakkimizda" })}
               {link("Künye", { n: "static", slug: "kunye" })}
               {link("İletişim", { n: "static", slug: "iletisim" })}
-              {link("Reklam ve İş Birlikleri", { n: "mediakit" })}
               {link("Finansal Araçlar", { n: "tools" })}
             </ul>
           </div>
@@ -4230,165 +4228,6 @@ function Tools({ activeTool, go }) {
   );
 }
 
-/* ---------------------------------------------------------- 17. MEDYA KİTİ */
-
-function MediaKit({ go }) {
-  useSeo({
-    title: "Reklam ve İş Birlikleri | FinansIndex",
-    description: "FinansIndex reklam çözümleri: sponsorlu içerik, kategori sponsorluğu, finansal araç sponsorluğu, newsletter sponsorluğu ve özel dosya iş birlikleri.",
-    path: "/reklam-ve-is-birlikleri",
-  });
-  useEffect(() => { track("article_view", { page_type: "mediakit", content_type: "commercial" }); }, []);
-
-  const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", budget: "", msg: "" });
-  const [state, setState] = useState({ msg: "", type: "" });
-  const started = useRef(false);
-
-  const upd = (k) => (e) => {
-    if (!started.current) { started.current = true; track("lead_form_start", { page_type: "mediakit", content_type: "media_inquiry" }); }
-    setForm({ ...form, [k]: e.target.value }); setState({ msg: "", type: "" });
-  };
-  const submit = () => {
-    if (!form.name.trim() || !form.company.trim()) { setState({ msg: "Ad soyad ve kurum alanları zorunludur.", type: "err" }); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) { setState({ msg: "Kurumsal e-posta adresinizi kontrol edin.", type: "err" }); return; }
-    track("lead_form_submit", { page_type: "mediakit", content_type: "media_inquiry" });
-    setState({ msg: "Talebiniz alındı. Medya planı ve fiyat listesiyle bir iş günü içinde dönüş yapacağız.", type: "ok" });
-    setForm({ name: "", company: "", email: "", phone: "", budget: "", msg: "" });
-  };
-
-  /* Envanter, değer sırasına göre listelenir: niyet yoğunluğu yüksek
-     alanlar üstte. Placement ID'ler koddaki AD_INVENTORY ile birebir aynıdır. */
-  const PRODUCTS = [
-    { t: "Finansal araç sponsorluğu", d: "Kredi, mevduat veya kira hesaplaması yapan kullanıcıya, kararın verildiği anda ulaşırsınız. Envanterimizdeki en yüksek niyetli alan.",
-      items: [["Araç başlığı altı", "calculator_sponsor"], ["Hesaplama sonucu alanı", "calculator_result"], ["Makale içi ilgili araç kutusu", "article_tool_sponsor"]] },
-    { t: "Kategori sponsorluğu", d: "Bir kategorinin belirli dönem boyunca tek markayla sunulması. Kredi ve Mevduat, Sigorta ve Emeklilik kategorileri sektörle doğrudan eşleşir.",
-      items: [["Kategori üst bandı", "category_sponsor"], ["Kategori içi native kart", "home_native_01"]] },
-    { t: "Sponsorlu içerik", d: "Editoryal ekibin doğruluk kontrolünden geçen, açıkça etiketlenmiş marka içeriği. Ürün tavsiyesi içermez.",
-      items: [["Makale + ana sayfa kartı", "sponsored_article"], ["Cep Etkisi Defteri native bloğu", "ledger_native"]] },
-    { t: "Bülten sponsorluğu", d: "Haftalık bültende tek sponsorlu blok. Sınırlı envanter, düşük rekabet, yüksek dikkat.",
-      items: [["Bülten içi blok", "newsletter_sponsor"]] },
-    { t: "Özel dosya sponsorluğu", d: "Bir konunun tüm yönleriyle ele alındığı çok bölümlü araştırma dosyasının marka iş birliğiyle sunulması.",
-      items: [["FinansIndex Dosya paneli", "dossier_sponsor"], ["Özel proje / araştırma", "custom"]] },
-    { t: "Yüksek niyetli sayfalar", d: "Araçlar ve arama sayfaları, kullanıcının aktif olarak araştırma yaptığı alanlardır. Sorgu ve araç seçimi, niyeti doğrudan gösterir.",
-      items: [["Araçlar sayfası native kart", "tools_index_native"], ["Arama sonuçları native kart", "search_native_01"], ["Kategori akışı native kart", "category_native_01"]] },
-    { t: "Display envanteri", d: "Okuma akışını bölmeyen, sabit boyutlu görsel alanlar. Pop-up, sayfa arası geçiş reklamı ve otomatik oynayan video kullanılmaz.",
-      items: [["Header altı geniş alan", "home_top_banner"], ["Ana sayfa orta bandı", "home_mid_banner"], ["Masaüstü sağ sütun sticky", "desktop_sidebar_sticky"], ["Makale içi birinci", "article_inline_01"], ["Makale içi ikinci", "article_inline_02"], ["Makale sonu", "article_end"]] },
-    { t: "Masaüstü yan panolar", d: "Geniş ekranlarda içerik sütununun iki yanında sabit duran dikey alanlar. İçerik genişliğini daraltmaz, dar ekranda görünmez.",
-      items: [["Sol pano", "rail_left"], ["Sağ pano", "rail_right"]] },
-    { t: "Mobil sabit bant", d: "Mobilde sayfa altında sabit duran, kullanıcının kapatabildiği tek satırlık alan. Yüksekliği sınırlıdır ve içeriğin üzerini örtmez.",
-      items: [["Mobil alt bant", "mobile_sticky_footer"]] },
-  ];
-
-  return (
-    <main id="icerik">
-      <div className="fi-mk-hero">
-        <div className="fi-wrap">
-          <div className="fi-eyebrow">Reklam ve iş birlikleri</div>
-          <h1>Finansal kararın verildiği anda markanız orada olsun.</h1>
-          <p>FinansIndex, kredi, mevduat, sigorta ve yatırım kararı öncesinde araştırma yapan kullanıcılara ulaşır. Envanterimiz okuma deneyimini bozmayacak şekilde tasarlanmıştır.</p>
-        </div>
-      </div>
-
-      <div className="fi-wrap">
-        <section className="fi-sec" style={{ borderTop: 0 }} aria-labelledby="aud-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">Kime ulaşıyoruz</div><h2 className="fi-h2" id="aud-h">Hedef kitle</h2></div></div>
-          <div className="fi-grid fi-g3">
-            {[
-              ["25–45 yaş çalışan yetişkinler", "Maaşını, harcamalarını ve borçlarını aktif olarak yöneten kullanıcılar."],
-              ["Karar aşamasındaki araştırmacılar", "Kredi, mevduat, sigorta veya yatırım ürünü seçmeden önce hesaplama yapan yüksek niyetli kullanıcılar."],
-              ["KOBİ sahipleri ve girişimciler", "İşletme finansmanı, nakit akışı ve e-ticaret konularında içerik arayan profesyoneller."],
-            ].map(([t, d]) => (
-              <div className="fi-panel" key={t}>
-                <h3 style={{ font: "600 17px/1.3 var(--sans)", color: "var(--navy)", margin: "0 0 8px" }}>{t}</h3>
-                <p style={{ fontSize: 14, color: "var(--muted)", margin: 0 }}>{d}</p>
-              </div>
-            ))}
-          </div>
-          <p className="fi-disc" style={{ marginTop: 24 }}>
-            Trafik, gösterim ve dönüşüm rakamları yayın başlangıcından itibaren ölçülmeye başlanacaktır. Bu sayfada doğrulanmamış performans verisi paylaşmıyoruz; güncel raporlama talebiniz için formu kullanabilirsiniz.
-          </p>
-        </section>
-
-        <section className="fi-sec" aria-labelledby="prod-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">Envanter</div><h2 className="fi-h2" id="prod-h">Reklam çözümleri</h2><p className="fi-sub">Her alanın benzersiz bir placement ID'si vardır; gösterim, tıklama ve görünürlük ayrı ayrı raporlanır.</p></div></div>
-          <div className="fi-grid fi-g3">
-            {PRODUCTS.map((p) => (
-              <div className="fi-prod" key={p.t}>
-                <h3>{p.t}</h3>
-                <p>{p.d}</p>
-                <ul>{p.items.map(([n, id]) => <li key={id + n}><span>{n}</span><code>{id}</code></li>)}</ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="fi-sec" aria-labelledby="pricing-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">Fiyatlama</div><h2 className="fi-h2" id="pricing-h">Nasıl çalışıyoruz?</h2></div></div>
-          <div className="fi-grid fi-g3">
-            {[
-              ["Dönemsel sponsorluk", "Envanteri gösterim başına değil, konum ve dönem üzerinden fiyatlıyoruz. Aylık veya üç aylık sponsorluk paketleri sunuyoruz."],
-              ["Şeffaf raporlama", "Kampanya süresince gösterim, tıklama ve görünürlük verilerini paylaşıyoruz. Her reklam alanının ayrı bir ölçüm kimliği var."],
-              ["Yeni yayın koşulları", "FinansIndex yeni bir yayın. Geçmiş trafik verisi paylaşmıyoruz; bunun yerine ilk dönem için avantajlı koşullar ve açık veri paylaşımı sunuyoruz."],
-            ].map(([t, d]) => (
-              <div className="fi-panel" key={t}>
-                <h3 style={{ font: "600 17px/1.3 var(--sans)", color: "var(--ink)", margin: "0 0 8px" }}>{t}</h3>
-                <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--muted)", margin: 0 }}>{d}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="fi-sec" aria-labelledby="rule-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">Çalışma ilkeleri</div><h2 className="fi-h2" id="rule-h">Neyi kabul ediyoruz, neyi etmiyoruz?</h2></div></div>
-          <div className="fi-grid fi-g3">
-            {[
-              ["Etiketleme zorunludur", "Sponsorlu tüm içerikler başlıkta ve kartta açıkça etiketlenir; etiket kaldırılamaz."],
-              ["Editoryal ayrım korunur", "Sponsor, editoryal içeriklerin konusuna veya sıralamasına müdahale edemez."],
-              ["Yanıltıcı vaat kabul edilmez", "Kesin kazanç vaadi ve lisanssız finansal hizmet tanıtımı yayımlanmaz."],
-            ].map(([t, d]) => (
-              <div className="fi-guide" key={t}><h3>{t}</h3><p style={{ marginBottom: 0 }}>{d}</p></div>
-            ))}
-          </div>
-        </section>
-
-        <section className="fi-sec" aria-labelledby="form-h">
-          <div className="fi-sh"><div><div className="fi-eyebrow">İletişim</div><h2 className="fi-h2" id="form-h">Medya planı talep edin</h2><p className="fi-sub">Formu doldurun; hedeflerinize uygun envanter, takvim ve fiyat listesiyle dönelim.</p></div></div>
-          <div className="fi-panel">
-            <div className="fi-form">
-              {[["name", "Ad soyad *", "text"], ["company", "Kurum *", "text"], ["email", "Kurumsal e-posta *", "email"], ["phone", "Telefon", "tel"]].map(([k, l, t]) => (
-                <div className="fi-fld" key={k}>
-                  <label htmlFor={`mk-${k}`}>{l}</label>
-                  <input id={`mk-${k}`} type={t} value={form[k]} onChange={upd(k)} style={{ fontFamily: "var(--sans)" }} />
-                </div>
-              ))}
-              <div className="fi-fld full">
-                <label htmlFor="mk-budget">İlgilendiğiniz çözüm</label>
-                <select id="mk-budget" value={form.budget} onChange={upd("budget")}>
-                  <option value="">Seçiniz</option>
-                  {PRODUCTS.map((p) => <option key={p.t} value={p.t}>{p.t}</option>)}
-                  <option value="Birden fazla / özel proje">Birden fazla / özel proje</option>
-                </select>
-              </div>
-              <div className="fi-fld full">
-                <label htmlFor="mk-msg">Kampanya hedefiniz</label>
-                <textarea id="mk-msg" value={form.msg} onChange={upd("msg")} placeholder="Dönem, hedef kitle ve ölçmek istediğiniz sonuç hakkında kısa bilgi." />
-              </div>
-              <div className="full">
-                {state.msg && <p className="fi-msg" role="status" style={{ background: state.type === "ok" ? "var(--green-soft)" : "#FBEAE6", color: state.type === "ok" ? "#12704A" : "#8C2B18", border: "1px solid", borderColor: state.type === "ok" ? "#C8E0D4" : "#EFCBC2", marginBottom: 14 }}>{state.msg}</p>}
-                <button className="fi-btn fi-btn-p" onClick={submit}>Talebi gönder</button>
-                <p style={{ fontSize: 12.5, color: "var(--muted)", margin: "12px 0 0" }}>
-                  Form verileriniz yalnızca talebinizi yanıtlamak amacıyla işlenir. Ayrıntı için{" "}
-                  <button onClick={() => go({ n: "static", slug: "kvkk" })} style={{ background: "none", border: 0, padding: 0, textDecoration: "underline", color: "var(--navy)" }}>KVKK Aydınlatma Metni</button>.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
-
 /* ------------------------------------------------------- 18. ARAMA / STATİK / 404 */
 
 function SearchPage({ q, go, daily }) {
@@ -4478,7 +4317,7 @@ function NotFound({ go }) {
      /<kategori>                       kategori
      /<kategori>/<yazi>                yazı
      /finansal-araclar[/<arac>]        hesaplama araçları
-     /reklam-ve-is-birlikleri          medya kiti
+     /reklam-ve-is-birlikleri          → /iletisim (medya kiti kaldırıldı)
      /ara?q=...                        arama
      /<sayfa>                          kurumsal ve yasal sayfalar          */
 
@@ -4508,7 +4347,6 @@ function routeToPath(r) {
       return cat ? `/${cat}/${r.slug}` : `/gundem/${r.slug}`;
     }
     case "tools": return r.tool ? `/${TOOLS_PATH}/${r.tool}` : `/${TOOLS_PATH}`;
-    case "mediakit": return `/${MEDIAKIT_PATH}`;
     case "search": return r.q ? `/${SEARCH_PATH}?q=${encodeURIComponent(r.q)}` : `/${SEARCH_PATH}`;
     case "static": return `/${r.slug}`;
     default: return "/";
@@ -4525,7 +4363,8 @@ function pathToRoute(pathname, searchStr = "", hashStr = "") {
     const tool = seg[1] && toolById(seg[1]) ? seg[1] : undefined;
     return tool ? { n: "tools", tool } : { n: "tools" };
   }
-  if (seg[0] === MEDIAKIT_PATH) return { n: "mediakit" };
+  /* Medya kiti sayfası kaldırıldı (Kasım 2026); eski bağlantılar iletişime gider. */
+  if (seg[0] === MEDIAKIT_PATH) return { n: "static", slug: "iletisim" };
   if (seg[0] === SEARCH_PATH) {
     const q = new URLSearchParams(searchStr || "").get("q") || "";
     return { n: "search", q };
@@ -4607,7 +4446,6 @@ export default function FinansIndex() {
       case "category": return <Category slug={route.slug} go={go} daily={daily} />;
       case "article": return <Article slug={route.slug} go={go} daily={daily} />;
       case "tools": return <Tools activeTool={route.tool} go={go} />;
-      case "mediakit": return <MediaKit go={go} />;
       case "search": return <SearchPage q={route.q} go={go} daily={daily} />;
       case "static": return <StaticPage slug={route.slug} go={go} />;
       case "404":
