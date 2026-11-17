@@ -3369,7 +3369,7 @@ const STATIC_PAGES = {
       ["Sorumlu kişi", "Yayın sahibi ve sorumlu editörün adı, ticari unvan, adres, ticaret sicil numarası ve KEP adresi bu alanda yer alır. [Bu bölümü kendi bilgilerinizle doldurun — yasal olarak gereklidir.]"],
       ["Editoryal sorumluluk", "Yayımlanan her içeriğin kaynak doğrulaması, oran ve tarih kontrolü sorumlu editör tarafından yapılır. Yapay zekâ desteğiyle hazırlanan taslaklar da aynı kontrolden geçer; editör onayı olmadan hiçbir içerik yayına alınmaz."],
       ["Uzmanlık sınırı", "FinansIndex bir yayın platformudur; yatırım danışmanlığı, hukuki danışmanlık veya mali müşavirlik yetkisine sahip değildir."],
-      ["İletişim", "Editoryal konular, düzeltme talepleri ve iş birliği başvuruları için ayrı e-posta adresleri kullanılır. Düzeltme talepleri en geç iki iş günü içinde değerlendirilir."],
+      ["İletişim", <>Editoryal konular, düzeltme talepleri ve iş birlikleri için: <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a> · <a href="https://arsdigitalmedia.com" target="_blank" rel="noopener">arsdigitalmedia.com</a>. Düzeltme talepleri en geç iki iş günü içinde değerlendirilir.</>],
     ],
   },
   "editoryal-ilkeler": {
@@ -3408,7 +3408,7 @@ const STATIC_PAGES = {
     body: [
       ["İşlenen veriler", "Bülten aboneliğinde e-posta adresi; iletişim formunda ad, kurum ve iletişim bilgisi işlenir. Hesaplama araçlarına girdiğiniz finansal veriler sunucularımıza gönderilmez, yalnızca tarayıcınızda işlenir."],
       ["Analitik", "Açık rızanız olmadan hassas finansal bilgiler analitik sistemlerine aktarılmaz. Ölçümleme yalnızca sayfa ve etkileşim düzeyinde yapılır."],
-      ["Haklarınız", "KVKK kapsamındaki bilgi edinme, düzeltme ve silme haklarınızı iletişim sayfasındaki adres üzerinden kullanabilirsiniz."],
+      ["Haklarınız", <>KVKK kapsamındaki bilgi edinme, düzeltme ve silme haklarınızı <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a> adresine yazarak kullanabilirsiniz.</>],
     ],
   },
   "cerez-politikasi": {
@@ -3433,14 +3433,9 @@ const STATIC_PAGES = {
     title: "İletişim",
     lead: "Bize nasıl ulaşabilirsiniz?",
     body: [
-      ["Editoryal", "Haber ihbarı, düzeltme talebi ve içerik önerileri için editoryal iletişim adresini kullanın."],
-      ["Reklam ve iş birlikleri", <>
-        Medya planı, fiyat listesi ve iş birliği talepleri için{" "}
-        <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a> adresine yazabilir
-        {" "}ya da Reklam ve İş Birlikleri sayfasındaki formu doldurabilirsiniz.
-        {" "}Web: <a href="https://arsdigitalmedia.com" target="_blank" rel="noopener">arsdigitalmedia.com</a>
-      </>],
-      ["KVKK", "Kişisel veri başvuruları için ayrı bir başvuru kanalı kullanılır."],
+      ["E-posta", <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a>],
+      ["Web", <a href="https://arsdigitalmedia.com" target="_blank" rel="noopener">arsdigitalmedia.com</a>],
+      ["Konular", "Reklam ve iş birlikleri, haber ve içerik önerileri, düzeltme talepleri ile KVKK kapsamındaki başvurular için bu adresi kullanabilirsiniz."],
     ],
   },
 };
