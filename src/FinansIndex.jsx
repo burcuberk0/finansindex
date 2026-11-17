@@ -3366,7 +3366,7 @@ const STATIC_PAGES = {
     lead: "Yayın sorumlulukları ve iletişim bilgileri.",
     body: [
       ["Neden kurumsal imza kullanıyoruz?", "FinansIndex içerikleri tek bir editörün imzasıyla değil, yayın adıyla yayımlanır. Bunun nedeni içeriklerin bireysel görüş değil, kurumsal editoryal süreçten geçmiş metinler olmasıdır. Sorumluluk ise kişiseldir: aşağıda adı geçen sorumlu kişi, yayımlanan her içeriğin doğruluk kontrolünden ve yayın kararından sorumludur."],
-      ["Sorumlu kişi", "Yayın sahibi ve sorumlu editörün adı, ticari unvan, adres, ticaret sicil numarası ve KEP adresi bu alanda yer alır. [Bu bölümü kendi bilgilerinizle doldurun — yasal olarak gereklidir.]"],
+      ["Sorumlu kişi", "Yayın sahibi bilgileri yakında eklenecektir."],
       ["Editoryal sorumluluk", "Yayımlanan her içeriğin kaynak doğrulaması, oran ve tarih kontrolü sorumlu editör tarafından yapılır. Yapay zekâ desteğiyle hazırlanan taslaklar da aynı kontrolden geçer; editör onayı olmadan hiçbir içerik yayına alınmaz."],
       ["Uzmanlık sınırı", "FinansIndex bir yayın platformudur; yatırım danışmanlığı, hukuki danışmanlık veya mali müşavirlik yetkisine sahip değildir."],
       ["İletişim", <>Editoryal konular, düzeltme talepleri ve iş birlikleri için: <a href="mailto:sales@arsdigitalmedia.com">sales@arsdigitalmedia.com</a> · <a href="https://arsdigitalmedia.com" target="_blank" rel="noopener">arsdigitalmedia.com</a>. Düzeltme talepleri en geç iki iş günü içinde değerlendirilir.</>],
