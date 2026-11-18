@@ -517,6 +517,8 @@ const CSS = `
 .fi-sticky { position:sticky; top:150px; }
 /* Yan panolar: yalnızca içerik sütununa yer kalan geniş ekranlarda */
 .fi-rail-ad { display:none; }
+.ars-skin-on .fi-rail-ad { display:none !important; }
+.fi-ars[hidden] { display:none !important; }
 @media (min-width:1400px) {
   .fi-rail-ad { display:block; position:fixed; top:170px; width:160px; z-index:40; }
   .fi-rail-ad-l { left:calc((100vw - 1180px) / 2 - 176px); }
@@ -2023,7 +2025,43 @@ function StatRow({ items, caption }) {
  * placementId zorunlu. Kreatif yoksa null döner → sayfada yer kaplamaz.
  * Görünürlük IntersectionObserver ile ölçülür (ad_impression / sponsor_impression).
  */
-function AdSlot({ placementId, pageType, className = "" }) {
+/**
+ * Reklam alanı. Öncelik: 1) ARS panel (panel.arsdigitalmedia.com, public/ars.js) → 2) koddaki
+ * AD_INVENTORY kreatifi → 3) GAM. Panelde yayında reklam yoksa eski sıra aynen işler; hiçbiri
+ * yoksa alan yer kaplamaz.
+ * ctx: alana özel hedefleme (kategori, arac, etiket). Sayfa bağlamı App'te ARS.setPage ile verilir.
+ * local=false: yalnız panelden satılır (koddaki kreatife düşmez).
+ */
+function AdSlot({ placementId, pageType, className = "", ctx, local = true }) {
+  const ars = typeof window !== "undefined" ? window.ARS : null;
+  const [st, setSt] = useState(ars ? "wait" : "none");
+  const ref = useRef(null);
+  const key = JSON.stringify([placementId, pageType, ctx || null, ars ? ars.pageKey() : ""]);
+  useEffect(() => {
+    if (!ars || !ref.current) { setSt("none"); return; }
+    let alive = true;
+    const el = ref.current;
+    setSt("wait");
+    el.innerHTML = "";
+    el.removeAttribute("style");
+    el.setAttribute("data-slot", placementId);
+    el.setAttribute("data-ars-ctx", JSON.stringify({ sayfa: pageType, ...(ctx || {}) }));
+    ars.slot(el).then((ok) => {
+      if (!alive) return;
+      setSt(ok ? "panel" : "none");
+      if (ok) track("ad_impression", { placement_id: placementId, page_type: pageType, ad_source: "ars_panel" });
+    });
+    return () => { alive = false; };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <>
+      <div className={`fi-ars ${className}`} hidden={st !== "panel"}><div ref={ref} /></div>
+      {st === "none" && local && <LocalAdSlot placementId={placementId} pageType={pageType} className={className} />}
+    </>
+  );
+}
+
+function LocalAdSlot({ placementId, pageType, className = "" }) {
   const creative = AD_INVENTORY[placementId];
 
   /* Öncelik sırası:
@@ -2355,7 +2393,7 @@ function CalcShell({ tool, children, out, note, compact }) {
         <span className="fi-samp">Örnek hesaplama aracı</span>
         <h3 style={{ marginTop: 10 }}>{tool.name}</h3>
         <p>{tool.desc}</p>
-        <AdSlot placementId="calculator_sponsor" pageType="tool" className="" />
+        <AdSlot placementId="calculator_sponsor" pageType="tools" className="" ctx={{ arac: tool.id }} />
       </div>
       <div className="fi-calc-b">
         <div className="fi-calc-in">
@@ -2370,7 +2408,7 @@ function CalcShell({ tool, children, out, note, compact }) {
         </div>
         <div className="fi-calc-out">
           {out}
-          <AdSlot placementId="calculator_result" pageType="tool" />
+          <AdSlot placementId="calculator_result" pageType="tools" ctx={{ arac: tool.id }} />
         </div>
       </div>
     </section>
@@ -3160,6 +3198,7 @@ function TopTicker({ market, go }) {
             );
           })}
         </div>
+        <AdSlot placementId="market_band_sponsor" pageType="home" local={false} />
         <button className="fx-tk-cta" onClick={() => go({ n: "home", hash: "bulten" })}>Bültene katıl</button>
       </div>
     </div>
@@ -3859,7 +3898,8 @@ function Category({ slug, go, daily }) {
           <div className="fi-eyebrow">Kategori</div>
           <h1>{cat.name}</h1>
           <p>{cat.desc}</p>
-          {slug === CATEGORY_SPONSOR_SLUG && <AdSlot placementId="category_sponsor" pageType="category" className="fi-catspon" />}
+          <AdSlot placementId="category_sponsor" pageType="category" className="fi-catspon"
+            ctx={{ kategori: slug, etiket: SUBNAV[slug] || [] }} local={slug === CATEGORY_SPONSOR_SLUG} />
         </div>
         <section className="fi-sec" style={{ borderTop: 0 }}>
           <div className="fi-2col">
@@ -3964,6 +4004,20 @@ function Article({ slug, go, daily }) {
               <div className="fi-sponnote">
                 <strong>Sponsorlu içerik.</strong> Bu içerik {a.sponsor_name} iş birliğiyle hazırlanmıştır. Editoryal içeriklerden ayrıdır; ürün tavsiyesi içermez.
               </div>
+            )}
+            {/* Markalı içerik serisi: aynı sponsorun diğer sponsorlu yazıları */}
+            {a.sponsored && a.sponsor_name && (() => {
+              const seri = ARTICLES.filter((x) => x.sponsored && x.sponsor_name === a.sponsor_name && x.id !== a.id).slice(0, 5);
+              return seri.length > 0 && (
+                <div className="fi-sponnote" style={{ marginTop: 8 }}>
+                  <strong>{a.sponsor_name} serisinin diğer yazıları:</strong>{" "}
+                  {seri.map((x, i) => <span key={x.id}>{i > 0 && " · "}<A to={{ n: "article", slug: x.slug }} go={go}>{x.title}</A></span>)}
+                </div>
+              );
+            })()}
+            {!a.sponsored && (
+              <AdSlot placementId="category_sponsor" pageType="article" className="fi-catspon"
+                ctx={{ kategori: a.category, etiket: a.tags }} local={false} />
             )}
 
             <div className="fi-meta">
@@ -4071,7 +4125,7 @@ function Article({ slug, go, daily }) {
                   <h3>{tool.name}</h3>
                   <p>{tool.desc}</p>
                   <A to={{ n: "tools", tool: tool.id }} go={go} className="fi-btn fi-btn-g">Aracı aç</A>
-                  <AdSlot placementId="article_tool_sponsor" pageType="article" />
+                  <AdSlot placementId="article_tool_sponsor" pageType="article" ctx={{ arac: a.related_tool }} />
                 </div>
               )}
 
@@ -4416,6 +4470,18 @@ function A({ to, go, className, children, ...rest }) {
 
 /* ------------------------------------------------------------------ 19. APP */
 
+/* Rota → ARS panel hedeflemesi (sayfa, kategori, arac, etiket) */
+function adContext(route, daily) {
+  const ctx = { sayfa: route.n };
+  if (route.n === "category") { ctx.kategori = route.slug; ctx.etiket = SUBNAV[route.slug] || []; }
+  if (route.n === "article") {
+    const a = bySlug(route.slug) || (daily && daily.slug === route.slug ? daily : null);
+    if (a) { ctx.kategori = a.category; ctx.etiket = a.tags || []; if (a.related_tool) ctx.arac = a.related_tool; }
+  }
+  if (route.n === "tools" && route.tool) ctx.arac = route.tool;
+  return ctx;
+}
+
 export default function FinansIndex() {
   const [route, setRoute] = useState(() =>
     typeof window === "undefined"
@@ -4457,6 +4523,12 @@ export default function FinansIndex() {
     return () => window.removeEventListener("popstate", onPop);
   }, [settle]);
 
+  /* ARS panel: sayfa bağlamı (hedefleme) render sırasında verilir ki alt bileşenlerdeki
+     reklam alanları ilk istekte doğru bağlamı kullansın; sayfa geneli formatlar efektte yenilenir. */
+  const adCtx = adContext(route, daily);
+  if (typeof window !== "undefined" && window.ARS) window.ARS.setPage(adCtx);
+  useEffect(() => { if (window.ARS) window.ARS.page(adCtx); }, [JSON.stringify(adCtx)]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const page = (() => {
     switch (route.n) {
       case "home": return <Home go={go} market={market} daily={daily} />;
@@ -4474,12 +4546,15 @@ export default function FinansIndex() {
     <div className={`fi ${AD_INVENTORY.mobile_sticky_footer ? "fi-has-sticky-ad" : ""}`}>
       <style>{CSS + CSS_X}</style>
       <a href="#icerik" className="fi-hidden fi-skip">İçeriğe geç</a>
+      <AdSlot placementId="masthead" pageType={route.n} local={false} />
       <Header route={route} go={go} onSearch={() => setSearch(true)} market={market} />
       {page}
       {search && <SearchOverlay onClose={() => setSearch(false)} go={go} />}
       <Footer go={go} />
       <ConsentBanner />
       <RailAds pageType={route.n} />
+      <aside className="fi-rail-ad fi-rail-ad-l" aria-label="Reklam"><AdSlot placementId="rail_left" pageType={route.n} local={false} /></aside>
+      <aside className="fi-rail-ad fi-rail-ad-r" aria-label="Reklam"><AdSlot placementId="rail_right" pageType={route.n} local={false} /></aside>
       <StickyFooterAd pageType={route.n} />
     </div>
   );
